@@ -1,0 +1,1162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tribuna Match IQ</title>
+<meta name="description" content="Tribuna Match IQ prototype: make three calls on a match, compare them with CaptainAI, fans and the market, then track your Match IQ.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230e0f0c'/%3E%3Cpath d='M18 4 7 18h8l-1 10 11-14h-8z' fill='%23d7ff3d'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ------------------------------------------------------------------ tokens */
+:root{
+  color-scheme:dark;
+  --bg:#0e0f0c;
+  --surface:#171915;
+  --surface-2:#1f221c;
+  --surface-3:#272b24;
+  --line:#2c3128;
+  --line-strong:#3a4035;
+  --ink:#f3f4ec;
+  --ink-2:#b4b8aa;
+  --ink-3:#878c80;
+  --accent:#d7ff3d;
+  --accent-ink:#0e0f0c;
+  --accent-dim:rgba(215,255,61,.14);
+  --ai:#3987e5;
+  --fans:#d95926;
+  --market:#199e70;
+  --danger:#e66767;
+  --font-display:"Barlow Condensed","Arial Narrow","Roboto Condensed",system-ui,sans-serif;
+  --font-body:"Barlow","Helvetica Neue",Arial,system-ui,sans-serif;
+  --radius:12px;
+  --radius-sm:8px;
+  --shadow:0 12px 32px -12px rgba(0,0,0,.6),0 2px 6px -2px rgba(0,0,0,.5);
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--font-body);font-size:16px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--accent);color:var(--accent-ink)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:8px;border:2px solid var(--bg)}
+::-webkit-scrollbar-track{background:var(--bg)}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0;margin:0;-webkit-tap-highlight-color:transparent}
+a{color:var(--accent);text-underline-offset:3px;text-decoration-thickness:1px}
+h1,h2,h3{font-family:var(--font-display);font-weight:700;line-height:1;letter-spacing:-.01em;margin:0;text-wrap:balance}
+p{margin:0}
+.num{font-variant-numeric:tabular-nums}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.hidden{display:none!important}
+svg.i{width:1em;height:1em;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.15em}
+
+/* --------------------------------------------------------------- site mock */
+.site-head{
+  position:sticky;top:0;z-index:20;background:rgba(14,15,12,.88);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.site-head .row{max-width:560px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:18px}
+.wordmark{font-family:var(--font-display);font-weight:800;font-size:22px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);display:flex;align-items:center;gap:8px}
+.wordmark i{width:10px;height:10px;background:var(--accent);border-radius:2px;transform:rotate(45deg)}
+.site-nav{display:flex;gap:14px;font-size:13px;color:var(--ink-2);margin-left:auto;font-weight:500}
+.site-nav span{opacity:.9}
+.site-nav .on{color:var(--ink);border-bottom:2px solid var(--accent);padding-bottom:2px}
+.page{max-width:560px;margin:0 auto;padding:20px 20px 40px;min-height:70vh}
+.site-foot{max-width:560px;margin:0 auto;padding:16px 20px 40px;color:var(--ink-3);font-size:12px;line-height:1.5;border-top:1px solid var(--line)}
+.site-foot .rg{display:flex;gap:10px;align-items:flex-start}
+.badge18{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border:1.5px solid var(--ink-3);border-radius:50%;font-weight:700;font-size:11px;flex:none;color:var(--ink-2)}
+
+/* -------------------------------------------------------------- primitives */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  min-height:48px;padding:0 20px;border-radius:var(--radius-sm);
+  font-weight:600;font-size:16px;transition:transform .15s var(--ease),background .15s,color .15s,box-shadow .15s;
+}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);box-shadow:0 6px 18px -8px rgba(0,0,0,.7)}
+.btn-primary:hover{background:#e4ff6b}
+.btn-secondary{background:var(--surface-3);color:var(--ink);border:1px solid var(--line-strong)}
+.btn-secondary:hover{background:#2f342b}
+.btn-ghost{color:var(--ink-2);min-height:44px;padding:0 10px}
+.btn-ghost:hover{color:var(--ink)}
+.btn-block{width:100%}
+.btn[disabled]{opacity:.45;cursor:not-allowed;transform:none}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600;letter-spacing:.02em;border:1px solid var(--line-strong);color:var(--ink-2);white-space:nowrap}
+.chip-accent{background:var(--accent-dim);border-color:transparent;color:var(--accent)}
+.chip-warn{background:rgba(230,103,103,.14);border-color:transparent;color:#ff9b9b}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+.stack>*+*{margin-top:14px}
+.muted{color:var(--ink-2)}
+.dim{color:var(--ink-3)}
+.small{font-size:13px}
+.tiny{font-size:12px}
+.row{display:flex;align-items:center;gap:10px}
+.between{justify-content:space-between}
+.wrap{flex-wrap:wrap}
+.divider{height:1px;background:var(--line);margin:16px 0}
+.swatch{width:10px;height:10px;border-radius:3px;flex:none}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink-2);font-weight:500}
+.legend .row{gap:6px}
+
+/* --------------------------------------------------------------- match page */
+.match-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+.match-card .comp{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;margin:14px 0 10px}
+.team{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.crest{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:20px;color:#fff;letter-spacing:.02em;border:2px solid rgba(255,255,255,.08)}
+.team b{font-family:var(--font-display);font-size:20px;font-weight:700;line-height:1.05}
+.kick{font-family:var(--font-display);font-size:34px;font-weight:800;line-height:1;color:var(--ink);letter-spacing:.02em}
+.kick small{display:block;font-family:var(--font-body);font-size:12px;font-weight:500;color:var(--ink-3);letter-spacing:.06em;text-transform:uppercase;margin-top:6px}
+.countdown{font-variant-numeric:tabular-nums}
+.venue{font-size:13px;color:var(--ink-3);text-align:center}
+.preview h2{font-size:30px;margin:26px 0 8px;line-height:1.02}
+.preview p{color:var(--ink-2);font-size:16px;line-height:1.6;max-width:62ch}
+.preview p+p{margin-top:10px}
+.byline{font-size:12px;color:var(--ink-3);margin-top:8px}
+.widget{
+  margin:22px 0;border-radius:var(--radius);padding:20px;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#1c2116 0%,#171915 60%);border:1px solid var(--line-strong);box-shadow:var(--shadow);
+}
+.widget:before{content:"";position:absolute;inset:-40% -30% auto auto;width:260px;height:260px;border-radius:50%;background:radial-gradient(closest-side,rgba(215,255,61,.16),transparent 70%);pointer-events:none}
+.widget h2{font-size:34px;line-height:.98;max-width:12ch}
+.widget h2 em{font-style:normal;color:var(--accent)}
+.widget p{color:var(--ink-2);margin-top:10px;max-width:40ch}
+.widget .facts{display:flex;gap:14px;margin:14px 0 18px;font-size:13px;color:var(--ink-2);flex-wrap:wrap}
+.widget .facts .row{gap:6px}
+.club-pick{margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.club-pick .row{gap:8px;margin-top:8px}
+.club-btn{flex:1;min-height:44px;border-radius:var(--radius-sm);border:1px solid var(--line-strong);background:var(--surface-2);font-weight:600;font-size:14px;display:flex;align-items:center;justify-content:center;gap:8px}
+.club-btn[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-dim)}
+.club-btn .dot{width:12px;height:12px;border-radius:50%;flex:none}
+.odds-plain{margin-top:8px}
+.odds-plain .head{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.odds-plain .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.odds-plain .cell{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:10px;text-align:center}
+.odds-plain .cell span{display:block;font-size:12px;color:var(--ink-3)}
+.odds-plain .cell b{font-family:var(--font-display);font-size:20px}
+
+/* ------------------------------------------------------------ challenge shell */
+.shell-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.steps{display:flex;gap:6px;flex:1;max-width:220px}
+.steps i{flex:1;height:4px;border-radius:2px;background:var(--line-strong)}
+.steps i.done{background:var(--accent)}
+.steps i.now{background:var(--accent);opacity:.55}
+.q-title{font-size:40px;line-height:.95;margin:6px 0 4px}
+.q-sub{color:var(--ink-2);font-size:15px}
+.options{display:grid;gap:10px;margin-top:18px}
+.opt{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;
+  min-height:60px;padding:14px 16px;border-radius:var(--radius);border:1px solid var(--line-strong);
+  background:var(--surface);transition:border-color .15s,background .15s,transform .15s var(--ease);
+}
+.opt:hover{border-color:#4b5245;background:var(--surface-2)}
+.opt[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-dim)}
+.opt[disabled]{cursor:default;transform:none}
+.opt[disabled]:hover{border-color:var(--line-strong);background:var(--surface)}
+.opt[disabled][aria-pressed="true"]{border-color:var(--accent);background:var(--accent-dim)}
+.opt .lbl{font-family:var(--font-display);font-size:24px;font-weight:700;line-height:1}
+.opt .sub{font-size:13px;color:var(--ink-3);margin-top:3px;font-family:var(--font-body);font-weight:400}
+.opt .tag{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+
+/* reveal (grouped bar chart) */
+.reveal{margin-top:18px;padding:16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);animation:rise .5s var(--ease) both}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.reveal h3{font-size:20px;font-weight:700}
+.reveal .legend{margin:8px 0 14px}
+.grp{display:grid;grid-template-columns:96px 1fr;gap:12px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.grp:first-of-type{border-top:0}
+.grp .name{font-weight:600;font-size:14px;line-height:1.2}
+.grp .name .you{display:block;font-size:11px;color:var(--accent);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.bars{display:grid;gap:2px}
+.bar{display:grid;grid-template-columns:1fr 34px;align-items:center;gap:8px;height:12px}
+.bar .track{height:10px;position:relative}
+.bar .fill{height:10px;border-radius:0 4px 4px 0;transform:scaleX(0);transform-origin:left;transition:transform .9s var(--ease)}
+.fill.in{transform:scaleX(1)}
+.bar .val{font-size:12px;color:var(--ink-2);text-align:right}
+.grp.you .name{color:var(--ink)}
+.reason{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);font-size:14px;color:var(--ink-2);display:flex;gap:10px;align-items:flex-start}
+.ai-dot{width:22px;height:22px;border-radius:6px;background:rgba(57,135,229,.18);color:#8db9f2;display:grid;place-items:center;flex:none;margin-top:1px}
+.back{transform:rotate(180deg)}
+.reason a{white-space:nowrap}
+.foot-cta{margin-top:18px;display:flex;gap:10px;flex-direction:column}
+
+/* power pick, lock */
+.pick-list{display:grid;gap:10px;margin-top:18px}
+.pick{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:var(--radius);border:1px solid var(--line-strong);background:var(--surface);text-align:left;min-height:64px;transition:border-color .15s,background .15s}
+.pick[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-dim)}
+.pick .k{font-size:12px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.pick .v{font-family:var(--font-display);font-size:22px;font-weight:700;line-height:1.05}
+.pick .x2{margin-left:auto;font-family:var(--font-display);font-weight:800;font-size:20px;color:var(--ink-3)}
+.pick[aria-pressed="true"] .x2{color:var(--accent)}
+.slip{margin-top:18px;border:1px solid var(--line-strong);border-radius:var(--radius);background:var(--surface);overflow:hidden;box-shadow:var(--shadow)}
+.slip .hd{padding:12px 16px;background:var(--surface-2);font-size:12px;text-transform:uppercase;letter-spacing:.08em;font-weight:600;color:var(--ink-2);display:flex;justify-content:space-between}
+.slip .leg{display:flex;align-items:center;gap:12px;padding:14px 16px;border-top:1px solid var(--line)}
+.slip .leg .n{width:22px;height:22px;border-radius:50%;background:var(--surface-3);display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--ink-2);flex:none}
+.slip .leg .t{font-family:var(--font-display);font-size:22px;font-weight:700;line-height:1}
+.slip .leg .s{font-size:12px;color:var(--ink-3)}
+.slip .leg.pp{background:var(--accent-dim)}
+.slip .leg.pp .n{background:var(--accent);color:var(--accent-ink)}
+.slip .leg .pp-tag{margin-left:auto;font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--accent);display:flex;align-items:center;gap:4px}
+.lockstamp{display:flex;align-items:center;gap:10px;padding:14px 16px;border-top:1px solid var(--line);color:var(--accent);font-weight:600}
+.locked-anim{animation:stamp .6s var(--ease) both}
+@keyframes stamp{0%{transform:scale(1.06);opacity:0}60%{transform:scale(.98);opacity:1}100%{transform:none}}
+
+/* odds */
+.tabs{display:flex;gap:4px;padding:4px;background:var(--surface-2);border-radius:10px;margin-top:16px}
+.tab{flex:1;min-height:40px;border-radius:8px;font-weight:600;font-size:14px;color:var(--ink-2);transition:background .15s,color .15s}
+.tab[aria-selected="true"]{background:var(--surface-3);color:var(--ink);box-shadow:0 1px 0 rgba(255,255,255,.04) inset}
+.odds-table{margin-top:14px;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.odds-row{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;padding:14px 16px;border-top:1px solid var(--line);background:var(--surface)}
+.odds-row:first-child{border-top:0}
+.odds-row.best{background:linear-gradient(90deg,var(--accent-dim),transparent 60%)}
+.odds-row .bk{font-weight:600}
+.odds-row .bk small{display:block;font-size:12px;color:var(--ink-3);font-weight:400}
+.odds-row .o{font-family:var(--font-display);font-size:26px;font-weight:800;text-align:right;line-height:1}
+.odds-row .o small{display:block;font-family:var(--font-body);font-size:12px;color:var(--ink-3);font-weight:500;margin-top:2px}
+.odds-row .go{min-height:40px;padding:0 14px;font-size:14px}
+.call{margin-top:14px;padding:14px 16px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--line)}
+.call .hd{font-size:12px;text-transform:uppercase;letter-spacing:.08em;font-weight:600;color:var(--ink-3)}
+.call .big{font-family:var(--font-display);font-size:26px;font-weight:700;margin-top:4px;line-height:1.05}
+.call .cmp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.call .cmp div{background:var(--surface-2);border-radius:var(--radius-sm);padding:10px;text-align:center}
+.call .cmp span{display:block;font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.call .cmp b{font-family:var(--font-display);font-size:24px;font-weight:800}
+.call .note{font-size:13px;color:var(--ink-2);margin-top:10px}
+.rg{display:flex;gap:10px;align-items:flex-start;font-size:12px;color:var(--ink-3);margin-top:14px;line-height:1.45}
+
+/* waiting */
+.wait{margin-top:18px;text-align:center;padding:28px 18px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--line)}
+.wait .big{font-family:var(--font-display);font-size:52px;font-weight:800;line-height:1;letter-spacing:.02em}
+.wait .lbl{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);font-weight:600;margin-top:8px}
+.proto{margin-top:24px;padding:14px;border:1px dashed var(--line-strong);border-radius:var(--radius);text-align:center;color:var(--ink-3);font-size:13px}
+.proto .btn{margin-top:10px}
+
+/* result */
+.score{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;margin-top:16px;padding:18px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--line)}
+.score .t{font-family:var(--font-display);font-size:22px;font-weight:700;text-align:center}
+.score .s{font-family:var(--font-display);font-size:44px;font-weight:800;letter-spacing:.04em}
+.score .ft{grid-column:1/-1;text-align:center;font-size:12px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+.calls{margin-top:14px;display:grid;gap:8px}
+.callrow{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:var(--radius-sm);background:var(--surface);border:1px solid var(--line)}
+.callrow .ic{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;flex:none}
+.callrow .ic.ok{background:var(--accent);color:var(--accent-ink)}
+.callrow .ic.no{background:rgba(230,103,103,.18);color:var(--danger)}
+.callrow .t{font-weight:600}
+.callrow .t small{display:block;font-size:12px;color:var(--ink-3);font-weight:400}
+.callrow .pts{margin-left:auto;font-family:var(--font-display);font-size:20px;font-weight:800;color:var(--ink-2)}
+.callrow .pts.ok{color:var(--accent)}
+.iq-hero{margin-top:16px;padding:20px;border-radius:var(--radius);background:linear-gradient(135deg,#1c2116,#171915 70%);border:1px solid var(--line-strong);display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px}
+.iq-hero .lbl{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);font-weight:600}
+.iq-hero .n{font-family:var(--font-display);font-size:56px;font-weight:800;line-height:1;color:var(--accent)}
+.iq-hero .n small{font-size:20px;color:var(--ink-2);font-weight:700;margin-left:4px}
+.duel{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.duel div{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);padding:12px;text-align:center}
+.duel span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);font-weight:600}
+.duel b{font-family:var(--font-display);font-size:28px;font-weight:800;line-height:1.1}
+.duel div.win{border-color:var(--accent)}
+.insight{margin-top:12px;display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:var(--radius-sm);background:var(--surface);border:1px solid var(--line);font-size:14px;color:var(--ink-2)}
+
+/* retention */
+.profile{margin-top:16px;padding:18px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--line)}
+.profile .top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.profile .rating{font-family:var(--font-display);font-size:48px;font-weight:800;line-height:1}
+.profile .rating small{font-size:16px;color:var(--ink-3);font-weight:600;margin-left:6px;font-family:var(--font-body)}
+.profile .league{text-align:right}
+.profile .league b{font-family:var(--font-display);font-size:22px;font-weight:700;display:block}
+.profile .league span{font-size:12px;color:var(--ink-3)}
+.progress{margin-top:12px;height:6px;background:var(--surface-3);border-radius:3px;overflow:hidden}
+.progress i{display:block;height:100%;background:var(--accent);border-radius:3px;transform:scaleX(0);transform-origin:left;transition:transform .8s var(--ease)}
+.progress i.in{transform:scaleX(1)}
+.profile .stats{display:flex;gap:16px;margin-top:14px;flex-wrap:wrap;font-size:14px;color:var(--ink-2)}
+.profile .stats .row{gap:6px}
+.profile .stats b{color:var(--ink)}
+.flame{color:#ff9b3d}
+.lb{margin-top:14px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--line);overflow:hidden}
+.lb .tabs{margin:12px 12px 0}
+.lb .hd{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 6px;font-size:13px;color:var(--ink-2)}
+.lb .hd b{font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--ink)}
+.lb table{width:100%;border-collapse:collapse;font-size:14px}
+.lb td{padding:10px 16px;border-top:1px solid var(--line)}
+.lb td:first-child{width:36px;color:var(--ink-3);font-weight:600}
+.lb td:last-child{text-align:right;font-family:var(--font-display);font-size:18px;font-weight:700}
+.lb tr.me td{background:var(--accent-dim)}
+.lb tr.ai td .name{color:#8db9f2}
+.lb table .name{display:flex;align-items:center;gap:8px;font-weight:500}
+.lb table .name .av{width:22px;height:22px;border-radius:50%;background:var(--surface-3);display:grid;place-items:center;font-size:10px;font-weight:700;color:var(--ink-2);flex:none}
+.fan{padding:6px 16px 16px}
+.fan .grp{grid-template-columns:110px 1fr}
+.fan .bar{height:16px}
+.fan .fill{height:14px}
+.fan .track{height:14px}
+.prize{margin-top:12px;font-size:13px;color:var(--ink-2);display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:var(--radius-sm);border:1px solid var(--line);background:var(--surface)}
+.next{margin-top:18px;padding:18px;border-radius:var(--radius);background:linear-gradient(135deg,#1c2116,#171915 70%);border:1px solid var(--line-strong)}
+.next .lbl{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);font-weight:600}
+.next h3{font-size:30px;margin:6px 0 4px}
+.next p{color:var(--ink-2);font-size:14px}
+
+/* metrics panel */
+.metrics{max-width:560px;margin:8px auto 0;padding:0 20px}
+.metrics details{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)}
+.metrics summary{cursor:pointer;padding:12px 16px;font-size:13px;font-weight:600;color:var(--ink-2);display:flex;align-items:center;gap:8px;list-style:none}
+.metrics summary::-webkit-details-marker{display:none}
+.metrics summary .chev{margin-left:auto;transition:transform .2s}
+.metrics details[open] summary .chev{transform:rotate(180deg)}
+.metrics .body{padding:4px 16px 16px;border-top:1px solid var(--line)}
+.funnel{display:grid;gap:6px;margin-top:10px}
+.funnel .f{display:grid;grid-template-columns:150px 1fr 28px;gap:10px;align-items:center;font-size:13px;color:var(--ink-2)}
+.funnel .f .track{height:10px}
+.funnel .f .fill{height:10px;background:var(--ai);border-radius:0 4px 4px 0}
+.funnel .f b{text-align:right;color:var(--ink)}
+.evlog{margin-top:12px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;color:var(--ink-3);line-height:1.6;max-height:120px;overflow:auto}
+.metrics .def{font-size:12px;color:var(--ink-3);margin-top:10px;line-height:1.5}
+
+/* toast */
+.toast-wrap{position:fixed;left:0;right:0;bottom:20px;display:flex;justify-content:center;pointer-events:none;z-index:50;padding:0 16px}
+.toast{background:var(--ink);color:var(--bg);padding:12px 16px;border-radius:10px;font-weight:600;font-size:14px;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow);animation:toast .35s var(--ease) both;max-width:420px}
+.toast.badge{background:var(--accent);color:var(--accent-ink)}
+@keyframes toast{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+@media (max-width:420px){
+  .q-title{font-size:34px}
+  .widget h2{font-size:30px}
+  .grp{grid-template-columns:84px 1fr}
+  .site-nav{gap:10px;font-size:12px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 22c4.4 0 7-3 7-7 0-3-1.5-5-3-7-.5 2-1.5 3-3 3.5C13 8 12 5 9 3c0 3-1 5-3 7.5C5 12 5 13.5 5 15c0 4 2.6 7 7 7z"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M12 15V3m0 0L8 7m4-4 4 4"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+  <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M8 4h8v5a4 4 0 0 1-8 0V4zM8 6H5a3 3 0 0 0 3 4m8-4h3a3 3 0 0 1-3 4M12 13v4m-4 3h8"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8v.5"/></symbol>
+  <symbol id="i-cpu" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v4m6-4v4M9 18v4m6-4v4M2 9h4m-4 6h4m12-6h4m-4 6h4"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-5-6.3"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10m6 10V4m6 16v-7m4 7H2"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 2 4 5v6c0 5 3.5 9 8 11 4.5-2 8-6 8-11V5l-8-3z"/></symbol>
+</svg>
+
+<header class="site-head">
+  <div class="row">
+    <div class="wordmark"><i></i>Tribuna</div>
+    <nav class="site-nav" aria-label="Site sections (mock)">
+      <span>Football</span><span class="on">Matches</span><span>Betting</span><span>Tables</span>
+    </nav>
+  </div>
+</header>
+
+<main id="app" class="page" aria-live="polite"></main>
+
+<div class="metrics" id="metrics"></div>
+
+<footer class="site-foot">
+  <div class="rg">
+    <span class="badge18">18+</span>
+    <p>Prototype. Odds are illustrative, partners are placeholders. Betting involves risk: only wager what you can afford to lose. If gambling stops being fun, take a break. Tribuna Match IQ is a prediction game, not betting advice.</p>
+  </div>
+</footer>
+
+<div class="toast-wrap" id="toasts" role="status" aria-live="polite"></div>
+
+<script>
+/* ==================================================================== data */
+const STORAGE_KEY = 'tribuna-match-iq-v1';
+const POINTS_PER_CALL = 10;
+const POWER_PICK_MULTIPLIER = 2;
+const KICKOFF_OFFSET_MS = (3 * 60 + 12) * 60 * 1000;
+const FUNNEL = [
+  ['challenge_start', 'Started challenge'],
+  ['challenge_complete', 'Made 3 calls'],
+  ['prediction_locked', 'Locked prediction'],
+  ['odds_viewed', 'Viewed odds'],
+  ['bookmaker_click', 'Clicked to bookmaker'],
+  ['result_viewed', 'Returned for result'],
+];
+const LEAGUES = [
+  { name: 'Rookie', min: 0 },
+  { name: 'Scout', min: 30 },
+  { name: 'Analyst', min: 80 },
+  { name: 'Expert', min: 160 },
+  { name: 'Captain', min: 300 },
+];
+const PARTNERS = ['Partner A', 'Partner B', 'Partner C'];
+const PLAYERS = [
+  { name: 'dmytro_k', iq: 138 },
+  { name: 'gunner_88', iq: 112 },
+  { name: 'kop_forever', iq: 96 },
+  { name: 'xg_nerd', iq: 88 },
+  { name: 'olena.f', iq: 74 },
+  { name: 'tactix', iq: 61 },
+  { name: 'red_wall', iq: 52 },
+];
+const AI_WEEKLY_IQ = 120;
+
+const MATCHES = [
+  {
+    id: 'ars-liv',
+    competition: 'Premier League · Matchweek 4',
+    venue: 'Emirates Stadium, London',
+    home: { name: 'Arsenal', short: 'ARS', color: '#c8102e' },
+    away: { name: 'Liverpool', short: 'LIV', color: '#7a1020' },
+    fansCount: '12.4k',
+    preview: {
+      title: 'Arsenal vs Liverpool: the title race starts here',
+      paras: [
+        'Two unbeaten sides, one point between them, and a fixture that has produced 3.1 goals per game over the last six meetings. Arteta has the stronger home xG this season; Slot has the better front three by every underlying number.',
+        'The key battle is Saka against Robertson down Arsenal\'s right. Liverpool have conceded 41% of their shots from that flank, and Saka has been directly involved in a goal in five of the last six home games.',
+      ],
+    },
+    questions: [
+      { id: 'winner', title: 'Who wins?', sub: 'Full-time result, 90 minutes', exclusive: true, options: [
+        { id: 'home', label: 'Arsenal', sub: 'Home win', ai: 54, fans: 63, odds: [2.10, 2.05, 2.15] },
+        { id: 'draw', label: 'Draw', sub: 'Level after 90', ai: 24, fans: 17, odds: [3.50, 3.60, 3.45] },
+        { id: 'away', label: 'Liverpool', sub: 'Away win', ai: 22, fans: 20, odds: [3.40, 3.50, 3.30] },
+      ], reason: 'Arsenal average 2.1 xG at home this season against Liverpool\'s 1.3 away. Saliba back from suspension moves the model 6 points to the hosts.' },
+      { id: 'goals', title: 'Over or Under 2.5 goals?', sub: 'Total goals in the match', exclusive: true, options: [
+        { id: 'over', label: 'Over 2.5', sub: 'Three goals or more', ai: 61, fans: 70, odds: [1.72, 1.75, 1.70] },
+        { id: 'under', label: 'Under 2.5', sub: 'Two goals or fewer', ai: 39, fans: 30, odds: [2.10, 2.05, 2.12] },
+      ], reason: 'Last six meetings: 3.1 goals per game. Both teams rank top-4 for shots on target this season.' },
+      { id: 'scorer', title: 'Who scores?', sub: 'Anytime goalscorer. Pick one player.', exclusive: false, options: [
+        { id: 'saka', label: 'Bukayo Saka', sub: 'Arsenal · RW', ai: 44, fans: 35, odds: [2.30, 2.25, 2.40] },
+        { id: 'havertz', label: 'Kai Havertz', sub: 'Arsenal · ST', ai: 36, fans: 15, odds: [2.60, 2.70, 2.55] },
+        { id: 'salah', label: 'Mohamed Salah', sub: 'Liverpool · RW', ai: 47, fans: 38, odds: [2.10, 2.15, 2.05] },
+        { id: 'diaz', label: 'Luis Díaz', sub: 'Liverpool · LW', ai: 30, fans: 12, odds: [3.10, 3.00, 3.20] },
+      ], reason: 'Salah leads the league in shots per 90 but faces Timber, who allows the fewest crosses in the division. Saka has 5 goal involvements in his last 6 at home.' },
+    ],
+    result: {
+      homeGoals: 2, awayGoals: 1,
+      scorers: ['saka', 'havertz'],
+      story: 'Saka 23\', Havertz 58\' · Gakpo 71\'',
+      insight: 'CaptainAI nailed Over 2.5: 2.1 home xG turned into 2.4 on the day. Fans over-rated Salah, who had one shot from open play.',
+    },
+  },
+  {
+    id: 'che-mci',
+    competition: 'Premier League · Matchweek 5',
+    venue: 'Stamford Bridge, London',
+    home: { name: 'Chelsea', short: 'CHE', color: '#034694' },
+    away: { name: 'Man City', short: 'MCI', color: '#6cabdd' },
+    fansCount: '9.8k',
+    preview: {
+      title: 'Chelsea vs Man City: Palmer against his old club, again',
+      paras: [
+        'City arrive with the best away record in the league but without Rodri, and every number says that matters: 1.9 goals conceded per game without him against 0.7 with him.',
+        'Chelsea have scored in 14 consecutive home league games. Palmer has 4 goals in 3 games against City since leaving, and Maresca has won both of his meetings with his former mentor.',
+      ],
+    },
+    questions: [
+      { id: 'winner', title: 'Who wins?', sub: 'Full-time result, 90 minutes', exclusive: true, options: [
+        { id: 'home', label: 'Chelsea', sub: 'Home win', ai: 31, fans: 38, odds: [3.10, 3.00, 3.20] },
+        { id: 'draw', label: 'Draw', sub: 'Level after 90', ai: 26, fans: 20, odds: [3.40, 3.50, 3.45] },
+        { id: 'away', label: 'Man City', sub: 'Away win', ai: 43, fans: 42, odds: [2.25, 2.30, 2.20] },
+      ], reason: 'City without Rodri drop from 68% to 43% in the model. Chelsea\'s home xG (1.8) is fourth in the league.' },
+      { id: 'goals', title: 'Over or Under 2.5 goals?', sub: 'Total goals in the match', exclusive: true, options: [
+        { id: 'over', label: 'Over 2.5', sub: 'Three goals or more', ai: 58, fans: 66, odds: [1.80, 1.78, 1.83] },
+        { id: 'under', label: 'Under 2.5', sub: 'Two goals or fewer', ai: 42, fans: 34, odds: [2.00, 2.02, 1.98] },
+      ], reason: 'Both sides sit top-5 for xG; four of the last five meetings went over 2.5.' },
+      { id: 'scorer', title: 'Who scores?', sub: 'Anytime goalscorer. Pick one player.', exclusive: false, options: [
+        { id: 'palmer', label: 'Cole Palmer', sub: 'Chelsea · AM', ai: 39, fans: 37, odds: [2.60, 2.55, 2.70] },
+        { id: 'jackson', label: 'Nicolas Jackson', sub: 'Chelsea · ST', ai: 33, fans: 15, odds: [2.90, 2.85, 3.00] },
+        { id: 'haaland', label: 'Erling Haaland', sub: 'Man City · ST', ai: 55, fans: 40, odds: [1.75, 1.80, 1.72] },
+        { id: 'foden', label: 'Phil Foden', sub: 'Man City · AM', ai: 31, fans: 8, odds: [3.20, 3.10, 3.30] },
+      ], reason: 'Haaland has scored in 6 of 7 away games. Palmer takes every Chelsea penalty and has 4 in 3 against City.' },
+    ],
+    result: {
+      homeGoals: 1, awayGoals: 1,
+      scorers: ['palmer', 'haaland'],
+      story: 'Palmer 34\' (pen) · Haaland 79\'',
+      insight: 'A cagey one: 1.6 combined xG, the lowest in this fixture for three seasons. CaptainAI and 66% of fans both went Over and both were wrong.',
+    },
+  },
+];
+
+const FANBASES = {
+  'ars-liv': [ { name: 'Arsenal fans', hit: 61, n: '6.9k', color: '#e0324a' }, { name: 'Liverpool fans', hit: 54, n: '5.5k', color: '#8a2030' } ],
+  'che-mci': [ { name: 'Chelsea fans', hit: 49, n: '4.1k', color: '#034694' }, { name: 'Man City fans', hit: 57, n: '5.7k', color: '#6cabdd' } ],
+};
+
+/* ================================================================= helpers */
+const icon = (name, cls = '') => `<svg class="i ${cls}" aria-hidden="true"><use href="#${name}"/></svg>`;
+const avg = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
+const round2 = (n) => Math.round(n * 100) / 100;
+const fmtOdds = (n) => n.toFixed(2);
+const pts = (n) => `${n} ${n === 1 ? 'point' : 'points'}`;
+
+function impliedProbs(question) {
+  const raw = question.options.map((o) => 1 / avg(o.odds));
+  if (!question.exclusive) return raw.map((r) => Math.round(r * 100));
+  const overround = raw.reduce((a, b) => a + b, 0);
+  return raw.map((r) => Math.round((r / overround) * 100));
+}
+function marketFor(question, optionId) {
+  const probs = impliedProbs(question);
+  const idx = question.options.findIndex((o) => o.id === optionId);
+  return probs[idx];
+}
+function pickBy(question, key) {
+  return question.options.reduce((best, o) => (o[key] > best[key] ? o : best), question.options[0]);
+}
+function marketPick(question) {
+  const probs = impliedProbs(question);
+  const idx = probs.indexOf(Math.max(...probs));
+  return question.options[idx];
+}
+function leagueFor(iq) {
+  return LEAGUES.reduce((cur, l) => (iq >= l.min ? l : cur), LEAGUES[0]);
+}
+function nextLeague(iq) {
+  return LEAGUES.find((l) => l.min > iq) || null;
+}
+function hitRate(correct, total) {
+  return total ? Math.round((correct / total) * 100) : 0;
+}
+function isCorrect(match, question, optionId) {
+  const r = match.result;
+  if (question.id === 'winner') {
+    const outcome = r.homeGoals > r.awayGoals ? 'home' : r.homeGoals < r.awayGoals ? 'away' : 'draw';
+    return optionId === outcome;
+  }
+  if (question.id === 'goals') return (r.homeGoals + r.awayGoals > 2.5) === (optionId === 'over');
+  if (question.id === 'scorer') return r.scorers.includes(optionId);
+  return false;
+}
+function optionOf(question, id) {
+  return question.options.find((o) => o.id === id);
+}
+function pad(n) { return String(n).padStart(2, '0'); }
+function formatCountdown(ms) {
+  const s = Math.max(0, Math.floor(ms / 1000));
+  return `${pad(Math.floor(s / 3600))}:${pad(Math.floor((s % 3600) / 60))}:${pad(s % 60)}`;
+}
+
+/* ============================================================= persistence */
+const DEFAULT_PROFILE = Object.freeze({
+  iq: 0, streak: 0, played: 0,
+  correct: 0, total: 0, aiCorrect: 0, marketCorrect: 0,
+  humans: 3, ai: 2, club: null,
+});
+function loadProfile() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return { ...DEFAULT_PROFILE };
+    const parsed = JSON.parse(raw);
+    return { ...DEFAULT_PROFILE, ...parsed };
+  } catch (e) {
+    return { ...DEFAULT_PROFILE };
+  }
+}
+function saveProfile(profile) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(profile)); } catch (e) { /* private mode: keep in memory */ }
+}
+
+/* =================================================================== state */
+const initialState = () => ({
+  screen: 'match',
+  matchIndex: 0,
+  qIndex: 0,
+  answers: {},
+  powerPick: null,
+  oddsTab: 'builder',
+  lbTab: 'players',
+  kickoff: Date.now() + KICKOFF_OFFSET_MS,
+  outcome: null,
+  profile: loadProfile(),
+  events: [],
+});
+let state = initialState();
+
+function setState(patch) {
+  state = { ...state, ...patch };
+  render();
+}
+function track(event, props = {}) {
+  const entry = { event, props, ts: Date.now() };
+  console.log('[MatchIQ]', event, props);
+  state = { ...state, events: [...state.events, entry] };
+  renderMetrics();
+}
+function updateProfile(patch) {
+  const profile = { ...state.profile, ...patch };
+  saveProfile(profile);
+  return profile;
+}
+
+/* ================================================================== views */
+const currentMatch = () => MATCHES[state.matchIndex];
+
+function crest(team) {
+  return `<span class="crest" style="background:${team.color}" aria-hidden="true">${team.short}</span>`;
+}
+
+function viewMatch() {
+  const m = currentMatch();
+  const p = state.profile;
+  const clubPicked = p.club;
+  return `
+  <article>
+    <section class="match-card" aria-label="Match">
+      <div class="row between">
+        <span class="comp">${m.competition}</span>
+        <span class="chip">${icon('i-clock')} Kick-off in <span class="countdown num" data-countdown>${formatCountdown(state.kickoff - Date.now())}</span></span>
+      </div>
+      <div class="teams">
+        <div class="team">${crest(m.home)}<b>${m.home.name}</b></div>
+        <div class="kick">v<small>Sat 17:30</small></div>
+        <div class="team">${crest(m.away)}<b>${m.away.name}</b></div>
+      </div>
+      <p class="venue">${m.venue}</p>
+    </section>
+
+    <section class="widget" aria-labelledby="widget-title">
+      <div class="row wrap" style="gap:8px">
+        <span class="chip chip-accent">${icon('i-bolt')} Match IQ</span>
+        ${p.streak > 0 ? `<span class="chip">${icon('i-flame', 'flame')} Streak ${p.streak}</span>` : ''}
+      </div>
+      <h2 id="widget-title" style="margin-top:12px">Make your <em>3 calls</em> before the whistle</h2>
+      <p>Then see what CaptainAI, ${m.fansCount} fans and the market think. Only after you've made yours.</p>
+      <div class="facts">
+        <span class="row">${icon('i-clock')} 45 seconds</span>
+        <span class="row">${icon('i-cpu')} CaptainAI</span>
+        <span class="row">${icon('i-users')} ${m.fansCount} fans</span>
+      </div>
+      <button class="btn btn-primary btn-block" data-action="start">Take the Match IQ Challenge ${icon('i-arrow')}</button>
+      ${clubPicked ? '' : `
+      <div class="club-pick">
+        <span class="small muted">Which side are you on? Your calls count for your fanbase.</span>
+        <div class="row">
+          <button class="club-btn" data-action="club" data-club="${m.home.name}" aria-pressed="false"><span class="dot" style="background:${m.home.color}"></span>${m.home.name}</button>
+          <button class="club-btn" data-action="club" data-club="${m.away.name}" aria-pressed="false"><span class="dot" style="background:${m.away.color}"></span>${m.away.name}</button>
+        </div>
+      </div>`}
+    </section>
+
+    <section class="preview">
+      <h2>${m.preview.title}</h2>
+      ${m.preview.paras.map((t) => `<p>${t}</p>`).join('')}
+      <p class="byline">Match preview · Tribuna Football Desk</p>
+    </section>
+
+    <div class="divider"></div>
+    <section class="odds-plain" aria-label="Partner odds (existing block)">
+      <div class="head"><span>Partner odds · 1X2</span><span class="dim" style="letter-spacing:0;text-transform:none;font-weight:500">18+ · Partner offer</span></div>
+      <div class="grid">
+        ${m.questions[0].options.map((o) => `<div class="cell"><span>${o.label}</span><b class="num">${fmtOdds(o.odds[0])}</b></div>`).join('')}
+      </div>
+    </section>
+  </article>`;
+}
+
+function shellHead(step) {
+  return `
+  <div class="shell-head">
+    <button class="btn btn-ghost" data-action="back-to-match" aria-label="Back to match page">${icon('i-arrow', 'back')}</button>
+    <div class="steps" aria-label="Progress: step ${step} of 4">
+      ${[1, 2, 3, 4].map((i) => `<i class="${i < step ? 'done' : i === step ? 'now' : ''}"></i>`).join('')}
+    </div>
+    <span class="chip">${icon('i-clock')} <span class="countdown num" data-countdown>${formatCountdown(state.kickoff - Date.now())}</span></span>
+  </div>`;
+}
+
+function revealChart(question, chosenId) {
+  const probs = impliedProbs(question);
+  return `
+  <div class="reveal" aria-label="How your call compares">
+    <h3>How your call compares</h3>
+    <div class="legend" aria-hidden="true">
+      <span class="row"><i class="swatch" style="background:var(--ai)"></i>CaptainAI</span>
+      <span class="row"><i class="swatch" style="background:var(--fans)"></i>Fans</span>
+      <span class="row"><i class="swatch" style="background:var(--market)"></i>Market</span>
+    </div>
+    ${question.options.map((o, i) => {
+      const you = o.id === chosenId;
+      return `
+      <div class="grp ${you ? 'you' : ''}">
+        <div class="name">${o.label}${you ? '<span class="you">Your call</span>' : ''}</div>
+        <div class="bars" role="img" aria-label="${o.label}: CaptainAI ${o.ai}%, fans ${o.fans}%, market ${probs[i]}%">
+          ${[['ai', o.ai], ['fans', o.fans], ['market', probs[i]]].map(([k, v]) => `
+          <div class="bar"><div class="track"><div class="fill" style="background:var(--${k})" data-w="${v}"></div></div><span class="val num">${v}%</span></div>`).join('')}
+        </div>
+      </div>`;
+    }).join('')}
+    <div class="reason">
+      <span class="ai-dot">${icon('i-cpu')}</span>
+      <span><b style="color:var(--ink)">CaptainAI:</b> ${question.reason} <a href="#preview" data-action="read-more">Read full preview</a></span>
+    </div>
+    <p class="tiny dim" style="margin-top:10px">Market = implied probability from average partner odds${question.exclusive ? ', bookmaker margin removed' : ' (scorer markets are not mutually exclusive, so they do not sum to 100%)'}.</p>
+  </div>`;
+}
+
+function viewQuestion() {
+  const m = currentMatch();
+  const q = m.questions[state.qIndex];
+  const chosen = state.answers[q.id];
+  const isLast = state.qIndex === m.questions.length - 1;
+  return `
+  ${shellHead(1)}
+  <p class="q-sub">Call ${state.qIndex + 1} of ${m.questions.length} · ${m.home.name} v ${m.away.name}</p>
+  <h1 class="q-title">${q.title}</h1>
+  <p class="q-sub">${q.sub}</p>
+  <div class="options" role="group" aria-label="${q.title}">
+    ${q.options.map((o) => `
+    <button class="opt" data-action="answer" data-q="${q.id}" data-opt="${o.id}" aria-pressed="${chosen === o.id}" ${chosen ? 'disabled' : ''}>
+      <span><span class="lbl">${o.label}</span><span class="sub" style="display:block">${o.sub}</span></span>
+      ${chosen === o.id ? `<span class="tag">Your call</span>` : ''}
+    </button>`).join('')}
+  </div>
+  ${chosen ? revealChart(q, chosen) : '<p class="tiny dim" style="margin-top:14px">Blind call: CaptainAI, fans and market reveal after you choose.</p>'}
+  ${chosen ? `<div class="foot-cta"><button class="btn btn-primary btn-block" data-action="next-q">${isLast ? 'Choose my Power Pick' : 'Next call'} ${icon('i-arrow')}</button></div>` : ''}`;
+}
+
+function viewPowerPick() {
+  const m = currentMatch();
+  return `
+  ${shellHead(2)}
+  <h1 class="q-title">Your Power Pick</h1>
+  <p class="q-sub">Which call are you most sure about? It scores double after the whistle.</p>
+  <div class="pick-list" role="group" aria-label="Choose your Power Pick">
+    ${m.questions.map((q) => {
+      const o = optionOf(q, state.answers[q.id]);
+      return `
+      <button class="pick" data-action="power" data-q="${q.id}" aria-pressed="${state.powerPick === q.id}">
+        <span><span class="k">${q.title}</span><span class="v" style="display:block">${o.label}</span></span>
+        <span class="x2">x${POWER_PICK_MULTIPLIER}</span>
+      </button>`;
+    }).join('')}
+  </div>
+  <div class="foot-cta">
+    <button class="btn btn-primary btn-block" data-action="to-lock" ${state.powerPick ? '' : 'disabled'}>Review my prediction ${icon('i-arrow')}</button>
+  </div>`;
+}
+
+function slip(locked) {
+  const m = currentMatch();
+  return `
+  <div class="slip ${locked ? 'locked-anim' : ''}">
+    <div class="hd"><span>Your prediction</span><span>${m.home.short} v ${m.away.short}</span></div>
+    ${m.questions.map((q, i) => {
+      const o = optionOf(q, state.answers[q.id]);
+      const pp = state.powerPick === q.id;
+      return `<div class="leg ${pp ? 'pp' : ''}"><span class="n">${i + 1}</span><span><span class="t">${o.label}</span><span class="s" style="display:block">${q.title}</span></span>${pp ? `<span class="pp-tag">${icon('i-bolt')} Power Pick</span>` : ''}</div>`;
+    }).join('')}
+    ${locked ? `<div class="lockstamp">${icon('i-lock')} Locked until full-time</div>` : ''}
+  </div>`;
+}
+
+function viewLock() {
+  return `
+  ${shellHead(3)}
+  <h1 class="q-title">Lock it in</h1>
+  <p class="q-sub">Your scenario, scored after the final whistle. +${POINTS_PER_CALL} Match IQ per correct call, Power Pick counts double.</p>
+  ${slip(false)}
+  <div class="foot-cta">
+    <button class="btn btn-primary btn-block" data-action="lock">${icon('i-lock')} Lock my prediction</button>
+    <button class="btn btn-ghost" data-action="back-to-power">Change Power Pick</button>
+  </div>`;
+}
+
+function builderOdds() {
+  const m = currentMatch();
+  return PARTNERS.map((_, i) => round2(m.questions.reduce((acc, q) => acc * optionOf(q, state.answers[q.id]).odds[i], 1)));
+}
+function singleOdds() {
+  const m = currentMatch();
+  const q = m.questions.find((x) => x.id === state.powerPick);
+  return optionOf(q, state.answers[q.id]).odds.map(round2);
+}
+
+function viewOdds() {
+  const m = currentMatch();
+  const isBuilder = state.oddsTab === 'builder';
+  const odds = isBuilder ? builderOdds() : singleOdds();
+  const best = Math.max(...odds);
+  const ppQ = m.questions.find((q) => q.id === state.powerPick);
+  const ppO = optionOf(ppQ, state.answers[ppQ.id]);
+  const market = marketFor(ppQ, ppO.id);
+  const legs = m.questions.map((q) => optionOf(q, state.answers[q.id]).label);
+  return `
+  ${shellHead(4)}
+  <h1 class="q-title">Your prediction, priced</h1>
+  <p class="q-sub">Same scenario at three partners. Pick the best price if you want to back it.</p>
+  <div class="tabs" role="tablist" aria-label="Bet type">
+    <button class="tab" role="tab" aria-selected="${isBuilder}" data-action="odds-tab" data-tab="builder">Bet Builder · 3 legs</button>
+    <button class="tab" role="tab" aria-selected="${!isBuilder}" data-action="odds-tab" data-tab="single">Power Pick · single</button>
+  </div>
+  <p class="small muted" style="margin-top:12px">${isBuilder ? legs.join(' + ') : `${ppO.label} · ${ppQ.title}`}</p>
+  <div class="odds-table" role="tabpanel">
+    ${PARTNERS.map((p, i) => `
+    <div class="odds-row ${odds[i] === best ? 'best' : ''}">
+      <span class="bk">${p}${odds[i] === best ? '<small>Best price</small>' : '<small>Partner offer</small>'}</span>
+      <span class="o num">${fmtOdds(odds[i])}<small>10 returns ${(odds[i] * 10).toFixed(2)}</small></span>
+      <button class="btn ${odds[i] === best ? 'btn-primary' : 'btn-secondary'} go" data-action="bookmaker" data-partner="${p}" data-odds="${odds[i]}">View</button>
+    </div>`).join('')}
+  </div>
+
+  <div class="call">
+    <div class="hd">Your call vs market</div>
+    <div class="big">${ppO.label} · ${ppQ.title}</div>
+    <div class="cmp">
+      <div><span>CaptainAI</span><b class="num">${ppO.ai}%</b></div>
+      <div><span>Fans</span><b class="num">${ppO.fans}%</b></div>
+      <div><span>Market</span><b class="num">${market}%</b></div>
+    </div>
+    <p class="note">${ppO.ai > market
+      ? `CaptainAI rates your Power Pick ${pts(ppO.ai - market)} above the market's implied ${market}%. That's information, not a guarantee.`
+      : ppO.ai === market
+        ? `CaptainAI and the market agree on ${market}% for your Power Pick. The price reflects the consensus.`
+        : `The market prices your Power Pick at ${market}%, ${pts(market - ppO.ai)} above CaptainAI's estimate. You are with the crowd on this one.`}</p>
+  </div>
+
+  <div class="rg"><span class="badge18">18+</span><span>Odds are illustrative. Partners pay Tribuna for referrals. Bet only what you can afford to lose.</span></div>
+
+  <div class="foot-cta">
+    <button class="btn btn-secondary btn-block" data-action="to-wait">Continue, remind me at full-time</button>
+  </div>`;
+}
+
+function viewWait() {
+  const m = currentMatch();
+  return `
+  ${shellHead(4)}
+  <h1 class="q-title">Locked in</h1>
+  <p class="q-sub">We'll notify you at full-time with your Match IQ result and how you did against CaptainAI.</p>
+  ${slip(true)}
+  <div class="wait">
+    <div class="big countdown num" data-countdown>${formatCountdown(state.kickoff - Date.now())}</div>
+    <div class="lbl">Until kick-off · ${m.home.name} v ${m.away.name}</div>
+  </div>
+  <div class="foot-cta">
+    <button class="btn btn-secondary btn-block" data-action="share">${icon('i-share')} Share my call</button>
+  </div>
+  <div class="proto">
+    Prototype control. In production the result arrives after the real match.
+    <button class="btn btn-secondary" data-action="simulate">Simulate full-time</button>
+  </div>`;
+}
+
+function computeOutcome() {
+  const m = currentMatch();
+  const calls = m.questions.map((q) => {
+    const o = optionOf(q, state.answers[q.id]);
+    const ok = isCorrect(m, q, o.id);
+    const pp = state.powerPick === q.id;
+    const points = ok ? POINTS_PER_CALL * (pp ? POWER_PICK_MULTIPLIER : 1) : 0;
+    const aiOk = isCorrect(m, q, pickBy(q, 'ai').id);
+    const fansOk = isCorrect(m, q, pickBy(q, 'fans').id);
+    const marketOk = isCorrect(m, q, marketPick(q).id);
+    return { q, o, ok, pp, points, aiOk, fansOk, marketOk };
+  });
+  const you = calls.filter((c) => c.ok).length;
+  const ai = calls.filter((c) => c.aiOk).length;
+  const fans = calls.filter((c) => c.fansOk).length;
+  const market = calls.filter((c) => c.marketOk).length;
+  const points = calls.reduce((a, c) => a + c.points, 0);
+  const badges = [];
+  if (you === calls.length) badges.push({ id: 'perfect', label: 'Perfect Match: 3 of 3' });
+  if (you > ai) badges.push({ id: 'beat-ai', label: 'Beat the AI' });
+  if (calls.some((c) => c.ok && c.o.fans <= 30)) badges.push({ id: 'crowd', label: 'Against the Crowd' });
+  return { calls, you, ai, fans, market, points, badges };
+}
+
+function viewResult() {
+  const m = currentMatch();
+  const r = m.result;
+  const out = state.outcome;
+  const top = Math.max(out.you, out.ai, out.fans);
+  return `
+  <div class="shell-head"><span class="chip chip-accent">${icon('i-check')} Full-time</span><span class="chip">${m.competition.split(' · ')[0]}</span></div>
+  <h1 class="q-title">Your result</h1>
+  <div class="score">
+    <span class="t">${m.home.name}</span>
+    <span class="s num">${r.homeGoals} : ${r.awayGoals}</span>
+    <span class="t">${m.away.name}</span>
+    <span class="ft">${r.story}</span>
+  </div>
+  <div class="calls">
+    ${out.calls.map((c) => `
+    <div class="callrow">
+      <span class="ic ${c.ok ? 'ok' : 'no'}">${icon(c.ok ? 'i-check' : 'i-x')}</span>
+      <span class="t">${c.o.label}<small>${c.q.title}${c.pp ? ' · Power Pick x2' : ''}</small></span>
+      <span class="pts num ${c.ok ? 'ok' : ''}">${c.ok ? '+' + c.points : '0'}</span>
+    </div>`).join('')}
+  </div>
+  <div class="iq-hero">
+    <div><div class="lbl">Match IQ earned</div><div class="n num" data-countup="${out.points}">0<small>pts</small></div></div>
+    ${icon('i-bolt', '')}
+  </div>
+  <div class="duel" aria-label="Correct calls: you versus CaptainAI versus fans">
+    <div class="${out.you === top ? 'win' : ''}"><span>You</span><b class="num">${out.you}/3</b></div>
+    <div class="${out.ai === top ? 'win' : ''}"><span>CaptainAI</span><b class="num">${out.ai}/3</b></div>
+    <div class="${out.fans === top ? 'win' : ''}"><span>Fans</span><b class="num">${out.fans}/3</b></div>
+  </div>
+  <div class="insight"><span class="ai-dot">${icon('i-cpu')}</span><span>${r.insight} <a href="#report" data-action="read-more">Read match report</a></span></div>
+  <div class="foot-cta">
+    <button class="btn btn-primary btn-block" data-action="to-retention">See my Match IQ ${icon('i-arrow')}</button>
+  </div>`;
+}
+
+function viewRetention() {
+  const m = currentMatch();
+  const p = state.profile;
+  const league = leagueFor(p.iq);
+  const next = nextLeague(p.iq);
+  const pct = next ? Math.round(((p.iq - league.min) / (next.min - league.min)) * 100) : 100;
+  const nextMatch = MATCHES[(state.matchIndex + 1) % MATCHES.length];
+  const board = [...PLAYERS, { name: 'CaptainAI', iq: AI_WEEKLY_IQ, ai: true }, { name: 'You', iq: p.iq, me: true }]
+    .sort((a, b) => b.iq - a.iq);
+  const fans = FANBASES[m.id];
+  const fanMax = Math.max(...fans.map((f) => f.hit));
+  const isPlayers = state.lbTab === 'players';
+  return `
+  <div class="shell-head"><span class="chip chip-accent">${icon('i-bolt')} Match IQ</span><span class="chip">Week 4</span></div>
+  <h1 class="q-title">Your Match IQ</h1>
+  <div class="profile">
+    <div class="top">
+      <div class="rating num">${p.iq}<small>IQ</small></div>
+      <div class="league"><b>${league.name}</b><span>${next ? `${next.min - p.iq} to ${next.name}` : 'Top league'}</span></div>
+    </div>
+    <div class="progress" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="Progress to ${next ? next.name : 'max'}"><i style="width:${pct}%"></i></div>
+    <div class="stats">
+      <span class="row">${icon('i-flame', 'flame')} <b class="num">${p.streak}</b> match streak</span>
+      <span class="row">Hit rate <b class="num">${hitRate(p.correct, p.total)}%</b> <span class="dim">· CaptainAI ${hitRate(p.aiCorrect, p.total)}% · Market ${hitRate(p.marketCorrect, p.total)}%</span></span>
+    </div>
+    ${p.streak > 0 ? `<div style="margin-top:12px"><span class="chip chip-warn">${icon('i-flame')} Streak at risk · next match Sunday</span></div>` : ''}
+  </div>
+
+  <div class="lb">
+    <div class="tabs" role="tablist" aria-label="Leaderboard">
+      <button class="tab" role="tab" aria-selected="${isPlayers}" data-action="lb-tab" data-tab="players">Players</button>
+      <button class="tab" role="tab" aria-selected="${!isPlayers}" data-action="lb-tab" data-tab="fanbases">Fanbases</button>
+    </div>
+    ${isPlayers ? `
+    <div class="hd"><span>This week</span><b>Humans <span class="num">${p.humans} : ${p.ai}</span> CaptainAI</b></div>
+    <table role="tabpanel" aria-label="Weekly leaderboard">
+      <tbody>
+      ${board.map((row, i) => `
+        <tr class="${row.me ? 'me' : ''} ${row.ai ? 'ai' : ''}">
+          <td class="num">${i + 1}</td>
+          <td><span class="name"><span class="av">${row.ai ? icon('i-cpu') : row.name.slice(0, 2).toUpperCase()}</span>${row.name}</span></td>
+          <td class="num">${row.iq}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>` : `
+    <div class="hd"><span>Which fanbase knows football better?</span></div>
+    <div class="fan" role="tabpanel" aria-label="Fanbase leaderboard">
+      ${fans.map((f) => `
+      <div class="grp ${p.club === f.name.replace(' fans', '') ? 'you' : ''}">
+        <div class="name">${f.name}${p.club === f.name.replace(' fans', '') ? '<span class="you">Your side</span>' : ''}<span class="tiny dim" style="display:block">${f.n} predictions</span></div>
+        <div class="bar" role="img" aria-label="${f.name} hit rate ${f.hit}%"><div class="track"><div class="fill" style="background:${f.color}" data-w="${f.hit}"></div></div><span class="val num">${f.hit}%</span></div>
+      </div>`).join('')}
+      <p class="tiny dim" style="margin-top:10px">Hit rate across all locked calls this week. ${fans.find((f) => f.hit === fanMax).name} lead.</p>
+    </div>`}
+  </div>
+
+  <div class="prize">${icon('i-trophy')}<span>Top-10 this week win a free bet from Partner A. Partner-funded, 18+, T&amp;Cs apply.</span></div>
+
+  <div class="next">
+    <div class="lbl">Next Match Challenge</div>
+    <h3>${nextMatch.home.name} v ${nextMatch.away.name}</h3>
+    <p>${nextMatch.competition} · Sunday 16:30. Keep the streak alive.</p>
+    <div class="foot-cta"><button class="btn btn-primary btn-block" data-action="next-match">Make my 3 calls ${icon('i-arrow')}</button></div>
+  </div>`;
+}
+
+/* ============================================================== rendering */
+const VIEWS = { match: viewMatch, question: viewQuestion, power: viewPowerPick, lock: viewLock, odds: viewOdds, wait: viewWait, result: viewResult, retention: viewRetention };
+
+function render() {
+  const app = document.getElementById('app');
+  app.innerHTML = VIEWS[state.screen]();
+  window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+  requestAnimationFrame(() => {
+    app.querySelectorAll('.fill[data-w]').forEach((el) => { el.style.width = el.dataset.w + '%'; el.classList.add('in'); });
+    app.querySelectorAll('.progress i').forEach((el) => el.classList.add('in'));
+    app.querySelectorAll('[data-countup]').forEach(countUp);
+  });
+  renderMetrics();
+}
+
+function countUp(el) {
+  const target = Number(el.dataset.countup);
+  const suffix = el.querySelector('small') ? el.querySelector('small').outerHTML : '';
+  const start = performance.now();
+  const dur = 900;
+  const step = (t) => {
+    const k = Math.min(1, (t - start) / dur);
+    const eased = 1 - Math.pow(1 - k, 3);
+    el.innerHTML = Math.round(target * eased) + suffix;
+    if (k < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+function renderMetrics() {
+  const el = document.getElementById('metrics');
+  const counts = FUNNEL.map(([ev]) => state.events.filter((e) => e.event === ev).length);
+  const max = Math.max(1, ...counts);
+  const open = el.querySelector('details') ? el.querySelector('details').open : false;
+  const last = state.events.slice(-8).reverse();
+  el.innerHTML = `
+  <details ${open ? 'open' : ''}>
+    <summary>${icon('i-chart')} Metrics panel · ${state.events.length} events this session ${icon('i-chev', 'chev')}</summary>
+    <div class="body">
+      <div class="funnel">
+        ${FUNNEL.map(([ev, label], i) => `<div class="f"><span>${label}</span><div class="track"><div class="fill" style="width:${(counts[i] / max) * 100}%"></div></div><b class="num">${counts[i]}</b></div>`).join('')}
+      </div>
+      <p class="def">North Star: Weekly Betting-Intent Predictors = users with <b>prediction_locked</b> and <b>bookmaker_click</b> in the same week. Completion rate = locked / started. Return-to-result = result_viewed within 48h of lock.</p>
+      <div class="evlog">${last.length ? last.map((e) => `${new Date(e.ts).toLocaleTimeString()} · ${e.event}${Object.keys(e.props).length ? ' ' + JSON.stringify(e.props) : ''}`).join('<br>') : 'No events yet.'}</div>
+    </div>
+  </details>`;
+}
+
+let toastTimer = null;
+function toast(text, kind = '') {
+  const wrap = document.getElementById('toasts');
+  wrap.innerHTML = `<div class="toast ${kind}">${kind === 'badge' ? icon('i-trophy') : icon('i-check')}<span>${text}</span></div>`;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { wrap.innerHTML = ''; }, 2600);
+}
+function toastQueue(items) {
+  items.forEach((t, i) => setTimeout(() => toast(t.text, t.kind), i * 2800 + 400));
+}
+
+/* ================================================================ actions */
+function shareText() {
+  const m = currentMatch();
+  const legs = m.questions.map((q) => optionOf(q, state.answers[q.id]).label);
+  return `My Match IQ call for ${m.home.name} v ${m.away.name}: ${legs.join(', ')}. Power Pick: ${legs[m.questions.findIndex((q) => q.id === state.powerPick)]}. Beat me on Tribuna.`;
+}
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch (e) {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch (err) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+}
+
+const ACTIONS = {
+  start() {
+    track('challenge_start', { match: currentMatch().id });
+    setState({ screen: 'question', qIndex: 0, answers: {}, powerPick: null, oddsTab: 'builder' });
+  },
+  club(btn) {
+    const club = btn.dataset.club;
+    const profile = updateProfile({ club });
+    track('club_selected', { club });
+    setState({ profile });
+  },
+  answer(btn) {
+    const q = btn.dataset.q;
+    const opt = btn.dataset.opt;
+    track('answer_selected', { q, opt });
+    setState({ answers: { ...state.answers, [q]: opt } });
+    track('reveal_viewed', { q });
+  },
+  'next-q'() {
+    const m = currentMatch();
+    if (state.qIndex < m.questions.length - 1) {
+      setState({ qIndex: state.qIndex + 1 });
+    } else {
+      track('challenge_complete', { match: m.id });
+      setState({ screen: 'power' });
+    }
+  },
+  power(btn) {
+    setState({ powerPick: btn.dataset.q });
+  },
+  'to-lock'() {
+    track('power_pick_set', { q: state.powerPick });
+    setState({ screen: 'lock' });
+  },
+  'back-to-power'() { setState({ screen: 'power' }); },
+  'back-to-match'() { setState({ screen: 'match' }); },
+  lock() {
+    const profile = updateProfile({ streak: state.profile.streak + 1, played: state.profile.played + 1 });
+    track('prediction_locked', { match: currentMatch().id, powerPick: state.powerPick });
+    setState({ profile, screen: 'odds' });
+    track('odds_viewed', { tab: 'builder' });
+  },
+  'odds-tab'(btn) {
+    track('odds_viewed', { tab: btn.dataset.tab });
+    setState({ oddsTab: btn.dataset.tab });
+  },
+  bookmaker(btn) {
+    track('bookmaker_click', { partner: btn.dataset.partner, odds: Number(btn.dataset.odds), type: state.oddsTab });
+    toast(`${btn.dataset.partner} opens in a new tab with your slip pre-filled (mock)`);
+  },
+  'to-wait'() { setState({ screen: 'wait' }); },
+  async share() {
+    track('share_click', { match: currentMatch().id });
+    const ok = await copyText(shareText());
+    toast(ok ? 'Copied. Paste it anywhere.' : 'Could not copy on this browser');
+  },
+  simulate() {
+    const outcome = computeOutcome();
+    const p = state.profile;
+    const profile = updateProfile({
+      iq: p.iq + outcome.points,
+      correct: p.correct + outcome.you,
+      total: p.total + outcome.calls.length,
+      aiCorrect: p.aiCorrect + outcome.ai,
+      marketCorrect: p.marketCorrect + outcome.market,
+      humans: p.humans + (outcome.you > outcome.ai ? 1 : 0),
+      ai: p.ai + (outcome.ai > outcome.you ? 1 : 0),
+    });
+    track('result_viewed', { match: currentMatch().id, correct: outcome.you, points: outcome.points });
+    setState({ outcome, profile, screen: 'result' });
+    toastQueue(outcome.badges.map((b) => ({ text: `Badge unlocked: ${b.label}`, kind: 'badge' })));
+  },
+  'to-retention'() { setState({ screen: 'retention' }); },
+  'lb-tab'(btn) { setState({ lbTab: btn.dataset.tab }); },
+  'next-match'() {
+    track('next_match_click', { from: currentMatch().id });
+    setState({ matchIndex: (state.matchIndex + 1) % MATCHES.length, screen: 'match', answers: {}, powerPick: null, qIndex: 0, outcome: null, kickoff: Date.now() + KICKOFF_OFFSET_MS });
+  },
+  'read-more'() {
+    track('content_click', { screen: state.screen });
+    toast('Opens the full article on Tribuna (mock)');
+  },
+};
+
+document.addEventListener('click', (e) => {
+  const el = e.target.closest('[data-action]');
+  if (!el || el.disabled) return;
+  const handler = ACTIONS[el.dataset.action];
+  if (!handler) return;
+  if (el.tagName === 'A') e.preventDefault();
+  handler(el);
+});
+
+setInterval(() => {
+  const text = formatCountdown(state.kickoff - Date.now());
+  document.querySelectorAll('[data-countdown]').forEach((el) => { el.textContent = text; });
+}, 1000);
+
+render();
+</script>
+</body>
+</html>
