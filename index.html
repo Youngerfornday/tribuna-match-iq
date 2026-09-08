@@ -76,10 +76,13 @@ svg.i{width:1em;height:1em;flex:none;fill:none;stroke:currentColor;stroke-width:
 /* --------------------------------------------------------------- site mock */
 .site-head{position:sticky;top:0;z-index:20;background:rgba(14,15,12,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .site-head .row{max-width:var(--shell);margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:18px}
-.wordmark{font-family:var(--font-display);font-weight:800;font-size:22px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);display:flex;align-items:center;gap:8px;min-height:44px}
+.wordmark{font-family:var(--font-display);font-weight:800;font-size:22px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);display:flex;align-items:center;gap:8px;min-height:44px;flex:none}
 .wordmark i{width:10px;height:10px;background:var(--accent);border-radius:2px;transform:rotate(45deg)}
-.site-nav{display:flex;gap:4px;margin-left:auto}
-.site-nav button{font-size:13px;color:var(--ink-2);font-weight:500;min-height:44px;padding:0 8px;border-bottom:2px solid transparent}
+/* The mock chrome scrolls sideways on narrow phones the way the real site's
+   does, rather than widening the page by a couple of pixels. */
+.site-nav{display:flex;gap:4px;margin-left:auto;min-width:0;overflow-x:auto;scrollbar-width:none}
+.site-nav::-webkit-scrollbar{display:none}
+.site-nav button{flex:none;font-size:13px;color:var(--ink-2);font-weight:500;min-height:44px;padding:0 8px;border-bottom:2px solid transparent}
 .site-nav button.on{color:var(--ink);border-bottom-color:var(--accent)}
 
 /* The play flow stays a single focused column; browse and scan screens open up. */
@@ -150,10 +153,18 @@ body[data-layout="wide"]{--shell:1120px}
 .dot{width:10px;height:10px;border-radius:50%;flex:none;display:inline-block}
 
 /* ------------------------------------------------------------- landing */
-.hero{position:relative;overflow:hidden;padding:24px 20px;border-radius:16px;background:linear-gradient(150deg,#1d2418 0%,#171915 55%,#131b26 100%);border:1px solid var(--line-strong);box-shadow:var(--shadow);display:flex;flex-direction:column;gap:18px}
+.hero{--art-w:clamp(148px,34vw,250px);position:relative;overflow:hidden;padding:24px 20px;border-radius:16px;background:linear-gradient(150deg,#1d2418 0%,#171915 55%,#131b26 100%);border:1px solid var(--line-strong);box-shadow:var(--shadow);display:flex;flex-direction:column;gap:18px}
 .hero-copy{position:relative;z-index:1;min-width:0}
-.hero-art{position:relative;z-index:1;order:-1;align-self:flex-end;width:180px;aspect-ratio:1/1;margin:-12px -12px -8px 0}
-.hero-photo{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 38%;filter:brightness(1.09) saturate(1.04);-webkit-mask-image:radial-gradient(80% 78% at 52% 48%,#000 42%,rgba(0,0,0,.5) 72%,transparent 98%);mask-image:radial-gradient(80% 78% at 52% 48%,#000 42%,rgba(0,0,0,.5) 72%,transparent 98%)}
+/* On phones the art sits out of flow in the corner: stacked above the copy it
+   cost 190px before the headline and pushed the CTA under the fold. */
+.hero>.hero-art{position:absolute;top:10px;right:-14px;z-index:0;width:var(--art-w);aspect-ratio:760/944;pointer-events:none;-webkit-mask-image:linear-gradient(to bottom,#000 58%,transparent 94%);mask-image:linear-gradient(to bottom,#000 58%,transparent 94%)}
+.hero-photo{display:block;width:100%;height:100%;object-fit:contain;object-position:top center;filter:brightness(1.09) saturate(1.04)}
+.hero-copy>.row{padding-right:calc(var(--art-w) - 22px)}
+/* Both illustrations keep the glow they were painted with, and its outer
+   falloff is dark. This pool sits under the art so that falloff reads as one
+   shadow with the surface rather than as an edge around the figure. */
+.hero-art,.prize-banner .pb-art{isolation:isolate}
+.hero-art:before,.prize-banner .pb-art:before{content:"";position:absolute;inset:-14% -18%;z-index:-1;border-radius:50%;background:radial-gradient(closest-side,rgba(6,10,7,.55),rgba(6,10,7,.26) 58%,transparent 76%);pointer-events:none}
 .hero:before{content:"";position:absolute;inset:-50% -20% auto auto;width:320px;height:320px;border-radius:50%;background:radial-gradient(closest-side,rgba(215,255,61,.18),transparent 70%);pointer-events:none}
 .hero:after{content:"";position:absolute;inset:auto auto -60% -20%;width:280px;height:280px;border-radius:50%;background:radial-gradient(closest-side,rgba(57,135,229,.16),transparent 70%);pointer-events:none}
 .hero>*{position:relative}
@@ -178,7 +189,7 @@ body[data-layout="wide"]{--shell:1120px}
   .sheet-table .st-scroll td:first-child,.sheet-table .st-scroll th:first-child{padding-left:10px;width:48px}
   .sheet-table .st-scroll td:last-child,.sheet-table .st-scroll th:last-child{padding-right:10px}
 }
-.steps3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:22px 0}
+.steps3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin:22px 0}
 .steps3 div{padding:14px 12px;border-radius:var(--radius-sm);background:var(--surface);border:1px solid var(--line)}
 .steps3 .n{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-family:var(--font-display);font-weight:800;font-size:15px}
 .steps3 b{display:block;font-family:var(--font-display);font-size:19px;font-weight:700;margin-top:10px;line-height:1.05}
@@ -194,12 +205,13 @@ body[data-layout="wide"]{--shell:1120px}
 .terms details p{font-size:14px;color:var(--ink-2);padding:0 0 14px;line-height:1.55;max-width:62ch}
 @media (max-width:420px){
   .hero h1{font-size:38px}
-  .steps3{grid-template-columns:1fr}
 }
 @media (min-width:720px){
   .hero{flex-direction:row;align-items:center;gap:28px;padding:30px 28px}
   .hero-copy{flex:1;min-width:0}
-  .hero-art{order:0;width:min(400px,38%);align-self:flex-end;margin:0 -18px -30px 0}
+  .hero>.hero-art{position:relative;top:auto;right:auto;order:0;width:min(400px,38%);aspect-ratio:1/1;align-self:flex-end;margin:0 -18px -30px 0;-webkit-mask-image:none;mask-image:none}
+  .hero-photo{object-fit:cover;object-position:50% 38%}
+  .hero-copy>.row{padding-right:0}
 }
 
 /* ---------------------------------------------------------------- hub */
@@ -527,9 +539,9 @@ body[data-layout="wide"]{--shell:1120px}
 .prize-banner .pb-status.on{color:var(--accent)}
 .prize-banner .pb-terms{margin-top:14px;font-size:11px;color:var(--ink-3);line-height:1.5;max-width:86ch}
 .prize-banner .pb-art{position:relative;z-index:1;justify-self:center;width:min(230px,72%);aspect-ratio:760/944;margin:-6px 0 -30px}
-.pb-photo{display:block;width:100%;height:100%;object-fit:contain;object-position:bottom center;filter:brightness(.94) saturate(1.06);-webkit-mask-image:radial-gradient(80% 78% at 52% 48%,#000 42%,rgba(0,0,0,.5) 72%,transparent 98%);mask-image:radial-gradient(80% 78% at 52% 48%,#000 42%,rgba(0,0,0,.5) 72%,transparent 98%)}
-@media (min-width:820px){
-  .prize-banner{grid-template-columns:minmax(0,1fr) minmax(280px,360px);align-items:center;padding:26px 14px 26px 30px;gap:18px}
+.pb-photo{display:block;width:100%;height:100%;object-fit:contain;object-position:bottom center;filter:brightness(.94) saturate(1.06)}
+@media (min-width:720px){
+  .prize-banner{grid-template-columns:minmax(0,1fr) minmax(260px,360px);align-items:center;padding:26px 14px 26px 30px;gap:18px}
   .prize-banner h2{font-size:42px}
   .prize-banner .pb-art{justify-self:end;width:100%;margin:0 0 -30px}
 }
