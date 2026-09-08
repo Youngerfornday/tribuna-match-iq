@@ -4,6 +4,7 @@ Prototype for the Tribuna.com iGaming Product/Project Manager test task.
 
 - **Live prototype:** https://youngerfornday.github.io/tribuna-match-iq/
 - **Answer deck (Ukrainian):** https://youngerfornday.github.io/tribuna-match-iq/deck.html — the three answers as a 14-slide deck, built from the prototype's own tokens. Arrow keys navigate, Cmd+P prints one slide per page.
+- **Integration contract:** [`docs/integration.md`](docs/integration.md) — the three things a browser cannot host (odds feed, push, account) specified to the point where a backend team can build them without touching this front end: payload shapes, suspension and close semantics, notification rules, sync and merge conflicts, the event list and partner attribution.
 - **Run it locally:** open `index.html` in any browser. No build step, no dependencies. Over HTTPS it installs as a PWA and works offline; the rest of the repo is the illustrations, icons and social card in `art/`, a manifest and a service worker.
 
 Flow: match page → 3 blind calls (winner, over/under, scorer) → reveal CaptainAI / fans / market after each call → review the three calls and tap one as the Power Pick, then lock → odds at three partners (bet builder or single) → wait for full-time → result → Match IQ, streak, league, leaderboards → next match.
@@ -102,9 +103,11 @@ All events are visible in the prototype's Metrics panel at the bottom of every s
 Kept out of the prototype so the core flow stays readable. Each is a follow-up, not a missing piece:
 
 - Push notifications for "result is in" and "streak at risk", and the weekly reset job behind them. The prototype says where they belong rather than faking a permission prompt.
-- The odds provider itself. Everything that reads a price goes through one small interface (`oddsFeed`: what does this selection pay at partner *i*, is that market open, when did we last hear), and the prototype ships the mock implementation. A real provider answers the same three questions; what it cannot be given here is a contract with a book.
-- Server-side notifications. The prototype uses the browser's own permission and schedules the kick-off and full-time notices while the tab is open. Delivering to a closed app needs a push service and a scheduler, which is the one thing a static page genuinely cannot host.
-- An account. Progress moves between devices through a transfer link and duels carry a handle, but only a real account survives clearing site data or a lost phone.
+Three of them are services rather than screens, and each is specified in [`docs/integration.md`](docs/integration.md) rather than left as a gesture:
+
+- The odds provider. Every price read already goes through one interface (`oddsFeed`), and the document defines the payload, the suspended/closed semantics, the refresh floor and the failure modes a real feed must honour.
+- Server-side notifications. The prototype uses the browser's own permission and schedules kick-off and full-time locally; the document defines the three server events, the deduplication rule, quiet hours and the ban on promotional pushes.
+- An account. Progress already moves between devices through a transfer link; the document defines the sync payload, per-match conflict resolution, the anonymous merge and who owns settlement.
 
 Precedents: Sky Bet Super 6 is the reference for predictor-to-sportsbook; FotMob and OneFootball predictions are the content-side reference. Rollout: one top match per week, then top-5 leagues, then a weekly league with partner-funded prizes.
 
