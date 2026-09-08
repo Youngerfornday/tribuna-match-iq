@@ -448,7 +448,6 @@ body[data-layout="wide"]{--shell:1120px}
 .restore .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none;background:var(--accent);color:var(--accent-ink);font-size:16px}
 .restore b{font-family:var(--font-display);font-size:19px;font-weight:700;line-height:1.1;display:block}
 .restore p{font-size:13px;color:var(--ink-2);margin:5px 0 10px;line-height:1.45}
-.move-device{margin-top:12px}
 .save-card{display:flex;gap:12px;align-items:flex-start;margin-top:16px;padding:14px 16px;border-radius:var(--radius);background:var(--surface);border:1px dashed var(--line-strong)}
 .save-card .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none;background:var(--surface-2);color:#ff9b3d;font-size:17px}
 .save-card b{font-family:var(--font-display);font-size:19px;font-weight:700;line-height:1.1;display:block}
@@ -581,7 +580,9 @@ body[data-layout="wide"]{--shell:1120px}
 .prize-row p{font-size:13px;color:var(--ink-2);margin-top:5px;line-height:1.45}
 .prize-row .pb-status{font-weight:600;color:var(--ink-2)}
 .prize-row .pb-status.on{color:var(--accent)}
-.prize-row .pb-terms{font-size:11px;color:var(--ink-3);margin-top:6px}
+.prize-row .pb-terms{font-size:11px;color:var(--ink-3);margin-top:8px}
+.prize-row .pb-actions{margin-top:10px}
+.prize-row .pb-claimed{display:flex;align-items:center;gap:7px;margin-top:8px;font-size:13px;font-weight:600;color:var(--accent)}
 .pb-ic{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);flex:none;font-size:17px}
 .next{margin-top:18px;padding:18px;border-radius:var(--radius);background:linear-gradient(135deg,#1c2116,#171915 70%);border:1px solid var(--line-strong)}
 .next h2{font-size:30px;margin:6px 0 4px}
@@ -1130,12 +1131,16 @@ function prizeBanner(p, opts = {}) {
     : `<button class="btn ${kind}" data-action="nav" data-to="hub" data-label="Challenges">Make my first prediction ${icon('i-arrow')}</button>`);
 
   if (opts.compact) {
+    const claimed = p.welcomeClaimed ? PARTNERS.find((x) => x.id === p.welcomeClaimed) : null;
     return `
     <section class="prize-row" aria-label="This week's prize">
       <span class="pb-ic">${icon(started ? 'i-trophy' : 'i-gift')}</span>
       <div>
         <b>${started ? `Top ${PRIZE_TOP} win the ${partner.name} welcome offer` : `First prediction unlocks ${partner.offer.reward} in free bets`}</b>
         <p>${started ? `${partner.offer.title}, credited Monday.` : `Then the top ${PRIZE_TOP} of the weekly table get a second offer on Monday.`} <span class="pb-status ${inPrize ? 'on' : ''}">${started ? standing : ''}</span></p>
+        ${opts.claimable ? (claimed
+          ? `<p class="pb-claimed">${icon('i-check')} Welcome offer claimed at ${claimed.name}. The top ${PRIZE_TOP} offer lands Monday.</p>`
+          : `<div class="pb-actions"><button class="btn btn-secondary btn-sm" data-action="claim-offer">${icon('i-gift')} Claim the welcome offer</button></div>`) : ''}
         <p class="pb-terms">Partner-funded · new customers only · 18+ · T&amp;Cs apply</p>
       </div>
     </section>`;
@@ -1957,14 +1962,13 @@ function viewRetention() {
           <button class="btn btn-ghost" data-action="nav" data-to="hub" data-label="Challenges">${icon('i-grid')} All ${w.total} challenges</button>
         </div>
       </section>
-      ${prizeBanner(p, { compact: true })}` : `
+      ${prizeBanner(p, { compact: true, claimable: true })}` : `
       <section class="next">
         <h2>All ${w.total} challenges called</h2>
         <p>New fixtures drop Monday. Your table position is final at Sunday 23:59.</p>
         <div class="foot-cta"><button class="btn btn-secondary btn-block" data-action="nav" data-to="hub" data-label="Challenges">${icon('i-grid')} Review this week</button></div>
       </section>
-      ${prizeBanner(p, { compact: true })}`}
-      ${p.iq > 0 ? `<button class="btn btn-ghost btn-sm move-device" data-action="transfer">${icon('i-share')} Move this profile to another device</button>` : ''}
+      ${prizeBanner(p, { compact: true, claimable: true })}`}
     </div>
 
     <div class="rail">
@@ -2005,8 +2009,8 @@ function viewWelcomeSheet() {
   <div class="sheet-wrap" data-action="close-welcome">
     <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="welcome-title" data-stop>
       <div class="grab" aria-hidden="true"></div>
-      <h2 id="welcome-title">Your first bet unlocks a welcome offer</h2>
-      <p class="q-sub" style="margin-top:8px">Pick the one you want. One offer per person, new customers only, and it is funded by the partner, not by Tribuna.</p>
+      <h2 id="welcome-title">${state.sheet.source === 'prize' ? 'Claim your welcome offer' : 'Your first bet unlocks a welcome offer'}</h2>
+      <p class="q-sub" style="margin-top:8px">${state.sheet.source === 'prize' ? 'Pick the partner you want it from.' : 'Pick the one you want.'} One offer per person, new customers only, and it is funded by the partner, not by Tribuna.</p>
       <div class="offer-pick" role="radiogroup" aria-label="Choose your welcome offer">
         ${offers.map((x) => `
         <button class="opick" role="radio" aria-checked="${x.id === picked.id}" data-action="welcome-pick" data-partner="${x.id}">
@@ -2545,7 +2549,7 @@ const ACTIONS = {
     if (state.profile.welcomeSeen) { closeSheet(); return; }
     updateProfile({ welcomeSeen: true });
     track('welcome_offer_shown', { after: partner.name });
-    setState({ sheet: { kind: 'welcome', pick: partner.offer ? partner.id : null } });
+    setState({ sheet: { kind: 'welcome', source: 'bet', pick: partner.offer ? partner.id : null } });
   },
   'welcome-pick'(btn) {
     track('welcome_offer_selected', { partner: PARTNERS.find((x) => x.id === btn.dataset.partner).name });
@@ -2729,6 +2733,11 @@ const ACTIONS = {
     toast('Profile restored on this device');
   },
   'restore-cancel'() { track('profile_restore_declined', {}); setState({ restore: null }); },
+  'claim-offer'(btn) {
+    updateProfile({ welcomeSeen: true });
+    track('welcome_offer_shown', { source: 'prize_row' });
+    openSheet({ kind: 'welcome', source: 'prize', pick: PARTNERS.find((x) => x.offer).id }, btn);
+  },
   'lb-tab'(btn) { setState({ lbTab: btn.dataset.tab }); },
   'lb-expand'(btn) { track('leaderboard_expand', { top: PRIZE_TOP }); openSheet({ kind: 'table' }, btn); },
   'read-more'() { track('content_click', { screen: state.screen }); toast('Opens the full article on Tribuna (mock)'); },
