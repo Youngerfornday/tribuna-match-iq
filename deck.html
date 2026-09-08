@@ -454,7 +454,7 @@ figcaption{margin-top:2px;font-size:12.5px;color:var(--ink-3);line-height:1.45}
           </tbody>
         </table>
       </div>
-      <div class="note"><b>Партнерська модель платить за депозити, а не за переходи.</b> Тому воронку міряємо до постбеків — зворотних повідомлень партнера про реєстрацію та перший депозит. Більше <code>bookmaker_click</code> при нижчому FTD rate — це провал, а не успіх.</div>
+      <div class="note"><b>Партнерська модель платить за депозити, а не за переходи.</b> Тому воронку міряємо до постбеків — зворотних повідомлень партнера про реєстрацію та перший депозит. Більше <code>bookmaker_click</code> при нижчому FTD rate (first-time deposit — частка тих, хто зробив перший депозит) — це провал, а не успіх.</div>
     </div>
   </section>
 
@@ -490,7 +490,7 @@ figcaption{margin-top:2px;font-size:12.5px;color:var(--ink-3);line-height:1.45}
       <div class="formula">
         <p class="f">Скільки унікальних користувачів за <em>один і той самий тиждень</em> зробили обидві дії: зафіксували прогноз і перейшли до партнера</p>
         <p class="cap" style="font-size:15px;color:var(--ink-2);font-weight:600">WBIP — Weekly Betting-Intent Predictors</p>
-        <p class="cap">WBIP(тиждень) = COUNT(DISTINCT user_id), де за цей тиждень у користувача є <code>prediction_locked</code> ≥ 1 <b>і</b> <code>bookmaker_click</code> ≥ 1</p>
+        <p class="cap">WBIP(тиждень) = скільки різних <code>user_id</code> мають за цей тиждень щонайменше одну подію <code>prediction_locked</code> <b>і</b> щонайменше одну <code>bookmaker_click</code></p>
       </div>
       <div class="grid g3">
         <div class="card"><span class="k">Одиниця виміру</span><h3>Користувач, не подія</h3><p>Десять переходів однієї людини = 1. Найактивніший гравець не роздує метрику.</p></div>
@@ -566,10 +566,10 @@ figcaption{margin-top:2px;font-size:12.5px;color:var(--ink-3);line-height:1.45}
         <h2>Що не має погіршитись, поки росте головна метрика</h2>
       </div>
       <div class="grid g4">
-        <div class="card"><span class="k"><span class="i">01</span> · Бізнес</span><h3>FTD і registration rate</h3><p>З постбеків партнерів. Більше переходів при нижчому FTD означає неякісний трафік.</p></div>
+        <div class="card"><span class="k"><span class="i">01</span> · Бізнес</span><h3>FTD і registration rate</h3><p>Частка перших депозитів і реєстрацій, із постбеків партнерів. Більше переходів при нижчому FTD означає неякісний трафік.</p></div>
         <div class="card"><span class="k"><span class="i">02</span> · Канібалізація</span><h3>CTR наявного блоку 1X2</h3><p>Блок «Bet on this match · 1X2» під превʼю. Якщо Match IQ лише перетягнув на себе кліки, що й так були, чистого приросту немає. Обидва маршрути розмічені різними <code>source</code>, тому канібалізацію видно в даних.</p></div>
         <div class="card"><span class="k"><span class="i">03</span> · Відповідальна гра</span><h3>Сигнали ризику</h3><p>Аномальна частота переходів, скарги, спрацювання підтверджень віку, звернення по самообмеження.</p></div>
-        <div class="card"><span class="k"><span class="i">04</span> · Основний продукт</span><h3>Швидкість сторінки</h3><p>LCP та INP: віджет не має псувати контент, заради якого читач прийшов.</p></div>
+        <div class="card"><span class="k"><span class="i">04</span> · Основний продукт</span><h3>Швидкість сторінки</h3><p>Як швидко сторінка малюється і відповідає на дотик (LCP, INP): віджет не має псувати контент, заради якого читач прийшов.</p></div>
       </div>
       <div class="split">
         <div>
@@ -590,7 +590,7 @@ figcaption{margin-top:2px;font-size:12.5px;color:var(--ink-3);line-height:1.45}
       </div>
       <div class="grid g3">
         <div class="card"><span class="k">Ідентичність</span><h3>У NSM — лише залогінені</h3><p>Одиниця — <code>user_id</code>. Анонімні мають <code>anon_id</code> : коли він заходить в акаунт, його дії за попередні 30 днів привʼязуються до профілю. У NSM анонімні не входять — без сталого впізнавання «унікальний користувач за тиждень» перетворюється на вигадку.</p></div>
-        <div class="card"><span class="k">Атрибуція</span><h3>click_id → постбек</h3><p>У партнерське посилання йде <code>click_id</code> = хеш(user_id, match, partner, ts). Партнер повертає його у постбеку — так депозит привʼязується до конкретного прогнозу. Вікно 30 днів, зараховуємо за останнім кліком.</p></div>
+        <div class="card"><span class="k">Атрибуція</span><h3>click_id → постбек</h3><p>У партнерське посилання йде <code>click_id</code> = хеш(user_id, матч, партнер, час кліку). Партнер повертає його у постбеку — так депозит привʼязується до конкретного прогнозу. Вікно 30 днів, зараховуємо за останнім кліком.</p></div>
         <div class="card"><span class="k">Усунення дублів</span><h3>Повтор за 5 хвилин = один намір</h3><p>Повторні <code>bookmaker_click</code> до того самого партнера рахуються як один. Для NSM це неважливо, для handoff conversion — критично.</p></div>
         <div class="card"><span class="k">Довіра до цифр</span><h3>Холодний старт голосування</h3><p>«63% уболівальників» на вибірці з 40 голосів — шум, що виглядає як факт. До порогу голосів показуємо лише CaptainAI і ринок: одна абсурдна цифра коштує дорожче за відсутню.</p></div>
         <div class="card"><span class="k">Гігієна даних</span><h3>Внутрішні профілі виключені</h3><p>Тестові акаунти позначені і виключені: на малих обсягах перших тижнів команда інакше потрапить у власну статистику.</p></div>
