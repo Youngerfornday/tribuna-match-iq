@@ -1,0 +1,658 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Tribuna Match IQ: три відповіді тестового завдання — суть продукту, iGaming-конверсія та метрики з формулами.">
+<meta property="og:title" content="Три відповіді Match IQ">
+<meta property="og:description" content="Гра-прогноз на сторінці матчу: суть, конверсія, метрики.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://youngerfornday.github.io/tribuna-match-iq/deck.html">
+<meta property="og:image" content="https://youngerfornday.github.io/tribuna-match-iq/art/captain-ai.webp">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230e0f0c'/%3E%3Cpath d='M18 4 7 18h8l-1 10 11-14h-8z' fill='%23d7ff3d'/%3E%3C/svg%3E">
+<!-- ARTIFACT-HEAD-START -->
+<title>Три відповіді Match IQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Tokens are the prototype's own: same ground, same lime, same data trio. */
+:root{
+  color-scheme:dark;
+  --bg:#0e0f0c;
+  --surface:#171915;
+  --surface-2:#1f221c;
+  --surface-3:#272b24;
+  --line:#2c3128;
+  --line-strong:#3a4035;
+  --ink:#f3f4ec;
+  --ink-2:#b4b8aa;
+  --ink-3:#878c80;
+  --accent:#d7ff3d;
+  --accent-ink:#0e0f0c;
+  --accent-dim:rgba(215,255,61,.14);
+  --ai:#3987e5;
+  --ai-text:#8db9f2;
+  --fans:#d95926;
+  --fans-text:#f08a5c;
+  --market:#199e70;
+  --market-text:#3fc394;
+  --danger:#e66767;
+  --font-display:"Barlow Condensed","Arial Narrow","Roboto Condensed",system-ui,sans-serif;
+  --font-body:"Barlow","Helvetica Neue",Arial,system-ui,sans-serif;
+  --radius:12px;
+  --radius-sm:8px;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --shell:1120px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--font-body);font-size:16px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;height:100dvh;overflow:hidden;
+}
+::selection{background:var(--accent);color:var(--accent-ink)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+h1,h2,h3{font-family:var(--font-display);font-weight:700;line-height:1;letter-spacing:-.01em;margin:0;text-wrap:balance}
+p{margin:0}
+b,strong{font-weight:600;color:var(--ink)}
+a{color:var(--accent);text-underline-offset:3px;text-decoration-thickness:1px}
+table{border-collapse:collapse;width:100%}
+img{max-width:100%}
+code,.mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.85em;color:var(--accent);background:var(--accent-dim);padding:1px 5px;border-radius:4px;white-space:nowrap}
+
+/* -------------------------------------------------------------- the deck */
+.deck{height:100dvh;overflow-y:auto;scroll-snap-type:y mandatory;scroll-behavior:smooth;scrollbar-width:none}
+.deck::-webkit-scrollbar{display:none}
+@media (prefers-reduced-motion:reduce){.deck{scroll-behavior:auto}}
+.slide{
+  scroll-snap-align:start;scroll-snap-stop:always;
+  min-height:100dvh;display:flex;flex-direction:column;justify-content:center;
+  padding:60px 88px 68px 104px;border-bottom:1px solid var(--line);
+}
+.inner{width:100%;max-width:var(--shell);margin:0 auto;display:flex;flex-direction:column;gap:32px}
+.head{display:flex;flex-direction:column;gap:14px}
+
+/* Numbering is real structure: three questions, ordered slides inside each. */
+.eyebrow{display:flex;align-items:center;gap:11px;flex-wrap:wrap;font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.eyebrow .no{font-family:var(--font-display);font-weight:800;font-size:13px;letter-spacing:.1em;color:var(--accent-ink);background:var(--accent);border-radius:4px;padding:3px 7px}
+.eyebrow .sep{width:20px;height:1px;background:var(--line-strong);flex:none}
+h2{font-size:clamp(32px,4.5vw,58px);max-width:21ch}
+.lead{font-size:clamp(16px,1.5vw,21px);color:var(--ink-2);max-width:66ch}
+.lead b{color:var(--ink)}
+
+/* ---------------------------------------------------------------- pieces */
+.grid{display:grid;gap:16px;align-items:stretch}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.split{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:32px;align-items:start}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;display:flex;flex-direction:column;gap:9px}
+.card h3{font-size:22px;letter-spacing:0}
+.card p{font-size:15.5px;color:var(--ink-2);line-height:1.5}
+.card-accent{border-color:transparent;background:linear-gradient(180deg,rgba(215,255,61,.10),rgba(215,255,61,.03));box-shadow:inset 0 0 0 1px rgba(215,255,61,.28)}
+.card-accent h3{color:var(--accent)}
+.card-plain{background:none;border:0;padding:0}
+.card-plain h3{font-size:19px}
+
+/* k = typed label above a block; tag = inline status marker */
+.k{font-size:11px;font-weight:600;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3)}
+.k .i{color:var(--ink-2);font-family:var(--font-display);font-weight:800;font-size:12px}
+.tag{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:4px;background:var(--surface-3);color:var(--ink-2);white-space:nowrap}
+.tag-live{background:var(--accent-dim);color:var(--accent)}
+.tag-mock{background:rgba(217,89,38,.16);color:var(--fans-text)}
+.tag-dec{background:rgba(57,135,229,.16);color:var(--ai-text)}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;font-size:12px;font-weight:600;border:1px solid var(--line-strong);color:var(--ink-2);white-space:nowrap;text-decoration:none}
+.chip-accent{background:var(--accent-dim);border-color:transparent;color:var(--accent)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+/* the game flow is a true sequence, so it carries step numbers */
+.flow{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.step{padding:18px 18px 20px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:8px;background:var(--surface)}
+.step:last-child{border-right:0}
+.step .n{font-family:var(--font-display);font-size:13px;font-weight:800;letter-spacing:.08em;color:var(--ink-3)}
+.step h3{font-size:19px;line-height:1.1}
+.step p{font-size:13.5px;color:var(--ink-3);line-height:1.45}
+.step-lock{background:linear-gradient(180deg,rgba(215,255,61,.10),rgba(215,255,61,.02))}
+.step-lock .n,.step-lock h3{color:var(--accent)}
+
+/* your call vs market */
+.bars{display:flex;flex-direction:column;gap:14px}
+.bar{display:grid;grid-template-columns:152px minmax(0,1fr) 56px;align-items:center;gap:14px}
+.bar .lbl{font-size:14.5px;font-weight:600;color:var(--ink-2);display:flex;align-items:center;gap:8px}
+.bar .dot{width:9px;height:9px;border-radius:2px;flex:none}
+.bar .track{height:14px;background:var(--surface-2);border-radius:3px;overflow:hidden}
+.bar .fill{height:14px;border-radius:0 3px 3px 0}
+.bar .val{font-family:var(--font-display);font-weight:800;font-size:23px;text-align:right;font-variant-numeric:tabular-nums}
+.ai .dot,.ai .fill{background:var(--ai)} .ai .val{color:var(--ai-text)}
+.fans .dot,.fans .fill{background:var(--fans)} .fans .val{color:var(--fans-text)}
+.market .dot,.market .fill{background:var(--market)} .market .val{color:var(--market-text)}
+
+/* tables */
+.tbl{font-size:15px}
+.tbl th{text-align:left;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);padding:0 14px 10px 0;border-bottom:1px solid var(--line);white-space:nowrap}
+.tbl td{padding:12px 14px 12px 0;border-bottom:1px solid var(--line);color:var(--ink-2);vertical-align:top}
+.tbl tr:last-child td{border-bottom:0}
+.tbl td:first-child{color:var(--ink);font-weight:600}
+.tbl .t-num{font-variant-numeric:tabular-nums;color:var(--accent);font-weight:600;white-space:nowrap}
+.scroll-x{overflow-x:auto}
+
+.list{display:flex;flex-direction:column;gap:12px;margin:0;padding:0;list-style:none}
+.list li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;font-size:15.5px;color:var(--ink-2);line-height:1.55}
+.list li .m{width:7px;height:7px;border-radius:2px;background:var(--accent);transform:rotate(45deg);margin-top:9px;flex:none}
+
+.formula{background:var(--surface-2);border:1px solid var(--line-strong);border-radius:var(--radius);padding:26px 28px;display:flex;flex-direction:column;gap:12px}
+.formula .f{font-family:var(--font-display);font-size:clamp(22px,2.7vw,34px);font-weight:700;line-height:1.25}
+.formula .f em{font-style:normal;color:var(--accent)}
+.formula .cap{font-size:14px;color:var(--ink-3);line-height:1.55}
+.note{font-size:14.5px;color:var(--ink-3);line-height:1.55;border-left:2px solid var(--line-strong);padding-left:14px;max-width:92ch}
+.note b{color:var(--ink-2)}
+.fn{font-size:12.5px;color:var(--ink-3);line-height:1.5}
+.fn sup{color:var(--accent);font-weight:700}
+
+/* title slide */
+.title-grid{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:48px;align-items:center}
+h1{font-size:clamp(56px,9vw,120px);font-weight:800;letter-spacing:-.02em;line-height:.88}
+h1 .lime{color:var(--accent)}
+.kicker{font-family:var(--font-display);font-size:clamp(20px,2.5vw,30px);font-weight:700;color:var(--ink-2);margin-top:8px}
+.toc{display:flex;flex-direction:column;margin-top:18px;border-top:1px solid var(--line)}
+.toc a{display:grid;grid-template-columns:38px minmax(0,1fr);gap:14px;align-items:baseline;padding:13px 0;border-bottom:1px solid var(--line);color:var(--ink);text-decoration:none;transition:color .15s,padding-left .2s var(--ease)}
+.toc a:hover{color:var(--accent);padding-left:6px}
+.toc .n{font-family:var(--font-display);font-weight:800;font-size:15px;color:var(--ink-3);letter-spacing:.06em}
+.toc a:hover .n{color:var(--accent)}
+.toc .t{font-size:17px;font-weight:600}
+.toc .q{display:block;font-size:13px;color:var(--ink-3);font-weight:400;margin-top:2px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:12.5px;color:var(--ink-3);margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.art{width:100%;border-radius:var(--radius);display:block}
+figure{margin:0}
+figcaption{margin-top:10px;font-size:12.5px;color:var(--ink-3);line-height:1.45}
+.stamp{position:absolute;top:34px;right:32px;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+
+.foot{display:flex;gap:12px;align-items:flex-start;font-size:12.5px;color:var(--ink-3);line-height:1.45;border-top:1px solid var(--line);padding-top:14px}
+.badge18{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border:1.5px solid var(--ink-3);border-radius:50%;font-weight:700;font-size:11px;flex:none;color:var(--ink-2)}
+
+/* chrome */
+.progress{position:fixed;top:0;left:0;height:2px;background:var(--accent);width:0;z-index:40;transition:width .25s var(--ease)}
+.rail{position:fixed;left:0;top:0;bottom:0;width:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;z-index:30}
+.rail button{border:0;background:none;padding:6px 4px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.rail button i{display:block;width:18px;height:2px;background:var(--line-strong);border-radius:2px;transition:background .2s,width .2s var(--ease)}
+.rail button:hover i{background:var(--ink-3)}
+.rail button[aria-current="true"] i{background:var(--accent);width:26px}
+.counter{position:fixed;right:22px;bottom:20px;z-index:30;display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:700;font-size:15px;letter-spacing:.08em;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.counter b{color:var(--accent);font-weight:800}
+.counter .hint{font-family:var(--font-body);font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;opacity:.75}
+.mark{position:fixed;left:0;top:0;width:56px;padding:18px 0;z-index:30;display:flex;justify-content:center}
+.mark i{width:11px;height:11px;background:var(--accent);border-radius:2px;transform:rotate(45deg);display:block}
+
+@media (max-width:1000px){
+  .slide{padding:52px 24px 64px 68px}
+  .split,.title-grid{grid-template-columns:minmax(0,1fr);gap:24px}
+  .g3,.g4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .flow{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .title-grid figure{max-width:210px}
+  .stamp{position:static;margin-bottom:12px}
+}
+@media (max-width:640px){
+  .slide{padding:56px 18px 60px 58px;min-height:auto}
+  .g2,.g3,.g4,.flow{grid-template-columns:minmax(0,1fr)}
+  .step{border-right:0;border-bottom:1px solid var(--line)}
+  .bar{grid-template-columns:118px minmax(0,1fr) 46px;gap:10px}
+  .rail{display:none}
+}
+@media print{
+  body,.deck{height:auto;overflow:visible}
+  .slide{min-height:auto;page-break-after:always;padding:26px}
+  .rail,.counter,.progress,.mark{display:none}
+}
+</style>
+<!-- ARTIFACT-HEAD-END -->
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<div class="mark" aria-hidden="true"><i></i></div>
+<nav class="rail" id="rail" aria-label="Слайди"></nav>
+<div class="counter"><span class="hint">← →</span><b id="cur">01</b>/<span id="total">14</span></div>
+
+<main class="deck" id="deck">
+
+  <!-- ---------------------------------------------------------- title -->
+  <section class="slide" data-label="Титул" style="position:relative">
+    <span class="stamp">v1.0 · 08.09.2026</span>
+    <div class="inner">
+      <div class="title-grid">
+        <div>
+          <div class="eyebrow">Tribuna.com<span class="sep"></span>iGaming Product Manager<span class="sep"></span>тестове завдання</div>
+          <h1 style="margin-top:16px">Match<span class="lime">&nbsp;IQ</span></h1>
+          <p class="kicker">Три відповіді: суть, конверсія, метрики</p>
+          <p class="lead" style="margin-top:14px">Гра-прогноз на сторінці матчу. Читач робить три прогнози наосліп, звіряє їх із CaptainAI, уболівальниками та ринком — і лише потім бачить ціну власного сценарію.</p>
+          <div class="toc">
+            <a href="#s11"><span class="n">01</span><span><span class="t">Суть проєкту</span><span class="q">У чому сіль і яку проблему користувача це вирішує</span></span></a>
+            <a href="#s21"><span class="n">02</span><span><span class="t">iGaming-конверсія</span><span class="q">Як інструмент природно мотивує ставку чи перехід до букмекера</span></span></a>
+            <a href="#s31"><span class="n">03</span><span><span class="t">Метрики</span><span class="q">North Star, допоміжні метрики і те, як саме ми їх рахуємо</span></span></a>
+          </div>
+          <div class="legend">
+            <span><code>prediction_locked</code> подія аналітики, яка вже працює в прототипі</span>
+            <span><i class="tag tag-mock">Ілюстративно</i> вигадані дані демо</span>
+            <span><i class="tag tag-dec">Метрика рішення</i> за чим ухвалюємо рішення</span>
+          </div>
+        </div>
+        <figure>
+          <img class="art" src="art/captain-ai.webp" alt="CaptainAI — модель, проти якої грає користувач" width="290" height="290">
+          <figcaption>CaptainAI — суперник читача. Не «AI-функція», а персонаж, з яким є рахунок.</figcaption>
+        </figure>
+      </div>
+      <div class="chips">
+        <a class="chip chip-accent" href="https://youngerfornday.github.io/tribuna-match-iq/">Живий прототип</a>
+        <span class="chip">Parimatch · GG.BET · FAVBET</span>
+        <span class="chip">Коефіцієнти ілюстративні</span>
+        <span class="chip">18+</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------- 1.1 -->
+  <section class="slide" id="s11" data-label="1.1 Проблема">
+    <div class="inner">
+      <div class="head">
+        <div class="eyebrow"><span class="no">1.1</span>Суть проєкту<span class="sep"></span>Проблема користувача</div>
+        <h2>«Маю думку про цей матч — і нема куди її подіти»</h2>
+        <p class="lead">Читач відкриває превʼю, бо вже має гіпотезу: Байєр візьме, забʼє Шик, буде більше 2.5. Сьогодні ця думка помирає в коментарях.</p>
+      </div>
+      <div class="grid g3">
+        <div class="card"><span class="k"><span class="i">01</span> · Барʼєр</span><h3>Немає ставки в матчі</h3><p>Емоційної, не грошової. Дивитися нема за що особисто — тільки за рахунок.</p></div>
+        <div class="card"><span class="k"><span class="i">02</span> · Барʼєр</span><h3>Немає дзеркала</h3><p>Свою компетентність нема з чим звірити: я розумію футбол краще за середнього фана чи гірше?</p></div>
+        <div class="card"><span class="k"><span class="i">03</span> · Барʼєр</span><h3>Немає накопичення</h3><p>Вгадане вчора сьогодні не існує. Сезон здогадок ні в що не складається.</p></div>
+      </div>
+      <div class="note"><b>Проблема бізнесу.</b> Сторінка матчу не має дії до матчу, причини повернутись після нього і другого контентного кліку між ними. А блок 1X2 звертається до читача в найгіршу мить — до того, як у нього зʼявилась думка, яку варто підкріпити грішми.</div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------- 1.2 -->
+  <section class="slide" id="s12" data-label="1.2 Рішення">
+    <div class="inner">
+      <div class="head">
+        <div class="eyebrow"><span class="no">1.2</span>Суть проєкту<span class="sep"></span>Рішення</div>
+        <h2>Гра на три дотики всередині сторінки матчу</h2>
+      </div>
+      <div class="flow">
+        <div class="step"><span class="n">КРОК 01</span><h3>Три прогнози наосліп</h3><p>Переможець, тотал, автор гола. Жодних чужих цифр на екрані.</p></div>
+        <div class="step"><span class="n">КРОК 02</span><h3>Розкриття після кожного</h3><p>CaptainAI, тисячі уболівальників і ринок — про той самий прогноз.</p></div>
+        <div class="step step-lock"><span class="n">КРОК 03</span><h3>Power Pick і фіксація</h3><p>Один прогноз — головний. Сценарій зафіксовано.</p></div>
+        <div class="step"><span class="n">КРОК 04</span><h3>Ціни трьох партнерів</h3><p>Коефіцієнти вперше зʼявляються тільки тут.</p></div>
+        <div class="step"><span class="n">КРОК 05</span><h3>Фінальний свисток</h3><p>Очікування результату — і є причиною повернутись.</p></div>
+        <div class="step"><span class="n">КРОК 06</span><h3>Результат</h3><p>Match IQ, серія, дивізіон, таблиці лідерів. Далі — наступний матч.</p></div>
+      </div>
+      <div class="grid g4">
+        <div class="card card-plain"><span class="k">Накопичення</span><h3>Рейтинг Match IQ</h3></div>
+        <div class="card card-plain"><span class="k">Ритм</span><h3>Серія матчів</h3></div>
+        <div class="card card-plain"><span class="k">Статус</span><h3>Дивізіон</h3></div>
+        <div class="card card-plain"><span class="k">Соціальне</span><h3>Гравці проти CaptainAI, клуб проти клубу</h3></div>
+      </div>
+      <div class="note">Розвага стає продуктом лише через наслідки, що переживають матч. Тому зароблене лишається в профілі, а таблиця оновлюється щопонеділка.</div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------- 1.3 -->
+  <section class="slide" id="s13" data-label="1.3 Blind-then-reveal">
+    <div class="inner">
+      <div class="head">
+        <div class="eyebrow"><span class="no">1.3</span>Суть проєкту<span class="sep"></span>Головний принцип</div>
+        <h2>Спершу зобовʼязання, потім порівняння</h2>
+        <p class="lead">Спершу вибір наосліп, потім розкриття чужих оцінок. Це не деталь інтерфейсу: на цьому тримається і залученість, і конверсія.</p>
+      </div>
+      <div class="grid g2">
+        <div class="card"><span class="k">Цифри до вибору</span><h3>Це підказка</h3><p>«62% уболівальників за Байєр» перед вибором стирає авторство: читач уже не автор прогнозу, а виконавець чужої думки.</p></div>
+        <div class="card card-accent"><span class="k">Цифри після вибору</span><h3>Це дзеркало</h3><p>Та сама цифра створює емоцію: «я бачу те, чого не бачить загал». Далі ставка стає ціною власного сценарію, а не банером.</p></div>
+      </div>
+      <div class="split">
+        <div>
+          <h3 style="font-size:21px;margin-bottom:14px">Чому це виграшно саме для Tribuna</h3>
+          <ul class="list">
+            <li><span class="m"></span><span><b>Клубні спільноти — актив, якого немає у FotMob.</b> Таблиця «клуб проти клубу» робить прогноз командною справою: я граю за North Stand, а не за себе.</span></li>
+            <li><span class="m"></span><span><b>CaptainAI — наявний контент у ролі опонента.</b> Модель, що просто друкує ймовірності, нудна. Модель, з якою є рахунок, — привід повернутися.</span></li>
+            <li><span class="m"></span><span><b>Кожне розкриття і кожен результат ведуть у контент:</b> розкриття — у превʼю, результат — у звіт.</span></li>
+          </ul>
+        </div>
+        <div class="card"><span class="k">Межі</span><h3>Чим це не є</h3><p>Не сервіс платних прогнозів: жодних «гарантованих ставок». Не фентезі-ліга: немає складу і щоденного зобовʼязання. Не гра для досвідченого беттора: ціль — читач, який уже прийшов на превʼю.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------- 1.4 -->
+  <section class="slide" id="s14" data-label="1.4 Поле й розгортання">
+    <div class="inner">
+      <div class="head">
+        <div class="eyebrow"><span class="no">1.4</span>Суть проєкту<span class="sep"></span>Поле й розгортання</div>
+        <h2>Механіка перевірена — новим є місце, де вона живе</h2>
+      </div>
+      <div class="grid g3">
+        <div class="card"><span class="k">Взірець конверсії</span><h3>Sky Bet Super 6</h3><p>Безкоштовна гра-прогноз як верх воронки букмекера. Доводить, що прогноз конвертує краще за банер.</p></div>
+        <div class="card"><span class="k">Взірець контенту</span><h3>FotMob, OneFootball</h3><p>Прогнози всередині матч-центру. Доводять, що механіка не заважає читанню.</p></div>
+        <div class="card card-accent"><span class="k">Що додає Tribuna</span><h3>Клубні спільноти</h3><p>Ані Sky Bet, ані FotMob не мають клубних спільнот як структури. Тут прогноз стає командним видом спорту.</p></div>
+      </div>
+      <div class="split">
+        <div class="card"><span class="k">Розгортання</span><h3>Один топ-матч на тиждень → топ-5 ліг → тижнева ліга з партнерськими призами</h3><p>Перший етап навмисно вузький: одна гра на тиждень тримає поле щільним, таблицю — осмисленою, редакційну підтримку — реальною.</p></div>
+        <div class="card"><span class="k">Що далі</span><h3>Наступні кроки, не прогалини</h3><p>Полиця значків і картка для поширення. «Зберегти серію в акаунт» як мʼяка реєстрація. Weekend Quest, заморозка серії, дуелі. Живі коефіцієнти з порядком партнерів за країною та сповіщення «результат готовий».</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------- 2.1 -->
+  <section class="slide" id="s21" data-label="2.1 Порядок звернень">
+    <div class="inner">
+      <div class="head">
+        <div class="eyebrow"><span class="no">2.1</span>iGaming-конверсія<span class="sep"></span>Порядок звернень</div>
+        <h2>Думка → порівняння → ціна</h2>
+        <p class="lead">Ставку ми ніколи не пропонуємо першою. Порядок жорсткий — і він же є конверсійною воронкою.</p>
+      </div>
+      <div class="grid g3">
+        <div class="card"><span class="k"><span class="i">01</span> · Механіка</span><h3>Коефіцієнтів не існує до фіксації</h3><p>Ціни приховані, доки сценарій не зафіксовано. Різниця між «поставте на Байєр» і «ваш сценарій коштує 4.20».</p></div>
+        <div class="card card-accent"><span class="k"><span class="i">02</span> · Механіка</span><h3>Сценарій сам стає конструктором ставки</h3><p>Три прогнози = три події в експресі, зібраному без жодного зусилля. Найдорожчий для букмекера тип ставки падає в руки готовим.</p></div>
+        <div class="card"><span class="k"><span class="i">03</span> · Механіка</span><h3>Power Pick — ординаром</h3><p>Експрес із трьох подій — високий барʼєр для того, хто ніколи не ставив. Ординар на найвпевненіший прогноз — найлегший вхід.</p></div>
+        <div class="card"><span class="k"><span class="i">04</span> · Механіка</span><h3>Три партнери, краща ціна підсвічена</h3><p>Чесна версія «порівняй коефіцієнти»: видно, що шукали вигоду, а не продавали конкретного букмекера.</p></div>
+        <div class="card"><span class="k"><span class="i">05</span> · Механіка</span><h3>Вітальна пропозиція після першого переходу</h3><p>Не на вході, а коли намір підтверджений дією. Один раз на профіль, закривається, позначена як ілюстративна.</p></div>
+        <div class="card"><span class="k"><span class="i">06</span> · Механіка</span><h3>Тижневий приз: топ-100 таблиці</h3><p>Приз від партнера, а не грошовий від Tribuna. Приз і конверсійна подія — одне й те саме, тому механіка сама себе фінансує.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------- 2.2 -->
+  <section class="slide" id="s22" data-label="2.2 Ваш прогноз проти ринку">
+    <div class="inner">
+      <div class="head">
+        <div class="eyebrow"><span class="no">2.2</span>iGaming-конверсія<span class="sep"></span>Ядро мотивації</div>
+        <h2>«Ваш прогноз проти ринку» — інформація, а не обіцянка</h2>
+      </div>
+      <div class="split">
+        <div class="card">
+          <div class="chips" style="justify-content:space-between">
+            <span class="k">Power Pick · Байєр Леверкузен виграє</span>
+            <span class="tag tag-mock">Ілюстративно</span>
+          </div>
+          <div class="bars" style="margin-top:6px">
+            <div class="bar ai"><span class="lbl"><i class="dot"></i>CaptainAI</span><span class="track"><span class="fill" style="width:54%"></span></span><span class="val">54%</span></div>
+            <div class="bar fans"><span class="lbl"><i class="dot"></i>Уболівальники</span><span class="track"><span class="fill" style="width:62%"></span></span><span class="val">62%</span></div>
+            <div class="bar market"><span class="lbl"><i class="dot"></i>Ринок</span><span class="track"><span class="fill" style="width:45%"></span></span><span class="val">45%</span></div>
+          </div>
+          <p style="margin-top:12px;font-size:13.5px;color:var(--ink-3)">CaptainAI — модель · Уболівальники — голоси читачів · Ринок — коефіцієнти трьох партнерів</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <div class="card card-plain">
+            <span class="k">Як рахуємо ринковий %</span>
+            <p style="font-size:15.5px;color:var(--ink-2)">Імпліцитна ймовірність із середнього коефіцієнта: <span class="mono">1 / 2.10 = 47.6%</span>. Для взаємовиключних ринків (1X2, тотал) маржу знімаємо нормуванням до 100% → <b>45%</b>. Для «автора гола» події не взаємовиключні, тому лишається сира імпліцитна ймовірність.</p>
+          </div>
+          <div class="card card-plain">
+            <span class="k">Навіщо знімати маржу</span>
+            <p style="font-size:15.5px;color:var(--ink-2)">Інакше ринок систематично виглядав би впевненішим за уболівальників і модель, і порівняння було б нечесним на його користь.</p>
+          </div>
+        </div>
+      </div>
+      <div class="note"><b>Формулювання — теж вимога регулятора.</b> У продукті вживається «ваш прогноз проти ринку» і ніколи «edge» чи «value»: перше — порівняння, друге — обіцянка виграшу. Поруч завжди стоїть явний рядок «це не гарантія».</div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------- 2.3 -->
+  <section class="slide" id="s23" data-label="2.3 Воронка">
+    <div class="inner">
+      <div class="head">
+        <div class="eyebrow"><span class="no">2.3</span>iGaming-конверсія<span class="sep"></span>Інструментація</div>
+        <div class="chips"><h2 style="font-size:clamp(30px,4vw,50px)">Воронка розкладена на події</h2><span class="tag tag-live">Уже в прототипі</span></div>
+        <p class="lead">Кожен крок — окрема подія, бо просідання на різних кроках лікуються по-різному.</p>
+      </div>
+      <div class="scroll-x">
+        <table class="tbl">
+          <thead><tr><th>Крок користувача</th><th>Подія</th><th>Метрика кроку</th><th>Що означає просідання</th></tr></thead>
+          <tbody>
+            <tr><td>Побачив гру</td><td><code>match_page_view</code></td><td class="t-num">entry rate</td><td>віджет не помітний на сторінці матчу</td></tr>
+            <tr><td>Почав</td><td><code>challenge_start</code></td><td class="t-num">—</td><td>перше питання не інтригує</td></tr>
+            <tr><td>Зробив три прогнози</td><td><code>challenge_complete</code></td><td class="t-num">complete / start</td><td>шлях задовгий, розкриття не тримає</td></tr>
+            <tr><td>Зафіксував</td><td><code>prediction_locked</code></td><td class="t-num">completion rate</td><td>незрозуміло, навіщо фіксувати</td></tr>
+            <tr><td>Побачив ціни</td><td><code>odds_viewed</code></td><td class="t-num">odds view rate</td><td>перехід до цін не мотивований</td></tr>
+            <tr><td>Відкрив картку партнера</td><td><code>handoff_opened</code></td><td class="t-num">intent rate</td><td>пропозиція партнера не переконує</td></tr>
+            <tr><td>Пішов до партнера</td><td><code>bookmaker_click</code></td><td class="t-num">handoff conversion</td><td>ціни неконкурентні або партнер не той для цієї країни</td></tr>
+            <tr><td>Зареєструвався, поповнив</td><td>постбек партнера</td><td class="t-num">якість гравця</td><td>женемо неякісний трафік</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note"><b>Партнерська модель платить за депозити, а не за переходи.</b> Тому воронку міряємо до постбеків — зворотних повідомлень партнера про реєстрацію та перший депозит. Більше <code>bookmaker_click</code> при нижчому FTD rate — це провал, а не успіх.</div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------- 2.4 -->
+  <section class="slide" id="s24" data-label="2.4 Запобіжники">
+    <div class="inner">
+      <div class="head">
+        <div class="eyebrow"><span class="no">2.4</span>iGaming-конверсія<span class="sep"></span>Відповідальна гра</div>
+        <h2>Запобіжники — умова роботи з ліцензованими партнерами</h2>
+      </div>
+      <div class="split">
+        <ul class="list">
+          <li><span class="m"></span><span><b>18+</b> на кожному екрані, у правилах і футері; підтвердження віку перед першим переходом.</span></li>
+          <li><span class="m"></span><span><b>«Коефіцієнти ілюстративні»</b> на картці партнера, у правилах і футері: демо не має читатись як справжня пропозиція.</span></li>
+          <li><span class="m"></span><span><b>Партнери марковані, таймерів тиску немає.</b> Єдиний відлік у продукті — реальний стартовий свисток.</span></li>
+          <li><span class="m"></span><span><b>«Продовжити без ставки»</b> так само помітний, як перехід до партнера.</span></li>
+          <li><span class="m"></span><span><b>Блок 1X2 залишається.</b> Match IQ додає другий маршрут до тих самих партнерів — для читача, який уже визначився, — а не замінює перший.</span></li>
+          <li><span class="m"></span><span><b>Ніяких «гарантованих прогнозів», штучних дедлайнів і грошових призів від Tribuna</b> — останнє вже інша ліцензійна категорія.</span></li>
+        </ul>
+        <figure>
+          <img class="art" src="art/captain-king.webp" alt="Переможець тижневої таблиці з кубком і безкоштовною ставкою" width="290" height="290">
+          <figcaption><b style="color:var(--ink-2)">Персонаж — переможець гри, а не талісман казино.</b> Гральна мультяшка на медіа з молодою аудиторією — перше, до чого будуть питання в юристів партнера. Ілюстрацію намальовано для прототипу: запозичена ілюстрація оператора — це порушення авторських прав.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------- 3.1 -->
+  <section class="slide" id="s31" data-label="3.1 North Star">
+    <div class="inner">
+      <div class="head">
+        <div class="eyebrow"><span class="no">3.1</span>Метрики<span class="sep"></span>North Star Metric</div>
+        <h2>Weekly Betting-Intent Predictors (WBIP)</h2>
+      </div>
+      <div class="formula">
+        <p class="f">Скільки користувачів за <em>один і той самий тиждень</em> і зафіксували прогноз, і перейшли до партнера</p>
+        <p class="cap">WBIP(w) = | { u : ∃ <code>prediction_locked</code>(u) ∈ w } ∩ { u : ∃ <code>bookmaker_click</code>(u) ∈ w } |</p>
+      </div>
+      <div class="grid g3">
+        <div class="card"><span class="k">Одиниця виміру</span><h3>Користувач, не подія</h3><p>Десять переходів однієї людини = 1. Найактивніший гравець не роздує метрику.</p></div>
+        <div class="card"><span class="k">Вікно</span><h3>ISO-тиждень, Europe/Kyiv</h3><p>Пн–нд, синхронно зі скиданням таблиці й призами в понеділок: приз і метрика в одному календарі.</p></div>
+        <div class="card"><span class="k">Знаменник</span><h3>Тижнева аудиторія віджета</h3><p>Поруч тримаємо <span class="mono">WBIP / weekly widget-exposed users</span>, інакше сезонність футболу видаватиме себе за успіх продукту.</p></div>
+      </div>
+      <div class="grid g2">
+        <div class="card"><span class="k">Чому не залученість і не кліки</span><h3>Поодинці обидва брешуть</h3><p>«Активні прогнозисти» ростуть без впливу на виручку. Самі переходи ловлять випадкові дотики по банеру. Перетин росте лише тоді, коли гра працює <b>і</b> веде до партнера.</p></div>
+        <div class="card"><span class="k">Свідоме послаблення</span><h3>Перехід не мусить бути з того самого прогнозу</h3><p>«Зафіксував у середу, поставив у суботу» — нормальна поведінка. Прямий звʼязок міряємо окремо: <b>attach rate</b> — частка <code>prediction_locked</code>, за якими є <code>bookmaker_click</code> із тим самим матчем у межах 72 год.</p></div>
+      </div>
+      <div class="note"><b>Чому не виручка.</b> Вона приходить із затримкою постбеків і залежить від умов партнерів, ринків і сезону — на неї команда не може реагувати щотижня. NSM має бути тим, на що впливає тижневий реліз.</div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------- 3.2 -->
+  <section class="slide" id="s32" data-label="3.2 Допоміжні метрики">
+    <div class="inner">
+      <div class="head">
+        <div class="eyebrow"><span class="no">3.2</span>Метрики<span class="sep"></span>Допоміжні метрики</div>
+        <h2>По одній метриці на кожну ланку петлі</h2>
+      </div>
+      <div class="scroll-x">
+        <table class="tbl">
+          <thead><tr><th>Метрика</th><th>Як рахуємо</th><th>Що діагностує</th><th>Орієнтир<sup style="color:var(--accent)">*</sup></th><th>Що робимо при провалі</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Challenge<br>completion rate</td>
+              <td><code>prediction_locked / challenge_start</code></td>
+              <td>Чи працює сама гра</td>
+              <td class="t-num">60%+</td>
+              <td>скорочуємо гру до двох прогнозів, спрощуємо формулювання, пробуємо раннє розкриття</td>
+            </tr>
+            <tr>
+              <td>Return-to-<br>result rate</td>
+              <td>частка <code>prediction_locked</code> із <code>result_viewed</code> протягом 48 год</td>
+              <td>Петлю повернення</td>
+              <td class="t-num">40%+ без сповіщень</td>
+              <td>вмикаємо сповіщення «результат готовий» і «серія під загрозою»</td>
+            </tr>
+            <tr>
+              <td>Pages per<br>predictor session</td>
+              <td>контентні сторінки в сесіях із фіксацією</td>
+              <td>Чи є другий контентний клік</td>
+              <td class="t-num">&gt; сесій без фіксації</td>
+              <td>переробляємо переходи з розкриття у превʼю і з результату у звіт</td>
+            </tr>
+            <tr>
+              <td>Handoff<br>conversion</td>
+              <td><code>bookmaker_click / handoff_opened</code></td>
+              <td>Ціни й вибір партнерів</td>
+              <td class="t-num">калібруємо</td>
+              <td>перевіряємо порядок партнерів за країною і конкурентність цін</td>
+            </tr>
+            <tr>
+              <td>Welcome offer<br>claim rate</td>
+              <td><code>welcome_offer_claimed / welcome_offer_shown</code></td>
+              <td>Роботу разового вікна</td>
+              <td class="t-num">калібруємо</td>
+              <td>низький показник при високому <code>welcome_offer_to_table</code> теж зараховуємо: користувач пішов у таблицю по тижневий приз</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="fn"><sup>*</sup> Орієнтири — первинні гіпотези, які калібруються на даних перших двох тижнів. Формули фіксуються до запуску: метрика з дрейфуючим визначенням гірша за відсутню.</p>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------- 3.3 -->
+  <section class="slide" id="s33" data-label="3.3 Запобіжники">
+    <div class="inner">
+      <div class="head">
+        <div class="eyebrow"><span class="no">3.3</span>Метрики<span class="sep"></span>Запобіжники</div>
+        <h2>Метрики, погіршення яких скасовує перемогу NSM</h2>
+      </div>
+      <div class="grid g4">
+        <div class="card"><span class="k"><span class="i">01</span> · Бізнес</span><h3>FTD і registration rate</h3><p>З постбеків партнерів. Більше переходів при нижчому FTD означає неякісний трафік.</p></div>
+        <div class="card"><span class="k"><span class="i">02</span> · Канібалізація</span><h3>CTR блоку 1X2</h3><p>Якщо Match IQ перетягнув кліки, які й так були, чистого приросту немає.</p></div>
+        <div class="card"><span class="k"><span class="i">03</span> · Відповідальна гра</span><h3>Сигнали ризику</h3><p>Аномальна частота переходів, скарги, спрацювання підтверджень віку, звернення по самообмеження.</p></div>
+        <div class="card"><span class="k"><span class="i">04</span> · Основний продукт</span><h3>Швидкість сторінки</h3><p>LCP та INP: віджет не має псувати контент, заради якого читач прийшов.</p></div>
+      </div>
+      <div class="split">
+        <div>
+          <h3 style="font-size:21px;margin-bottom:14px">Зрізи, у яких дивимось усе вищезгадане</h3>
+          <p class="lead" style="font-size:17px">Новий проти повторного гравця · залогінений проти анонімного · ліга і статус матчу · партнер · країна · платформа · клуб · тип купона.</p>
+        </div>
+        <div class="card card-accent"><span class="k">Найважливіший зріз</span><h3>Тижневі когорти W1 → W4</h3><p>Гра з таблицями лідерів майже завжди дає гарний перший тиждень і провал на четвертому. Тому дивимось не сумарну цифру, а утримання по когортах.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------- 3.4 -->
+  <section class="slide" id="s34" data-label="3.4 Як рахуємо">
+    <div class="inner">
+      <div class="head">
+        <div class="eyebrow"><span class="no">3.4</span>Метрики<span class="sep"></span>Технічна чесність</div>
+        <h2>Що зробити, щоб числу можна було вірити</h2>
+      </div>
+      <div class="grid g3">
+        <div class="card"><span class="k">Ідентичність</span><h3>У NSM — лише залогінені</h3><p>Одиниця — <code>user_id</code>. Анонімні мають <code>anon_id</code> і при вході в акаунт зшиваються до 30 днів назад, але в NSM не входять: без сталої ідентичності «унікальний за тиждень» — вигадка.</p></div>
+        <div class="card"><span class="k">Атрибуція</span><h3>click_id → постбек</h3><p>У партнерське посилання йде <code>click_id</code> = хеш(user_id, match, partner, ts). Партнер повертає його у постбеку — так депозит зшивається з конкретним прогнозом. Вікно 30 днів, за останнім кліком.</p></div>
+        <div class="card"><span class="k">Усунення дублів</span><h3>Повтор за 5 хвилин = один намір</h3><p>Повторні <code>bookmaker_click</code> до того самого партнера склеюються в метриці. Для NSM неважливо, для handoff conversion — критично.</p></div>
+        <div class="card"><span class="k">Довіра до цифр</span><h3>Холодний старт голосування</h3><p>«62% уболівальників» на вибірці з 40 голосів — шум, що виглядає як факт. До порогу голосів показуємо лише CaptainAI і ринок: одна абсурдна цифра коштує дорожче за відсутню.</p></div>
+        <div class="card"><span class="k">Гігієна даних</span><h3>Внутрішні профілі виключені</h3><p>Тестові акаунти позначені і виключені, інакше на обсягах перших тижнів команда порахує сама себе.</p></div>
+        <div class="card"><span class="k">Ритм</span><h3>Понеділковий огляд</h3><p>Разом з оновленням таблиці: NSM і його нормована версія, допоміжні метрики, запобіжники, когорти, статус експериментів. Одна сторінка, ті самі визначення щотижня.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------- 3.5 -->
+  <section class="slide" id="s35" data-label="3.5 Гіпотеза й експерименти">
+    <div class="inner">
+      <div class="head">
+        <div class="eyebrow"><span class="no">3.5</span>Метрики<span class="sep"></span>Гіпотеза й перевірка</div>
+        <h2>У що віримо і як дізнаємось, що маємо рацію</h2>
+      </div>
+      <div class="formula">
+        <p class="f">Вибір наосліп із подальшим розкриттям підніме переходи до партнерів серед залогінених читачів на <em>20%</em>, а 7-денне повернення на сторінку матчу — на <em>15%</em></p>
+        <p class="cap"><b style="color:var(--ink-2)">Критерій успіху:</b> NSM зростає чотири тижні поспіль без просідання FTD rate у партнерів і без просідання CTR блоку 1X2. Чотири тижні — щоб відсіяти сплеск запуску і вплив одного топ-матчу в календарі.</p>
+      </div>
+      <div class="grid g3">
+        <div class="card"><span class="k"><span class="i">01</span> · Експеримент</span><h3>Розкриття після вибору проти розкриття до нього</h3><p><span class="tag tag-dec">Метрика рішення</span> completion rate, вторинна — <code>bookmaker_click / prediction_locked</code>.<br>Очікуємо перемогу вибору наосліп: порівняння має вагу лише після зобовʼязання. Це перевірка головного принципу, тому вона перша.</p></div>
+        <div class="card"><span class="k"><span class="i">02</span> · Експеримент</span><h3>Ціни до фіксації проти цін після неї</h3><p><span class="tag tag-dec">Метрика рішення</span> FTD rate із постбеків, а не сам собою CTR.<br>Очікуємо перемогу «після»: користувача не перервали посеред гри. Показ до фіксації, імовірно, дасть більше кліків і гірші депозити.</p></div>
+        <div class="card"><span class="k"><span class="i">03</span> · Експеримент</span><h3>Ординар проти експреса за замовчуванням</h3><p><span class="tag tag-dec">Метрика рішення</span> handoff conversion серед тих, хто раніше не переходив до партнерів.<br>Тільки для нових користувачів.</p></div>
+      </div>
+      <div class="chips">
+        <a class="chip chip-accent" href="https://youngerfornday.github.io/tribuna-match-iq/">Прототип: усі події видно в панелі Metrics</a>
+        <span class="chip">Parimatch · GG.BET · FAVBET</span>
+      </div>
+      <div class="foot">
+        <span class="badge18">18+</span>
+        <p>Прототип: коефіцієнти, ймовірності CaptainAI, відсотки уболівальників, вітальні пропозиції, таблиці й результати матчів вигадані та ілюстративні. Справжні умови партнерів різняться за ринками і змінюються. Грайте відповідально.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+(function () {
+  var deck = document.getElementById('deck');
+  var slides = Array.prototype.slice.call(deck.querySelectorAll('.slide'));
+  var rail = document.getElementById('rail');
+  var cur = document.getElementById('cur');
+  var progress = document.getElementById('progress');
+  var active = 0;
+
+  function pad(n) { return n < 10 ? '0' + n : String(n); }
+  document.getElementById('total').textContent = pad(slides.length);
+
+  slides.forEach(function (slide, i) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.title = slide.dataset.label;
+    b.setAttribute('aria-label', 'Слайд ' + (i + 1) + ': ' + slide.dataset.label);
+    b.innerHTML = '<i></i>';
+    b.addEventListener('click', function () { goTo(i); });
+    rail.appendChild(b);
+  });
+  var dots = Array.prototype.slice.call(rail.querySelectorAll('button'));
+
+  function setActive(i) {
+    active = i;
+    dots.forEach(function (d, n) { d.setAttribute('aria-current', n === i ? 'true' : 'false'); });
+    cur.textContent = pad(i + 1);
+    progress.style.width = ((i + 1) / slides.length * 100) + '%';
+  }
+
+  function goTo(i) {
+    var n = Math.max(0, Math.min(slides.length - 1, i));
+    slides[n].scrollIntoView({ block: 'start' });
+    setActive(n);
+  }
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (e.isIntersecting) setActive(slides.indexOf(e.target)); });
+  }, { root: deck, threshold: 0.55 });
+  slides.forEach(function (s) { io.observe(s); });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    var k = e.key;
+    if (k === 'ArrowRight' || k === 'ArrowDown' || k === 'PageDown' || k === ' ') { e.preventDefault(); goTo(active + 1); }
+    else if (k === 'ArrowLeft' || k === 'ArrowUp' || k === 'PageUp') { e.preventDefault(); goTo(active - 1); }
+    else if (k === 'Home') { e.preventDefault(); goTo(0); }
+    else if (k === 'End') { e.preventDefault(); goTo(slides.length - 1); }
+  });
+
+  // Table-of-contents links jump inside the scroll container, not the document.
+  document.querySelectorAll('.toc a').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var target = document.querySelector(a.getAttribute('href'));
+      if (!target) return;
+      e.preventDefault();
+      goTo(slides.indexOf(target));
+    });
+  });
+
+  setActive(0);
+}());
+</script>
+</body>
+</html>

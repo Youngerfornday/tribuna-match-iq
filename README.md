@@ -3,6 +3,7 @@
 Prototype for the Tribuna.com iGaming Product/Project Manager test task.
 
 - Live prototype: https://youngerfornday.github.io/tribuna-match-iq/
+- Answer deck (Ukrainian): https://youngerfornday.github.io/tribuna-match-iq/deck.html — the three answers as a 14-slide deck, built from the prototype's own tokens. Arrow keys navigate, Cmd+P prints one slide per page.
 - Local: open `index.html` in any browser. No build step, works offline. The prototype plus two artwork files in `art/` (98 KB total).
 - Every screen has its own URL (`#/challenges`, `#/match/bay-bvb/play`, `#/board`, `#/me`), so deep links and the browser back button work. In production these map 1:1 to paths under `/match-iq/`.
 - Navigation: a Match IQ sub-nav (Overview / Challenges / Table / You) sits under the site header on every browse screen; the play flow replaces it with one labelled back link. Challenges, Table and You use a 1120px two-column layout from 1024px up; the play flow stays a single 620px column.
