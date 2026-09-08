@@ -6,6 +6,20 @@
 <title>Tribuna Match IQ</title>
 <meta name="description" content="Tribuna Match IQ prototype: make three calls on a match, compare them with CaptainAI, fans and the market, then track your Match IQ.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230e0f0c'/%3E%3Cpath d='M18 4 7 18h8l-1 10 11-14h-8z' fill='%23d7ff3d'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#0e0f0c">
+<link rel="canonical" href="https://youngerfornday.github.io/tribuna-match-iq/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Tribuna">
+<meta property="og:title" content="Tribuna Match IQ — call the match, beat CaptainAI">
+<meta property="og:description" content="Three calls per match, locked before kick-off. Compare yours with the model, the fans and the betting market, then climb the weekly table.">
+<meta property="og:url" content="https://youngerfornday.github.io/tribuna-match-iq/">
+<meta property="og:image" content="https://youngerfornday.github.io/tribuna-match-iq/art/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Tribuna Match IQ — call the match, beat CaptainAI">
+<meta name="twitter:description" content="Three calls per match, locked before kick-off. Compare yours with the model, the fans and the betting market, then climb the weekly table.">
+<meta name="twitter:image" content="https://youngerfornday.github.io/tribuna-match-iq/art/og.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
@@ -135,7 +149,7 @@ body[data-layout="wide"]{--shell:1120px}
 .hero{position:relative;overflow:hidden;padding:24px 20px;border-radius:16px;background:linear-gradient(150deg,#1d2418 0%,#171915 55%,#131b26 100%);border:1px solid var(--line-strong);box-shadow:var(--shadow);display:flex;flex-direction:column;gap:18px}
 .hero-copy{position:relative;z-index:1;min-width:0}
 .hero-art{position:relative;z-index:1;order:-1;align-self:flex-end;width:180px;aspect-ratio:1/1;margin:-12px -12px -8px 0}
-.hero-photo{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 38%;filter:brightness(.97) saturate(1.03);-webkit-mask-image:radial-gradient(66% 62% at 53% 45%,#000 40%,rgba(0,0,0,.55) 68%,transparent 86%);mask-image:radial-gradient(66% 62% at 53% 45%,#000 40%,rgba(0,0,0,.55) 68%,transparent 86%)}
+.hero-photo{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 38%;filter:brightness(1.09) saturate(1.04);-webkit-mask-image:radial-gradient(66% 62% at 53% 45%,#000 40%,rgba(0,0,0,.55) 68%,transparent 86%);mask-image:radial-gradient(66% 62% at 53% 45%,#000 40%,rgba(0,0,0,.55) 68%,transparent 86%)}
 .hero:before{content:"";position:absolute;inset:-50% -20% auto auto;width:320px;height:320px;border-radius:50%;background:radial-gradient(closest-side,rgba(215,255,61,.18),transparent 70%);pointer-events:none}
 .hero:after{content:"";position:absolute;inset:auto auto -60% -20%;width:280px;height:280px;border-radius:50%;background:radial-gradient(closest-side,rgba(57,135,229,.16),transparent 70%);pointer-events:none}
 .hero>*{position:relative}
@@ -183,7 +197,19 @@ body[data-layout="wide"]{--shell:1120px}
 .week span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);font-weight:600}
 .week b{font-family:var(--font-display);font-size:26px;font-weight:800;line-height:1.1}
 .week b small{font-size:13px;color:var(--ink-3);font-family:var(--font-body);font-weight:600;margin-left:3px}
-.day{margin:18px 0 8px;display:flex;align-items:baseline;gap:10px}
+.week-strip{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-top:16px;padding:16px 18px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--line)}
+.week-strip .ws-progress{flex:1;min-width:220px}
+.week-strip .ws-progress b{font-family:var(--font-display);font-size:22px;font-weight:700;display:block}
+.week-strip .progress{margin-top:10px}
+.week-strip .ws-stats{display:flex;gap:22px}
+.week-strip .ws-stats span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);font-weight:600}
+.week-strip .ws-stats b{font-family:var(--font-display);font-size:24px;font-weight:800;line-height:1.1}
+.fixture .fx-calls{color:var(--ink-2);margin-top:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fixture .status .sub{font-size:12px;color:var(--ink-3)}
+.fixture.next-up{border-color:rgba(215,255,61,.45);background:linear-gradient(110deg,rgba(215,255,61,.08),var(--surface) 55%)}
+.fixture .cta{display:inline-flex;align-items:center;gap:6px;padding:9px 14px;border-radius:20px;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:14px;white-space:nowrap}
+.fixture.next-up:hover .cta{background:#e4ff6b}
+.day{margin:22px 0 8px;display:flex;align-items:baseline;gap:10px}
 .day h2{font-size:22px}
 .day span{font-size:12px;color:var(--ink-3)}
 .fixture{width:100%;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:14px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--line);margin-top:8px;transition:border-color .15s,background .15s}
@@ -424,7 +450,7 @@ body[data-layout="wide"]{--shell:1120px}
 .prize-banner{position:relative;overflow:hidden;margin-top:18px;padding:24px;border-radius:16px;background:linear-gradient(104deg,#222a1a 0%,#171a12 46%,#0f1710 100%);border:1px solid rgba(215,255,61,.28);box-shadow:var(--shadow);display:grid;gap:8px}
 .prize-banner:before{content:"";position:absolute;inset:-45% -14% auto auto;width:440px;height:440px;border-radius:50%;background:radial-gradient(closest-side,rgba(215,255,61,.15),transparent 70%);pointer-events:none}
 .prize-banner .pb-copy{position:relative;z-index:1;min-width:0}
-.prize-banner h3{font-family:var(--font-display);font-size:36px;font-weight:800;line-height:.98;letter-spacing:-.01em;max-width:15ch}
+.prize-banner h2{font-family:var(--font-display);font-size:36px;font-weight:800;line-height:.98;letter-spacing:-.01em;max-width:15ch}
 .prize-banner .pb-lead{color:var(--ink-2);font-size:15px;line-height:1.5;margin-top:10px;max-width:44ch}
 .prize-banner .pb-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:16px}
 .prize-banner .pb-status{font-weight:600;font-size:14px;color:var(--ink-2)}
@@ -434,7 +460,7 @@ body[data-layout="wide"]{--shell:1120px}
 .pb-photo{display:block;width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(.94) saturate(1.06);-webkit-mask-image:radial-gradient(66% 62% at 53% 45%,#000 40%,rgba(0,0,0,.55) 68%,transparent 86%);mask-image:radial-gradient(66% 62% at 53% 45%,#000 40%,rgba(0,0,0,.55) 68%,transparent 86%)}
 @media (min-width:820px){
   .prize-banner{grid-template-columns:minmax(0,1fr) minmax(220px,300px);align-items:center;padding:26px 8px 26px 30px;gap:10px}
-  .prize-banner h3{font-size:42px}
+  .prize-banner h2{font-size:42px}
   .prize-banner .pb-art{justify-self:end;width:min(300px,100%);margin:-24px 6px -34px 0}
 }
 .standing{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:16px;padding:14px 18px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--line)}
@@ -443,7 +469,7 @@ body[data-layout="wide"]{--shell:1120px}
 .standing .st-cta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .myweek{border-radius:var(--radius);background:var(--surface);border:1px solid var(--line);overflow:hidden}
 .myweek .hd{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:14px 16px 10px;flex-wrap:wrap}
-.myweek .hd b{font-family:var(--font-display);font-size:22px;font-weight:700}
+.myweek .hd h2{font-family:var(--font-display);font-size:22px;font-weight:700}
 .myweek .hd span{font-size:12px;color:var(--ink-3)}
 .mw-row{width:100%;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:12px 16px;border-top:1px solid var(--line);transition:background .15s}
 .mw-row:hover{background:var(--surface-2)}
@@ -466,7 +492,7 @@ body[data-layout="wide"]{--shell:1120px}
 .pb-ic{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);flex:none;font-size:17px}
 .prize{margin-top:12px;font-size:13px;color:var(--ink-2);display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:var(--radius-sm);border:1px solid var(--line);background:var(--surface)}
 .next{margin-top:18px;padding:18px;border-radius:var(--radius);background:linear-gradient(135deg,#1c2116,#171915 70%);border:1px solid var(--line-strong)}
-.next h3{font-size:30px;margin:6px 0 4px}
+.next h2{font-size:30px;margin:6px 0 4px}
 .next p{color:var(--ink-2);font-size:14px}
 
 /* handoff sheet */
@@ -979,7 +1005,7 @@ function prizeBanner(p, opts = {}) {
   return `
   <section class="prize-banner" aria-label="This week's prize">
     <div class="pb-copy">
-      <h3>${headline}</h3>
+      <h2>${headline}</h2>
       <p class="pb-lead">${lead}</p>
       <div class="pb-actions">
         ${cta}
@@ -1072,46 +1098,55 @@ function viewHub() {
   const p = state.profile;
   const w = weekSummary();
   const days = [...new Set(MATCHES.map((m) => m.day))];
+  const nextOpen = MATCHES.find((m) => statusOf(m, p) === 'open');
+  const pct = Math.round((w.locked / w.total) * 100);
   return `
   <h1 class="q-title">This week's challenges</h1>
   <p class="q-sub">${WEEK_LABEL} · three calls per match, locked before kick-off.</p>
-  <div class="cols">
-    <div>
-      ${days.map((day) => `
-      <div class="day"><h2>${day}</h2><span>${plural(MATCHES.filter((m) => m.day === day).length, 'match', 'matches')}</span></div>
-      ${MATCHES.filter((m) => m.day === day).map((m) => {
-        const e = entryOf(p, m.id);
-        const st = statusOf(m, p);
-        const status = {
-          settled: `<span class="pts num">+${e.points}</span><span>${e.correct}/3 correct</span>`,
-          locked: `<span class="chip">${icon('i-lock')} Locked</span><span>Result at full-time</span>`,
-          live: `<span class="chip chip-warn">${icon('i-clock')} Live</span><span>Locked · settling at FT</span>`,
-          missed: `<span class="chip">${icon('i-x')} Closed</span><span>Kick-off passed</span>`,
-          open: `<span class="chip chip-accent">${icon('i-bolt')} Open</span><span class="num" data-countdown="${m.id}">${formatCountdown(kickoffOf(m) - Date.now())}</span>`,
-        }[st];
-        return `
-        <button class="fixture ${st}" data-action="open-match" data-match="${m.id}" aria-label="${m.home.name} v ${m.away.name}, ${st}">
-          <span class="teams-sm">${crest(m.home, true)}${crest(m.away, true)}<span class="names">${m.home.name} v ${m.away.name}<small>${m.competition} · ${m.kickoffLabel}</small></span></span>
-          <span class="status">${status}</span>
-        </button>`;
-      }).join('')}`).join('')}
-      ${CONFIG.features.aiSlip ? `
-      <div class="sec-head">
-        <h2>What the model would back</h2>
-        <span>One slip, every week</span>
-      </div>
-      ${aiSlipCard()}` : ''}
-    </div>
 
-    <div class="rail">
-      <div class="week" aria-label="Your week">
-        <div><span>Called</span><b class="num">${w.locked}<small>/ ${w.total}</small></b></div>
-        <div><span>Match IQ</span><b class="num">${p.iq}</b></div>
-        <div><span>Rank</span><b class="num">${p.iq > 0 || w.settled > 0 ? '#' + w.rank : '–'}</b></div>
-      </div>
-      ${prizeBanner(p, { compact: true })}
+  <section class="week-strip" aria-label="Your week">
+    <div class="ws-progress">
+      <b>${w.locked} of ${w.total} matches called</b>
+      <div class="progress" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><i style="width:${pct}%"></i></div>
     </div>
-  </div>`;
+    <div class="ws-stats">
+      <div><span>Match IQ</span><b class="num">${p.iq}</b></div>
+      <div><span>Rank</span><b class="num">${p.iq > 0 ? '#' + w.rank : '–'}</b></div>
+      <div><span>Streak</span><b class="num">${p.streak}</b></div>
+    </div>
+  </section>
+
+  ${days.map((day) => `
+  <div class="day"><h2>${day}</h2></div>
+  ${MATCHES.filter((m) => m.day === day).map((m) => {
+    const e = entryOf(p, m.id);
+    const st = statusOf(m, p);
+    const isNext = nextOpen && m.id === nextOpen.id;
+    const calls = e.answers ? questionsOf(m).map((q) => optionOf(q, e.answers[q.id]).label).join(' · ') : '';
+    const status = {
+      settled: `<span class="pts num">+${e.points}</span><span class="sub">${e.correct}/3 correct</span>`,
+      locked: `<span class="chip">${icon('i-lock')} Locked</span><span class="sub">Result at full-time</span>`,
+      live: `<span class="chip chip-warn">${icon('i-clock')} Live</span><span class="sub">Settling at full-time</span>`,
+      missed: `<span class="chip">${icon('i-x')} Closed</span><span class="sub">Kick-off passed</span>`,
+      open: isNext
+        ? `<span class="cta">Make 3 calls ${icon('i-arrow')}</span><span class="sub num" data-countdown="${m.id}">${formatCountdown(kickoffOf(m) - Date.now())}</span>`
+        : `<span class="chip chip-accent">${icon('i-bolt')} Open</span><span class="sub num" data-countdown="${m.id}">${formatCountdown(kickoffOf(m) - Date.now())}</span>`,
+    }[st];
+    return `
+    <button class="fixture ${st} ${isNext ? 'next-up' : ''}" data-action="open-match" data-match="${m.id}" aria-label="${m.home.name} v ${m.away.name}, ${isNext ? 'next to call' : st}">
+      <span class="teams-sm">${crest(m.home, true)}${crest(m.away, true)}<span class="names">${m.home.name} v ${m.away.name}<small>${m.competition} · ${m.kickoffLabel}</small>${calls ? `<small class="fx-calls">${calls}</small>` : ''}</span></span>
+      <span class="status">${status}</span>
+    </button>`;
+  }).join('')}`).join('')}
+
+  ${prizeBanner(p, { compact: true })}
+
+  ${CONFIG.features.aiSlip ? `
+  <div class="sec-head">
+    <h2>What the model would back</h2>
+    <span>One slip, every week</span>
+  </div>
+  ${aiSlipCard()}` : ''}`;
 }
 
 function viewMatch() {
@@ -1557,7 +1592,7 @@ function myWeek(p) {
   return `
   <section class="myweek" aria-label="Your calls this week">
     <div class="hd">
-      <b>Your calls this week</b>
+      <h2>Your calls this week</h2>
       <span>${w.locked} of ${w.total} matches called</span>
     </div>
     ${rows.length ? rows.map(({ m, e, st }) => {
@@ -1624,7 +1659,7 @@ function viewRetention() {
 
       ${nextOpen ? `
       <section class="next">
-        <h3>Next: ${nextOpen.home.name} v ${nextOpen.away.name}</h3>
+        <h2>Next: ${nextOpen.home.name} v ${nextOpen.away.name}</h2>
         <p>${nextOpen.competition} · ${nextOpen.kickoffLabel} · kicks off in <span class="num" data-countdown="${nextOpen.id}">${formatCountdown(kickoffOf(nextOpen) - Date.now())}</span></p>
         ${p.streak > 0 ? `<p class="warn-row">${icon('i-flame', 'flame')} Call it before kick-off to keep your ${p.streak}-match streak.</p>` : ''}
         <div class="foot-cta">
@@ -1634,7 +1669,7 @@ function viewRetention() {
       </section>
       ${prizeBanner(p, { compact: true })}` : `
       <section class="next">
-        <h3>All ${w.total} challenges called</h3>
+        <h2>All ${w.total} challenges called</h2>
         <p>New fixtures drop Monday. Your table position is final at Sunday 23:59.</p>
         <div class="foot-cta"><button class="btn btn-secondary btn-block" data-action="nav" data-to="hub" data-label="Challenges">${icon('i-grid')} Review this week</button></div>
       </section>
@@ -1821,7 +1856,7 @@ function renderMetrics() {
   const last = state.events.slice(-8).reverse();
   el.innerHTML = `
   <details ${open ? 'open' : ''}>
-    <summary>${icon('i-chart')} Metrics panel · ${state.events.length} events this session ${icon('i-chev', 'chev')}</summary>
+    <summary>${icon('i-chart')} Metrics panel · ${plural(state.events.length, 'event', 'events')} this session ${icon('i-chev', 'chev')}</summary>
     <div class="body">
       <div class="funnel">
         ${FUNNEL.map(([ev, label], i) => `<div class="f"><span>${label}</span><div class="track"><div class="fill" style="width:${(counts[i] / max) * 100}%"></div></div><b class="num">${counts[i]}</b></div>`).join('')}
