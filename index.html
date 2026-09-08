@@ -83,7 +83,6 @@ body[data-layout="wide"]{--shell:1120px}
 .span-all{grid-column:1/-1}
 @media (min-width:1024px){
   .cols{grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:24px}
-  .rail{position:sticky;top:calc(var(--head-h) + var(--subnav-h) + 16px)}
   .hero{padding:38px 36px}
   .hero .foot-cta{max-width:440px}
   .hero h1{font-size:58px;max-width:17ch}
@@ -432,11 +431,12 @@ body[data-layout="wide"]{--shell:1120px}
 .prize-banner .pb-status{font-weight:600;font-size:14px;color:var(--ink-2)}
 .prize-banner .pb-status.on{color:var(--accent)}
 .prize-banner .pb-terms{margin-top:14px;font-size:11px;color:var(--ink-3);line-height:1.5;max-width:86ch}
-.prize-banner .pb-art{position:relative;z-index:1;justify-self:center;width:230px;margin:-6px 0 -18px}
+.prize-banner .pb-art{position:relative;z-index:1;justify-self:center;width:min(230px,72%);aspect-ratio:760/944;margin:-6px 0 -30px}
+.pb-photo{display:block;width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(.94) saturate(1.06);-webkit-mask-image:radial-gradient(66% 62% at 53% 45%,#000 40%,rgba(0,0,0,.55) 68%,transparent 86%);mask-image:radial-gradient(66% 62% at 53% 45%,#000 40%,rgba(0,0,0,.55) 68%,transparent 86%)}
 @media (min-width:820px){
   .prize-banner{grid-template-columns:minmax(0,1fr) minmax(220px,300px);align-items:center;padding:26px 8px 26px 30px;gap:10px}
   .prize-banner h3{font-size:42px}
-  .prize-banner .pb-art{justify-self:end;width:100%;margin:-10px -6px -26px 0}
+  .prize-banner .pb-art{justify-self:end;width:min(300px,100%);margin:-24px 6px -34px 0}
 }
 .prize-row{display:flex;gap:12px;align-items:flex-start;margin-top:16px;padding:14px 16px;border-radius:var(--radius);background:linear-gradient(120deg,rgba(215,255,61,.09),rgba(23,25,21,.9) 60%);border:1px solid rgba(215,255,61,.26)}
 .prize-row b{font-family:var(--font-display);font-size:19px;font-weight:700;line-height:1.1;display:block}
@@ -445,7 +445,6 @@ body[data-layout="wide"]{--shell:1120px}
 .prize-row .pb-status.on{color:var(--accent)}
 .prize-row .pb-terms{font-size:11px;color:var(--ink-3);margin-top:6px}
 .pb-ic{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);flex:none;font-size:17px}
-.cap-promo{display:block;width:100%;height:auto;filter:drop-shadow(0 18px 40px rgba(0,0,0,.5))}
 .prize{margin-top:12px;font-size:13px;color:var(--ink-2);display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:var(--radius-sm);border:1px solid var(--line);background:var(--surface)}
 .next{margin-top:18px;padding:18px;border-radius:var(--radius);background:linear-gradient(135deg,#1c2116,#171915 70%);border:1px solid var(--line-strong)}
 .next h3{font-size:30px;margin:6px 0 4px}
@@ -1001,45 +1000,34 @@ function captainArt() {
   </svg>`;
 }
 
-/* Promo pose: same character, leaning out of the banner with the free bet in hand. */
-function captainPromo(rewardShort) {
-  const k = 'promo';
-  return `
-  <svg class="cap-promo" viewBox="0 0 300 220" preserveAspectRatio="xMidYMax meet" aria-hidden="true" focusable="false">
-    ${capDefs(k)}
-    <circle cx="168" cy="104" r="104" fill="url(#capGlow-${k})"/>
-    <g>
-      <path d="M104 34h-16v14c0 10 7 18 16 20M232 34h16v14c0 10-7 18-16 20" fill="none" stroke="#d7ff3d" stroke-opacity=".38" stroke-width="4"/>
-      <path d="M104 26h128v34c0 32-26 58-58 58h-12c-32 0-58-26-58-58z" fill="none" stroke="#d7ff3d" stroke-opacity=".3" stroke-width="4"/>
-      <path d="M152 118h32v24h-32zM132 142h72v12h-72z" fill="none" stroke="#d7ff3d" stroke-opacity=".3" stroke-width="4"/>
-    </g>
-    <g transform="translate(78 -14) scale(.88)">${capFigure(k)}</g>
-    <g transform="rotate(-10 56 168)">
-      <rect x="2" y="136" width="108" height="60" rx="10" fill="#12150e" stroke="#d7ff3d" stroke-width="2"/>
-      <path d="M2 161a9 9 0 0 1 0 12M110 161a9 9 0 0 0 0 12" fill="#0e0f0c"/>
-      <text x="16" y="160" font-family="Barlow, Arial, sans-serif" font-size="12" font-weight="700" letter-spacing="1.4" fill="#878c80">FREE BET</text>
-      <text x="16" y="186" font-family="Barlow Condensed, Arial Narrow, sans-serif" font-size="30" font-weight="800" fill="#d7ff3d">${rewardShort}</text>
-    </g>
-  </svg>`;
-}
-
-/* One prize component, two shapes: a promo banner where it has room, a plain row in a rail. */
+/* One prize component, two states. Before the first prediction it sells the entry
+   ticket and names the weekly prize; after it, the weekly prize is the whole story. */
 function prizeBanner(p, opts = {}) {
   const partner = PARTNERS[0];
   const w = weekSummary();
+  const started = w.locked > 0;
   const inPrize = p.iq > 0 && w.rank <= PRIZE_TOP;
-  const status = p.iq === 0
-    ? `Lock one prediction and you are in this week's table.`
-    : inPrize
+  const standing = p.iq > 0
+    ? (inPrize
       ? `You are #${w.rank} of ${fmtK(WEEK_FIELD)} — inside the top ${PRIZE_TOP}.`
-      : `You are #${w.rank} — ${w.rank - PRIZE_TOP} ${plural(w.rank - PRIZE_TOP, 'place', 'places')} from the prize.`;
+      : `You are #${w.rank} — ${w.rank - PRIZE_TOP} ${plural(w.rank - PRIZE_TOP, 'place', 'places')} from the prize.`)
+    : `Your locked calls score at full-time, and that is when you enter the table.`;
+  const headline = started ? `Finish in the top ${PRIZE_TOP} this week` : `Your first prediction unlocks ${partner.offer.reward} in free bets`;
+  const lead = started
+    ? `${partner.name} adds its welcome offer — ${partner.offer.title} — credited on Monday when the table resets.`
+    : `Lock three calls on any match and claim the ${partner.name} welcome offer. The game is free, the offer is partner-funded.`;
+  const note = started ? standing : `Then finish in the top ${PRIZE_TOP} of the weekly table and Monday brings a second partner offer.`;
+  const cta = opts.cta || (started
+    ? `<button class="btn btn-primary" data-action="nav" data-to="board" data-label="Table">See the table ${icon('i-arrow')}</button>`
+    : `<button class="btn btn-primary" data-action="nav" data-to="hub" data-label="Challenges">Make my first prediction ${icon('i-arrow')}</button>`);
+
   if (opts.compact) {
     return `
     <section class="prize-row" aria-label="This week's prize">
-      <span class="pb-ic">${icon('i-gift')}</span>
+      <span class="pb-ic">${icon(started ? 'i-trophy' : 'i-gift')}</span>
       <div>
-        <b>Top ${PRIZE_TOP} win the ${partner.name} welcome offer</b>
-        <p>${partner.offer.title}, credited Monday. <span class="pb-status ${inPrize ? 'on' : ''}">${status}</span></p>
+        <b>${started ? `Top ${PRIZE_TOP} win the ${partner.name} welcome offer` : `First prediction unlocks ${partner.offer.reward} in free bets`}</b>
+        <p>${started ? `${partner.offer.title}, credited Monday.` : `Then the top ${PRIZE_TOP} of the weekly table get a second offer on Monday.`} <span class="pb-status ${inPrize ? 'on' : ''}">${started ? standing : ''}</span></p>
         <p class="pb-terms">Partner-funded · new customers only · 18+ · T&amp;Cs apply</p>
       </div>
     </section>`;
@@ -1047,15 +1035,15 @@ function prizeBanner(p, opts = {}) {
   return `
   <section class="prize-banner" aria-label="This week's prize">
     <div class="pb-copy">
-      <h3>${partner.offer.title}</h3>
-      <p class="pb-lead">Finish in the top ${PRIZE_TOP} this week and ${partner.name} adds its welcome offer, credited on Monday.</p>
+      <h3>${headline}</h3>
+      <p class="pb-lead">${lead}</p>
       <div class="pb-actions">
-        ${opts.cta || `<button class="btn btn-primary" data-action="nav" data-to="board" data-label="Table">See the table ${icon('i-arrow')}</button>`}
-        <span class="pb-status ${inPrize ? 'on' : ''}">${status}</span>
+        ${cta}
+        <span class="pb-status ${started && inPrize ? 'on' : ''}">${note}</span>
       </div>
       <p class="pb-terms">Partner-funded, not a cash prize from Tribuna · new customers only · 18+ · T&amp;Cs apply · locking a prediction is always free.</p>
     </div>
-    <div class="pb-art">${captainPromo('+' + partner.offer.reward)}</div>
+    <div class="pb-art"><img class="pb-photo" src="art/captain-king.webp" width="760" height="944" alt="" loading="lazy" decoding="async"></div>
   </section>`;
 }
 
@@ -1066,7 +1054,7 @@ function viewLanding() {
   return `
   <section class="hero" aria-labelledby="hero-title">
     <div class="hero-copy">
-      <div class="row wrap" style="gap:8px"><span class="chip">${WEEK_LABEL} · ${MATCHES.length} matches</span><span class="chip">${fmtK(totalPredictions)} calls locked</span></div>
+      <div class="row wrap" style="gap:8px"><span class="chip">${WEEK_LABEL} · ${MATCHES.length} matches</span><span class="chip chip-accent">${icon('i-trophy')} Top ${PRIZE_TOP} win ${PARTNERS[0].offer.reward}</span><span class="chip">${fmtK(totalPredictions)} calls locked</span></div>
       <h1 id="hero-title">Call the match. <em>Beat CaptainAI.</em> Climb the table.</h1>
       <p>Three calls per match, locked before kick-off. Compare yours with the model, ${fmtK(totalPredictions)} fans and the betting market, then watch the points land at full-time.</p>
       <div class="foot-cta">
@@ -1074,10 +1062,14 @@ function viewLanding() {
         ${p.iq > 0 ? `<button class="btn btn-ghost" data-action="nav" data-to="retention" data-label="You">My Match IQ · ${p.iq} · ${leagueFor(p.iq).name}</button>` : ''}
       </div>
     </div>
-    <div class="hero-art" aria-hidden="false">${captainArt()}</div>
+    <div class="hero-art">${captainArt()}</div>
   </section>
 
-  <section class="steps3" aria-label="How it works">
+  <div class="sec-head">
+    <h2 id="how-title">How it works</h2>
+    <span>Three taps, then the whistle does the rest</span>
+  </div>
+  <section class="steps3" aria-labelledby="how-title">
     <div><span class="n">1</span><b>Make 3 blind calls</b><p>Winner, goals, scorer. Nothing revealed until you commit.</p></div>
     <div><span class="n">2</span><b>Compare and lock</b><p>See CaptainAI, fans and the market, then tap your Power Pick for double points.</p></div>
     <div><span class="n">3</span><b>Score at full-time</b><p>+${POINTS_PER_CALL} per correct call. Streaks, leagues and a weekly table.</p></div>
