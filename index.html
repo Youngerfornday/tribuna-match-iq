@@ -478,6 +478,18 @@ body[data-layout="wide"]{--shell:1120px}
 .standing .st-main b{font-family:var(--font-display);font-size:24px;font-weight:700;line-height:1.1;display:block}
 .standing .st-main span{display:block;font-size:13px;color:var(--ink-3);margin-top:3px}
 .standing .st-cta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.shelf{margin-top:16px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--line);overflow:hidden}
+.shelf .hd{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:14px 16px 4px}
+.shelf .hd h2{font-family:var(--font-display);font-size:22px;font-weight:700}
+.shelf .hd span{font-size:12px;color:var(--ink-3)}
+.shelf-grid{display:grid;gap:2px;padding:8px 8px 12px}
+.badge{display:flex;align-items:center;gap:12px;padding:10px 8px;border-radius:var(--radius-sm)}
+.badge .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none;background:var(--surface-2);color:var(--ink-3);font-size:16px}
+.badge .t b{display:block;font-family:var(--font-display);font-size:17px;font-weight:700;line-height:1.1;color:var(--ink-2)}
+.badge .t small{display:block;font-size:12px;color:var(--ink-3);margin-top:2px;line-height:1.35}
+.badge.on .ic{background:var(--accent);color:var(--accent-ink)}
+.badge.on .t b{color:var(--ink)}
+.badge.on .t small{color:var(--accent)}
 .myweek{border-radius:var(--radius);background:var(--surface);border:1px solid var(--line);overflow:hidden}
 .myweek .hd{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:14px 16px 10px;flex-wrap:wrap}
 .myweek .hd h2{font-family:var(--font-display);font-size:22px;font-weight:700}
@@ -854,6 +866,15 @@ function isCorrect(match, qid, optionId) {
 /* CONFIG is what a production build would read from the CMS or a remote-config service. */
 /* The weekly prize is partner-funded: the top of the table gets the partner's welcome
    offer, which is also the handoff the whole game is built around. */
+/* A badge is only a retention hook if it persists and if the locked ones are visible. */
+const BADGES = [
+  { id: 'perfect', name: 'Perfect Match', hint: 'All three calls correct in one match', icon: 'i-trophy' },
+  { id: 'beat-ai', name: 'Beat the AI', hint: 'More correct calls than CaptainAI in one match', icon: 'i-cpu' },
+  { id: 'power-hit', name: 'Power Play', hint: 'Your Power Pick lands', icon: 'i-bolt' },
+  { id: 'against-crowd', name: 'Against the Crowd', hint: 'A correct call fewer than 30% of fans made', icon: 'i-users' },
+  { id: 'week3', name: 'Full Weekend', hint: 'Three matches called in one week', icon: 'i-grid' },
+];
+const badgeById = (id) => BADGES.find((b) => b.id === id);
 const PRIZE_TOP = 100;
 const WEEK_FIELD = 12480;
 const CONFIG = Object.freeze({
@@ -864,7 +885,7 @@ const CONFIG = Object.freeze({
 /* The profile is what a production backend would return from GET /match-iq/me:
    aggregate stats plus one entry per match. Nothing else is persisted client-side. */
 const DEFAULT_PROFILE = Object.freeze({
-  uid: null, iq: 0, streak: 0, correct: 0, total: 0, aiCorrect: 0, marketCorrect: 0,
+  uid: null, iq: 0, streak: 0, correct: 0, total: 0, aiCorrect: 0, marketCorrect: 0, badges: [],
   humans: 2, ai: 3, club: null, prevRank: null, ageConfirmed: false, welcomeSeen: false, welcomeClaimed: null, matches: {},
 });
 const newId = () => (crypto.randomUUID ? crypto.randomUUID() : 'u-' + Math.random().toString(36).slice(2, 10));
@@ -1475,9 +1496,10 @@ function computeOutcome(m, answers, powerPick) {
   const perfect = you === calls.length;
   const points = calls.reduce((a, c) => a + c.points, 0) + (perfect ? PERFECT_BONUS : 0);
   const badges = [];
-  if (perfect) badges.push('Perfect Match: 3 of 3');
-  if (you > ai) badges.push('Beat the AI');
-  if (calls.some((c) => c.ok && c.o.fans <= 30)) badges.push('Against the Crowd');
+  if (perfect) badges.push('perfect');
+  if (you > ai) badges.push('beat-ai');
+  if (calls.some((c) => c.pp && c.ok)) badges.push('power-hit');
+  if (calls.some((c) => c.ok && c.o.fans <= 30)) badges.push('against-crowd');
   return { calls, you, ai, fans, market, perfect, points, badges };
 }
 
@@ -1605,6 +1627,29 @@ function fanbasesPanel(p) {
 
 /* The profile answers "how am I doing", the table answers "who is winning". This is the
    first half: every call you locked this week and what it scored. */
+/* The shelf lives on the profile: earned badges in accent, the rest visible with the
+   condition that unlocks them, because a locked badge is the reason to play again. */
+function badgeShelf(p) {
+  const owned = p.badges || [];
+  return `
+  <section class="shelf" aria-label="Badges">
+    <div class="hd">
+      <h2>Badges</h2>
+      <span>${owned.length} of ${BADGES.length}</span>
+    </div>
+    <div class="shelf-grid">
+      ${BADGES.map((b) => {
+        const has = owned.includes(b.id);
+        return `
+        <div class="badge ${has ? 'on' : ''}">
+          <span class="ic">${icon(b.icon)}</span>
+          <span class="t"><b>${b.name}</b><small>${has ? 'Unlocked' : b.hint}</small></span>
+        </div>`;
+      }).join('')}
+    </div>
+  </section>`;
+}
+
 function myWeek(p) {
   const rows = MATCHES.map((m) => ({ m, e: entryOf(p, m.id), st: statusOf(m, p) })).filter((r) => r.e.status !== 'open');
   const w = weekSummary();
@@ -1697,6 +1742,7 @@ function viewRetention() {
 
     <div class="rail">
       ${myWeek(p)}
+      ${badgeShelf(p)}
     </div>
   </div>`;
 }
@@ -2130,9 +2176,14 @@ const ACTIONS = {
       humans: p.humans + (outcome.you > outcome.ai ? 1 : 0),
       ai: p.ai + (outcome.ai > outcome.you ? 1 : 0),
     });
-    track('result_viewed', { match: m.id, correct: outcome.you, points: outcome.points, badges: outcome.badges });
-    go('result', { outcome });
-    toastQueue(outcome.badges.map((b) => ({ text: `Badge unlocked: ${b}`, kind: 'badge' })));
+    /* Badges persist on the profile; only the ones earned for the first time are announced. */
+    const weekly = weekSummary().locked >= 3 ? ['week3'] : [];
+    const owned = state.profile.badges || [];
+    const fresh = [...outcome.badges, ...weekly].filter((id) => !owned.includes(id));
+    if (fresh.length) updateProfile({ badges: [...owned, ...fresh] });
+    track('result_viewed', { match: m.id, correct: outcome.you, points: outcome.points, badges: outcome.badges, newBadges: fresh });
+    go('result', { outcome: { ...outcome, fresh } });
+    toastQueue(fresh.map((id) => ({ text: `Badge unlocked: ${badgeById(id).name}`, kind: 'badge' })));
   },
   'to-retention'() {
     const rank = rankOf(state.profile);
