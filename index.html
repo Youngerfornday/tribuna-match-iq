@@ -207,6 +207,16 @@ body[data-layout="wide"]{--shell:1120px}
 .day{margin:22px 0 8px;display:flex;align-items:baseline;gap:10px}
 .day h2{font-size:22px}
 .day span{font-size:12px;color:var(--ink-3)}
+.quest{display:flex;align-items:center;gap:14px;margin-top:12px;padding:14px 18px;border-radius:var(--radius);background:var(--surface);border:1px dashed var(--line-strong)}
+.quest.done{border-style:solid;border-color:rgba(215,255,61,.4);background:linear-gradient(110deg,rgba(215,255,61,.08),var(--surface) 60%)}
+.quest .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none;background:var(--surface-2);color:var(--ink-3);font-size:16px}
+.quest.done .ic{background:var(--accent);color:var(--accent-ink)}
+.quest .q-main{flex:1;min-width:0}
+.quest b{font-family:var(--font-display);font-size:19px;font-weight:700;line-height:1.1;display:block}
+.quest p{font-size:13px;color:var(--ink-2);margin-top:3px;line-height:1.4}
+.quest .q-count{font-family:var(--font-display);font-size:26px;font-weight:800;color:var(--ink-2);flex:none}
+.quest.done .q-count{color:var(--accent)}
+.quest .q-count small{font-size:15px;color:var(--ink-3)}
 .fixture{width:100%;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:14px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--line);margin-top:8px;transition:border-color .15s,background .15s}
 .fixture:hover{border-color:#4b5245;background:var(--surface-2)}
 .fixture.open{border-color:var(--line-strong)}
@@ -671,6 +681,9 @@ const LEAGUES = [
   { name: 'Expert', min: 160 },
   { name: 'Captain', min: 300 },
 ];
+/* Which partner leads is a market decision - licence, brand recognition, payment
+   methods - while the best price is highlighted wherever it sits. */
+const PARTNER_ORDER = { UA: ['fb', 'pm', 'gg'], INT: ['pm', 'gg', 'fb'] };
 const CURRENCY = '\u20ac';
 const money = (n) => CURRENCY + (Number.isInteger(n) ? n : n.toFixed(2));
 const PARTNERS = [
@@ -880,6 +893,9 @@ const BADGES = [
   { id: 'week3', name: 'Full Weekend', hint: 'Three matches called in one week', icon: 'i-grid' },
 ];
 const badgeById = (id) => BADGES.find((b) => b.id === id);
+/* One weekly quest, computed from the fixtures rather than stored: call every match on
+   the busiest day and the week pays a bonus. */
+const QUEST = { day: 'Sunday', bonus: 25 };
 const PRIZE_TOP = 100;
 const WEEK_FIELD = 12480;
 const CONFIG = Object.freeze({
@@ -892,7 +908,7 @@ const CONFIG = Object.freeze({
 const DEFAULT_PROFILE = Object.freeze({
   uid: null, iq: 0, streak: 0, correct: 0, total: 0, aiCorrect: 0, marketCorrect: 0, badges: [],
   humans: 2, ai: 3, club: null, prevRank: null, ageConfirmed: false, welcomeSeen: false, welcomeClaimed: null,
-  accountSaved: false, accountPrompted: false, matches: {},
+  accountSaved: false, accountPrompted: false, questDone: false, matches: {},
 });
 const newId = () => (crypto.randomUUID ? crypto.randomUUID() : 'u-' + Math.random().toString(36).slice(2, 10));
 function loadProfile() {
@@ -958,6 +974,12 @@ const currentMatch = () => matchById(state.matchId);
 const crest = (team, sm = false) => `<span class="crest ${sm ? 'sm' : ''}" style="background:${clubColor(team.name)}" aria-hidden="true">${team.short}</span>`;
 const countdownChip = (m) => `<span class="chip">${icon('i-clock')} <span class="countdown num" data-countdown="${m.id}">${formatCountdown(kickoffOf(m) - Date.now())}</span></span>`;
 
+function questProgress(p) {
+  const matches = MATCHES.filter((m) => m.day === QUEST.day);
+  const called = matches.filter((m) => entryOf(p, m.id).status !== 'open').length;
+  return { called, total: matches.length, done: called === matches.length };
+}
+
 function weekSummary() {
   const p = state.profile;
   const entries = Object.values(p.matches);
@@ -1003,7 +1025,7 @@ const TERMS = [
   ['Prizes', `Each week the top ${PRIZE_TOP} players receive the ${PARTNERS[0].name} welcome offer, credited on Monday when the table resets. Prizes are funded by the partner and subject to its terms: new customers only, 18+, verified account, licensed territory. Tribuna staff and partner employees are not eligible. No purchase or bet is required to play or win.`],
   ['Fair play', 'One account per person. Automated or duplicate accounts are removed from the table without notice. Tribuna\'s decision on settlement is final.'],
   ['CaptainAI and market data', 'CaptainAI is a statistical model. Fans % aggregates locked calls from Tribuna users. Market % is derived from partner odds with the bookmaker margin removed. None of this is betting advice.'],
-  ['Partners and prices', `Prices come from Tribuna's betting partners, currently ${PARTNERS.map((x) => x.name).join(', ')}, and are refreshed before each kick-off. In this prototype every price and welcome offer is illustrative: check the operator's own site for live odds and terms.`],
+  ['Partners and prices', `Prices come from Tribuna's betting partners, currently ${PARTNERS.map((x) => x.name).join(', ')}, and are refreshed before each kick-off. The order of the partners follows the market you are in; the best price is highlighted wherever it sits, and you can back your prediction with any of them. In this prototype every price and welcome offer is illustrative: check the operator's own site for live odds and terms.`],
   ['Responsible play', 'Match IQ is a prediction game, not a betting product. Partner offers are clearly labelled and always optional. If gambling stops being fun, take a break: support is available at begambleaware.org.'],
 ];
 
@@ -1152,6 +1174,19 @@ function viewHub() {
       <div><span>Streak</span><b class="num">${p.streak}</b></div>
     </div>
   </section>
+
+  ${(() => {
+    const q = questProgress(p);
+    return `
+  <section class="quest ${q.done ? 'done' : ''}" aria-label="${QUEST.day} quest">
+    <span class="ic">${icon(q.done ? 'i-check' : 'i-grid')}</span>
+    <div class="q-main">
+      <b>${QUEST.day} quest${q.done ? ' complete' : ''}</b>
+      <p>${q.done ? `All ${q.total} ${QUEST.day} matches called. +${QUEST.bonus} Match IQ added.` : `Call all ${q.total} ${QUEST.day} matches this week for +${QUEST.bonus} Match IQ.`}</p>
+    </div>
+    <span class="q-count num">${q.called}<small>/${q.total}</small></span>
+  </section>`;
+  })()}
 
   ${days.map((day) => `
   <div class="day"><h2>${day}</h2></div>
@@ -1385,6 +1420,15 @@ function singleOdds() {
   const leg = legsOf().find((l) => l.q.id === state.powerPick);
   return leg.o.odds.map(round2);
 }
+/* Display order for the current market, paired with each partner's index in PARTNERS
+   so the odds arrays stay canonical. */
+function partnersInOrder() {
+  const order = PARTNER_ORDER[CONFIG.geo] || PARTNER_ORDER.INT;
+  const ranked = order.map((id) => PARTNERS.find((x) => x.id === id)).filter(Boolean);
+  const rest = PARTNERS.filter((x) => !ranked.includes(x));
+  return [...ranked, ...rest].map((p) => ({ p, i: PARTNERS.indexOf(p) }));
+}
+
 function currentOdds() {
   return state.oddsTab === 'builder' ? builderOdds() : singleOdds();
 }
@@ -1416,7 +1460,7 @@ function viewOdds() {
       : `<span class="chip">${pp.o.label}</span><span class="sl-note">${pp.q.title}</span>`}</span>
   </div>
   <div class="odds-table" role="tabpanel">
-    ${PARTNERS.map((p, i) => `
+    ${partnersInOrder().map(({ p, i }) => `
     <div class="odds-row ${odds[i] === best ? 'best' : ''}">
       <span class="bk">${p.name}<small>${odds[i] === best ? 'Best price' : `${fmtOdds(best - odds[i])} below best`}</small>${p.offer ? `<span class="offer">${icon('i-gift')} ${p.offer.reward} welcome offer</span>` : ''}</span>
       <span class="o num">${fmtOdds(odds[i])}<small>${money(10)} returns ${money(odds[i] * 10)}</small></span>
@@ -2202,6 +2246,12 @@ const ACTIONS = {
     updateProfile({ streak: state.profile.streak + 1 });
     updateEntry(m.id, { status: 'locked', answers: state.answers, powerPick: state.powerPick, lockedAt: Date.now() });
     track('prediction_locked', { match: m.id, powerPick: state.powerPick, streak: state.profile.streak });
+    const quest = questProgress(state.profile);
+    if (quest.done && !state.profile.questDone) {
+      updateProfile({ questDone: true, iq: state.profile.iq + QUEST.bonus });
+      track('quest_complete', { day: QUEST.day, bonus: QUEST.bonus });
+      toastQueue([{ text: `${QUEST.day} quest complete: +${QUEST.bonus} Match IQ`, kind: 'badge' }]);
+    }
     go('odds');
     track('odds_viewed', { tab: 'builder', source: 'lock' });
   },

@@ -72,6 +72,9 @@ All events are visible in the prototype's Metrics panel at the bottom of every s
 
 ## Prototype notes
 
+- The weekly quest is computed from the fixtures, not stored: call every Sunday match and the week pays +25 Match IQ, awarded the moment the last one is locked.
+- Partner order follows the market (`PARTNER_ORDER` by geo, UA leads with FAVBET), while the best price is highlighted wherever it sits. Ordering is a market decision; price is not.
+- The first result asks whether to save the streak to a Tribuna account. It is the soft registration gate, shown once, and nothing is gated behind refusing it.
 - Sharing produces a card, not a line of text: a 1080x1080 image drawn on a canvas with your three calls, the Power Pick and, after full-time, the points each call scored. It goes through the system share sheet where the browser accepts files, downloads otherwise, and falls back to copied text.
 - Badges persist. Five of them, earned ids stored on the profile, shown on a shelf where the locked ones stay visible with the condition that unlocks them.
 
@@ -90,9 +93,8 @@ All events are visible in the prototype's Metrics panel at the bottom of every s
 Kept out of the prototype so the core flow stays readable. Each is a follow-up, not a missing piece:
 
 - Push notifications for "result is in" and "streak at risk", and the weekly reset job behind them. The prototype says where they belong rather than faking a permission prompt.
-- "Save streak to your Tribuna account" prompt after the first result, the soft registration gate.
-- Weekend Quest ("predict three matches this weekend"), streak freeze, friend duels.
-- A real odds feed with geo-specific partner ordering, and the weekly reset of the leaderboards.
+- Streak freeze and friend duels: both need social or economy design that a prototype cannot answer honestly.
+- A real odds feed, and the weekly reset job behind the Monday table reset.
 
 Precedents: Sky Bet Super 6 is the reference for predictor-to-sportsbook; FotMob and OneFootball predictions are the content-side reference. Rollout: one top match per week, then top-5 leagues, then a weekly league with partner-funded prizes.
 
