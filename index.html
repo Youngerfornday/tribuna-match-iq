@@ -359,6 +359,9 @@ body[data-layout="wide"]{--shell:1120px}
 .odds-row{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;padding:14px 16px;border-top:1px solid var(--line);background:var(--surface)}
 .odds-row:first-child{border-top:0}
 .odds-row.best{background:linear-gradient(90deg,var(--accent-dim),transparent 60%)}
+.odds-row.off .bk,.odds-row.off .o{opacity:.55}
+.odds-row.off .bk small{color:var(--danger)}
+.odds-row .o .susp{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:var(--surface-2);color:var(--ink-3);font-size:16px}
 .odds-row .bk{font-weight:600;min-width:0}
 .odds-row .bk small{display:block;font-size:12px;color:var(--ink-3);font-weight:400}
 .odds-row .bk .offer{display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:4px 9px;border-radius:20px;background:var(--accent-dim);border:1px solid rgba(215,255,61,.4);font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--accent)}
@@ -990,7 +993,7 @@ const SESSION_ID = newId();
 const initialState = () => ({
   screen: 'landing', matchId: MATCHES[0].id, qIndex: 0,
   answers: {}, powerPick: null, oddsTab: 'builder', lbTab: 'players',
-  outcome: null, sheet: null, lbFull: false, drift: PARTNERS.map(() => 1), pricedAt: Date.now(),
+  outcome: null, sheet: null, lbFull: false, drift: PARTNERS.map(() => 1), suspended: PARTNERS.map(() => false), pricedAt: Date.now(),
   profile: loadProfile(), events: [],
 });
 let state = initialState();
@@ -1496,7 +1499,8 @@ function currentOdds() {
 function viewOdds() {
   const isBuilder = state.oddsTab === 'builder';
   const odds = currentOdds();
-  const best = Math.max(...odds);
+  const live = odds.filter((o, i) => !state.suspended[i]);
+  const best = live.length ? Math.max(...live) : Math.max(...odds);
   const pp = legsOf().find((l) => l.q.id === state.powerPick);
   const market = marketFor(pp.q, pp.o.id);
   const offerPartner = PARTNERS.find((p) => p.offer);
@@ -1520,12 +1524,16 @@ function viewOdds() {
       : `<span class="chip">${pp.o.label}</span><span class="sl-note">${pp.q.title}</span>`}</span>
   </div>
   <div class="odds-table" role="tabpanel">
-    ${partnersInOrder().map(({ p, i }) => `
-    <div class="odds-row ${odds[i] === best ? 'best' : ''}">
-      <span class="bk">${p.name}<small>${odds[i] === best ? 'Best price' : `${fmtOdds(best - odds[i])} below best`}</small>${p.offer ? `<span class="offer">${icon('i-gift')} ${p.offer.reward} welcome offer</span>` : ''}</span>
-      <span class="o num">${fmtOdds(odds[i])}<small>${money(10)} returns ${money(odds[i] * 10)}</small></span>
-      <button class="btn btn-sm ${odds[i] === best ? 'btn-primary' : 'btn-secondary'}" data-action="handoff" data-partner="${p.id}">View</button>
-    </div>`).join('')}
+    ${partnersInOrder().map(({ p, i }) => {
+      const off = state.suspended[i];
+      const isBest = !off && odds[i] === best;
+      return `
+    <div class="odds-row ${isBest ? 'best' : ''} ${off ? 'off' : ''}">
+      <span class="bk">${p.name}<small>${off ? 'Price suspended' : isBest ? 'Best price' : `${fmtOdds(best - odds[i])} below best`}</small>${p.offer ? `<span class="offer">${icon('i-gift')} ${p.offer.reward} welcome offer</span>` : ''}</span>
+      <span class="o num">${off ? `<span class="susp">${icon('i-clock')}</span>` : `${fmtOdds(odds[i])}<small>${money(10)} returns ${money(odds[i] * 10)}</small>`}</span>
+      <button class="btn btn-sm ${isBest ? 'btn-primary' : 'btn-secondary'}" data-action="handoff" data-partner="${p.id}" ${off ? 'disabled' : ''}>${off ? 'Suspended' : 'View'}</button>
+    </div>`;
+    }).join('')}
   </div>
 
   ${offerPartner ? `
@@ -2001,8 +2009,9 @@ function viewSheet() {
       ${state.profile.ageConfirmed
         ? `<div class="rg" style="margin-top:12px"><span class="badge18">18+</span><span>Age confirmed on this device. Only bet what you can afford to lose.</span></div>`
         : `<label class="age"><input type="checkbox" data-action="age-confirm"><span>I confirm I am 18 or over, in a licensed territory, and I accept ${partner.name}'s terms.</span></label>`}
+      ${state.suspended[idx] ? `<div class="price-moved" role="status">${icon('i-clock')}<span><b>${partner.name} has suspended this market.</b> Prices come back when the book re-opens it; the other partners are still live.</span></div>` : ''}
       <div class="foot-cta">
-        <button class="btn btn-primary btn-block" data-action="bookmaker" data-partner="${partner.id}" ${state.profile.ageConfirmed ? '' : 'disabled'}>Continue to ${partner.name} ${icon('i-ext')}</button>
+        <button class="btn btn-primary btn-block" data-action="bookmaker" data-partner="${partner.id}" ${state.profile.ageConfirmed && !state.suspended[idx] ? '' : 'disabled'}>${state.suspended[idx] ? 'Suspended at ' + partner.name : `Continue to ${partner.name}`} ${icon('i-ext')}</button>
         <button class="btn btn-ghost" data-action="close-sheet">Stay on Tribuna</button>
       </div>
     </div>
@@ -2403,6 +2412,7 @@ const ACTIONS = {
   bookmaker(btn) {
     if (!state.profile.ageConfirmed) { toast('Confirm you are 18 or over to continue'); return; }
     const partner = PARTNERS.find((p) => p.id === btn.dataset.partner);
+    if (state.suspended[PARTNERS.indexOf(partner)]) { toast(`${partner.name} has suspended this market`); return; }
     const { slip, source, seenOdds } = state.sheet;
     const odds = slipOdds(slip, PARTNERS.indexOf(partner));
     /* The price moved while the sheet was open: never send someone out on a price they
@@ -2586,7 +2596,15 @@ document.addEventListener('keydown', (e) => {
 
 setInterval(() => {
   if (!CONFIG.features.livePrices) return;
-  state = { ...state, drift: PARTNERS.map(() => 1 + (Math.random() - 0.5) * 0.04), pricedAt: Date.now() };
+  /* One partner at most can be suspended at a time: a real book suspends a market while it
+     re-prices, and the screen has to keep working around it. */
+  const out = Math.random() < 0.35 ? Math.floor(Math.random() * PARTNERS.length) : -1;
+  state = {
+    ...state,
+    drift: PARTNERS.map(() => 1 + (Math.random() - 0.5) * 0.04),
+    suspended: PARTNERS.map((_, i) => i === out),
+    pricedAt: Date.now(),
+  };
   if (['odds', 'wait'].includes(state.screen) && !state.sheet) render();
 }, PRICE_TICK_MS);
 
