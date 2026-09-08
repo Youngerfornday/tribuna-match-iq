@@ -431,6 +431,10 @@ body[data-layout="wide"]{--shell:1120px}
 .save-card .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none;background:var(--surface-2);color:#ff9b3d;font-size:17px}
 .save-card b{font-family:var(--font-display);font-size:19px;font-weight:700;line-height:1.1;display:block}
 .save-card p{font-size:13px;color:var(--ink-2);margin:5px 0 10px;line-height:1.45}
+.save-name{display:block;margin-bottom:10px}
+.save-name input{width:100%;max-width:280px;min-height:44px;padding:0 12px;border-radius:var(--radius-sm);background:var(--surface-2);border:1px solid var(--line-strong);color:var(--ink);font:inherit;font-size:15px}
+.save-name input::placeholder{color:var(--ink-3)}
+.save-name input:focus-visible{border-color:var(--accent)}
 .save-cta{display:flex;gap:8px;flex-wrap:wrap}
 .rank-line{margin-top:12px;font-size:14px;color:var(--ink-2)}
 .rank-line b{color:var(--accent);font-family:var(--font-display);font-size:18px;font-weight:800}
@@ -572,6 +576,8 @@ body[data-layout="wide"]{--shell:1120px}
 .sheet .mini-slip div{display:flex;justify-content:space-between;gap:10px;padding:10px 14px;border-top:1px solid var(--line);font-size:14px}
 .sheet .mini-slip div:first-child{border-top:0;background:var(--surface-2);font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);font-weight:600}
 .sheet .mini-slip .tot{font-family:var(--font-display);font-size:18px;font-weight:700}
+.sheet .price-moved{display:flex;gap:10px;align-items:flex-start;margin-top:12px;padding:12px 14px;border-radius:var(--radius-sm);background:rgba(230,103,103,.12);border:1px solid rgba(230,103,103,.4);font-size:13px;color:var(--ink-2);line-height:1.45}
+.sheet .price-moved b{color:var(--ink)}
 .sheet .offer{margin-top:12px;padding:14px;border-radius:var(--radius-sm);background:var(--accent-dim);border:1px solid rgba(215,255,61,.3)}
 .sheet .offer .t{font-family:var(--font-display);font-size:22px;font-weight:700;line-height:1.05}
 .sheet .offer .fine{font-size:12px;color:var(--ink-2);margin-top:6px}
@@ -918,14 +924,14 @@ const QUEST = { day: 'Sunday', bonus: 25 };
 const PRIZE_TOP = 100;
 const WEEK_FIELD = 12480;
 const CONFIG = Object.freeze({
-  features: { offers: true, aiSlip: true, quickBet: true, fanbases: true },
+  features: { offers: true, aiSlip: true, quickBet: true, fanbases: true, livePrices: true },
   geo: 'UA',
   analytics: { endpoint: null },
 });
 /* The profile is what a production backend would return from GET /match-iq/me:
    aggregate stats plus one entry per match. Nothing else is persisted client-side. */
 const DEFAULT_PROFILE = Object.freeze({
-  uid: null, iq: 0, streak: 0, correct: 0, total: 0, aiCorrect: 0, marketCorrect: 0, badges: [],
+  uid: null, name: null, iq: 0, streak: 0, correct: 0, total: 0, aiCorrect: 0, marketCorrect: 0, badges: [],
   humans: 2, ai: 3, club: null, prevRank: null, ageConfirmed: false, welcomeSeen: false, welcomeClaimed: null,
   accountSaved: false, accountPrompted: false, questDone: false, freezes: 1, freezeUsed: false, week: null, notify: false, duels: {}, matches: {},
 });
@@ -984,7 +990,8 @@ const SESSION_ID = newId();
 const initialState = () => ({
   screen: 'landing', matchId: MATCHES[0].id, qIndex: 0,
   answers: {}, powerPick: null, oddsTab: 'builder', lbTab: 'players',
-  outcome: null, sheet: null, lbFull: false, profile: loadProfile(), events: [],
+  outcome: null, sheet: null, lbFull: false, drift: PARTNERS.map(() => 1), pricedAt: Date.now(),
+  profile: loadProfile(), events: [],
 });
 let state = initialState();
 function setState(patch) { state = { ...state, ...patch }; render(); }
@@ -1029,7 +1036,7 @@ function rankOf(p) {
   return leaderboard(p).findIndex((r) => r.me) + 1;
 }
 function leaderboard(p) {
-  const me = { name: 'You', club: p.club, played: Object.values(p.matches).filter((e) => e.status === 'settled').length, correct: p.correct, iq: p.iq, prev: p.prevRank, me: true };
+  const me = { name: p.name || 'You', club: p.club, played: Object.values(p.matches).filter((e) => e.status === 'settled').length, correct: p.correct, iq: p.iq, prev: p.prevRank, me: true };
   return [...PLAYERS, ...FIELD, CAPTAIN, me].sort((a, b) => b.iq - a.iq || hitRate(b.correct, b.played * 3) - hitRate(a.correct, a.played * 3));
 }
 
@@ -1461,12 +1468,17 @@ function viewLock() {
 function legsOf() {
   return questionsOf(currentMatch()).map((q) => ({ q, o: optionOf(q, state.answers[q.id]) }));
 }
+/* Prices are static data here, so the feed is simulated - but the behaviour it forces on
+   the UI is real: a price can move between the moment you see it and the moment you act,
+   and the handoff has to make you accept the new one. */
+const PRICE_TICK_MS = 20000;
+const driftOf = (i) => (CONFIG.features.livePrices ? state.drift[i] || 1 : 1);
 function builderOdds() {
-  return PARTNERS.map((_, i) => round2(legsOf().reduce((acc, l) => acc * l.o.odds[i], 1)));
+  return PARTNERS.map((_, i) => round2(legsOf().reduce((acc, l) => acc * l.o.odds[i], 1) * driftOf(i)));
 }
 function singleOdds() {
   const leg = legsOf().find((l) => l.q.id === state.powerPick);
-  return leg.o.odds.map(round2);
+  return leg.o.odds.map((o, i) => round2(o * driftOf(i)));
 }
 /* Display order for the current market, paired with each partner's index in PARTNERS
    so the odds arrays stay canonical. */
@@ -1496,7 +1508,7 @@ function viewOdds() {
   return `
   ${shellHead(3)}
   <h1 class="q-title">Your prediction, priced</h1>
-  <p class="q-sub">Same scenario at three partners. Pick the best price if you want to back it.</p>
+  <p class="q-sub">Same scenario at three partners. Pick the best price if you want to back it.${CONFIG.features.livePrices ? ' Prices refresh while you are here, as they would from a live feed.' : ''}</p>
   <div class="tabs" role="tablist" aria-label="Bet type">
     <button class="tab" role="tab" aria-selected="${isBuilder}" data-action="odds-tab" data-tab="builder">Bet Builder · 3 legs</button>
     <button class="tab" role="tab" aria-selected="${!isBuilder}" data-action="odds-tab" data-tab="single">Power Pick · single</button>
@@ -1643,6 +1655,10 @@ function viewResult() {
     <div>
       <b>Keep this streak</b>
       <p>Your ${p.iq} Match IQ and ${plural(p.streak, 'match', 'matches')} of streak live on this device only. Save them to your Tribuna account and they follow you.</p>
+      <label class="save-name">
+        <span class="sr-only">Display name for the table</span>
+        <input id="handle" type="text" maxlength="16" placeholder="Pick a name for the table" value="${p.name || ''}" autocomplete="nickname">
+      </label>
       <div class="save-cta">
         <button class="btn btn-primary btn-sm" data-action="account-save">Save to my account</button>
         <button class="btn btn-ghost btn-sm" data-action="account-later">Not now</button>
@@ -1931,7 +1947,7 @@ function slipLegs(slip) {
   return slip.legs.map((l) => { const q = { id: l.qid, ...m.questions[l.qid] }; return { q, o: optionOf(q, l.oid) }; });
 }
 function slipOdds(slip, partnerIdx) {
-  return round2(slipLegs(slip).reduce((acc, l) => acc * l.o.odds[partnerIdx], 1));
+  return round2(slipLegs(slip).reduce((acc, l) => acc * l.o.odds[partnerIdx], 1) * driftOf(partnerIdx));
 }
 function bestPartnerFor(slip) {
   const odds = PARTNERS.map((_, i) => slipOdds(slip, i));
@@ -1971,6 +1987,11 @@ function viewSheet() {
         ${legs.map((l) => `<div><span>${l.o.label} <span class="dim">· ${l.q.title}</span></span><span class="num">${fmtOdds(l.o.odds[idx])}</span></div>`).join('')}
         <div><span>Stake ${money(10)} at ${fmtOdds(odds)}</span><span class="tot num">Returns ${money(odds * 10)}</span></div>
       </div>
+      ${state.sheet.moved ? `
+      <div class="price-moved" role="status">
+        ${icon('i-clock')}
+        <span>The price moved from <b class="num">${fmtOdds(state.sheet.moved.from)}</b> to <b class="num">${fmtOdds(state.sheet.moved.to)}</b> while this was open. Continue to accept the new price.</span>
+      </div>` : ''}
       ${partner.offer ? `
       <div class="offer">
         <span class="eyebrow" style="color:var(--accent)">${icon('i-gift')} Welcome offer applied</span>
@@ -2086,8 +2107,8 @@ function toastQueue(items) {
 /* A duel is a link: the challenger's slip is encoded into it, the opponent plays the same
    match blind, and both sets of calls are only compared at full-time. No server involved,
    and the blind-then-reveal rule survives - showing their calls first would break it. */
-function encodeDuel(matchId, answers, powerPick) {
-  const payload = JSON.stringify({ m: matchId, a: answers, p: powerPick });
+function encodeDuel(matchId, answers, powerPick, name) {
+  const payload = JSON.stringify({ m: matchId, a: answers, p: powerPick, n: name || undefined });
   return btoa(unescape(encodeURIComponent(payload))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 function decodeDuel(code) {
@@ -2097,12 +2118,12 @@ function decodeDuel(code) {
     if (!d || !matchById(d.m) || !d.a || !d.p) return null;
     const qs = QUESTION_ORDER;
     if (!qs.every((q) => d.a[q])) return null;
-    return { matchId: d.m, answers: d.a, powerPick: d.p };
+    return { matchId: d.m, answers: d.a, powerPick: d.p, from: (d.n || '').slice(0, 16) || 'A friend' };
   } catch (e) { return null; }
 }
-function duelLink(matchId, answers, powerPick) {
+function duelLink(matchId, answers, powerPick, name) {
   const base = location.href.split('#')[0];
-  return `${base}#/duel/${encodeDuel(matchId, answers, powerPick)}`;
+  return `${base}#/duel/${encodeDuel(matchId, answers, powerPick, name)}`;
 }
 
 /* ================================================================ routing */
@@ -2153,7 +2174,7 @@ function applyRoute(r) {
   /* An incoming duel is stored against the match, then the link is replaced by the plain
      match URL so a refresh does not re-add it. */
   if (r.duel && !entryOf(state.profile, r.duel.matchId).duel) {
-    updateEntry(r.duel.matchId, { duel: { answers: r.duel.answers, powerPick: r.duel.powerPick, from: 'A friend' } });
+    updateEntry(r.duel.matchId, { duel: { answers: r.duel.answers, powerPick: r.duel.powerPick, from: r.duel.from } });
     track('duel_received', { match: r.duel.matchId });
   }
   if (res.matchId) {
@@ -2371,7 +2392,7 @@ const ACTIONS = {
     const slip = btn.dataset.slip ? JSON.parse(btn.dataset.slip) : currentSlip();
     const source = btn.dataset.source || 'odds_screen';
     track('handoff_opened', { partner: partner.name, type: slip.type, legs: slip.legs.length, offer: !!partner.offer, source, match: slip.matchId });
-    openSheet({ partnerId: partner.id, slip, source }, btn);
+    openSheet({ partnerId: partner.id, slip, source, seenOdds: slipOdds(slip, PARTNERS.indexOf(partner)) }, btn);
   },
   'close-sheet'() { track('handoff_dismissed', { partner: state.sheet && state.sheet.partnerId }); closeSheet(); },
   'age-confirm'(input) {
@@ -2382,8 +2403,15 @@ const ACTIONS = {
   bookmaker(btn) {
     if (!state.profile.ageConfirmed) { toast('Confirm you are 18 or over to continue'); return; }
     const partner = PARTNERS.find((p) => p.id === btn.dataset.partner);
-    const { slip, source } = state.sheet;
+    const { slip, source, seenOdds } = state.sheet;
     const odds = slipOdds(slip, PARTNERS.indexOf(partner));
+    /* The price moved while the sheet was open: never send someone out on a price they
+       did not agree to. */
+    if (seenOdds && odds !== seenOdds && !state.sheet.accepted) {
+      track('price_moved', { partner: partner.name, from: seenOdds, to: odds });
+      setState({ sheet: { ...state.sheet, moved: { from: seenOdds, to: odds }, accepted: true, seenOdds: odds } });
+      return;
+    }
     track('bookmaker_click', { partner: partner.name, odds, type: slip.type, offer: !!partner.offer, source, match: slip.matchId });
     toast(`${partner.name} opens in a new tab with your slip pre-filled (mock)`);
     if (state.profile.welcomeSeen) { closeSheet(); return; }
@@ -2499,10 +2527,12 @@ const ACTIONS = {
     updateProfile({ prevRank: rank });
   },
   'account-save'() {
-    updateProfile({ accountSaved: true, accountPrompted: true });
-    track('account_saved', { iq: state.profile.iq, streak: state.profile.streak });
+    const field = document.getElementById('handle');
+    const name = (field && field.value.trim().slice(0, 16)) || null;
+    updateProfile({ accountSaved: true, accountPrompted: true, name });
+    track('account_saved', { iq: state.profile.iq, streak: state.profile.streak, named: !!name });
     render();
-    toast('Saved to your Tribuna account (mock)');
+    toast(name ? `Saved. You are ${name} in the table.` : 'Saved to your Tribuna account (mock)');
   },
   'account-later'() {
     updateProfile({ accountPrompted: true });
@@ -2511,7 +2541,7 @@ const ACTIONS = {
   },
   async 'duel-invite'() {
     const m = currentMatch();
-    const link = duelLink(m.id, state.answers, state.powerPick);
+    const link = duelLink(m.id, state.answers, state.powerPick, state.profile.name);
     const text = `I called ${m.home.name} v ${m.away.name} on Tribuna Match IQ. Your turn - calls stay sealed until full-time.`;
     track('duel_sent', { match: m.id });
     if (navigator.share) {
@@ -2553,6 +2583,12 @@ document.addEventListener('keydown', (e) => {
     else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
   }
 });
+
+setInterval(() => {
+  if (!CONFIG.features.livePrices) return;
+  state = { ...state, drift: PARTNERS.map(() => 1 + (Math.random() - 0.5) * 0.04), pricedAt: Date.now() };
+  if (['odds', 'wait'].includes(state.screen) && !state.sheet) render();
+}, PRICE_TICK_MS);
 
 setInterval(() => {
   document.querySelectorAll('[data-countdown]').forEach((el) => {
