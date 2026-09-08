@@ -409,6 +409,24 @@ body[data-layout="wide"]{--shell:1120px}
 .fan .grp{grid-template-columns:120px 1fr}
 .fan .bar{height:16px}
 .fan .fill,.fan .track{height:14px}
+.prize-banner{margin-top:16px;padding:18px 20px;border-radius:var(--radius);background:linear-gradient(120deg,rgba(215,255,61,.10),rgba(23,25,21,.92) 58%);border:1px solid rgba(215,255,61,.32);display:grid;grid-template-columns:1fr auto;gap:14px 18px;align-items:center;box-shadow:var(--shadow)}
+.prize-banner .pb-main{display:flex;gap:14px;align-items:flex-start;min-width:0}
+.prize-banner .pb-ic{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);flex:none;font-size:19px}
+.prize-banner h3{font-family:var(--font-display);font-size:26px;font-weight:700;line-height:1.02}
+.prize-banner p{color:var(--ink-2);font-size:14px;margin-top:6px;max-width:58ch;line-height:1.5}
+.prize-banner b{color:var(--ink);font-weight:600}
+.prize-banner .pb-status{font-weight:600;color:var(--ink-2)}
+.prize-banner .pb-status.on{color:var(--accent)}
+.prize-banner .pb-cta .btn{white-space:nowrap}
+.prize-banner .pb-terms{grid-column:1/-1;margin-top:0;font-size:11px;color:var(--ink-3);max-width:104ch;line-height:1.5}
+.prize-banner.compact{grid-template-columns:1fr;padding:14px 16px;gap:10px}
+.prize-banner.compact h3{font-size:20px}
+.prize-banner.compact p{font-size:13px}
+@media (max-width:720px){
+  .prize-banner{grid-template-columns:1fr;padding:16px}
+  .prize-banner h3{font-size:22px}
+  .prize-banner .pb-cta .btn{width:100%}
+}
 .prize{margin-top:12px;font-size:13px;color:var(--ink-2);display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:var(--radius-sm);border:1px solid var(--line);background:var(--surface)}
 .next{margin-top:18px;padding:18px;border-radius:var(--radius);background:linear-gradient(135deg,#1c2116,#171915 70%);border:1px solid var(--line-strong)}
 .next h3{font-size:30px;margin:6px 0 4px}
@@ -715,6 +733,10 @@ function isCorrect(match, qid, optionId) {
 
 /* ============================================================= persistence */
 /* CONFIG is what a production build would read from the CMS or a remote-config service. */
+/* The weekly prize is partner-funded: the top of the table gets the partner's welcome
+   offer, which is also the handoff the whole game is built around. */
+const PRIZE_TOP = 100;
+const WEEK_FIELD = 12480;
 const CONFIG = Object.freeze({
   features: { offers: true, aiSlip: true, quickBet: true, fanbases: true },
   geo: 'UA',
@@ -832,7 +854,7 @@ const TERMS = [
   ['Who can play', 'Tribuna Match IQ is free to play for registered Tribuna users aged 18 or over. One entry per match. Calls lock at the scheduled kick-off time; late entries are not accepted.'],
   ['Scoring', `+${POINTS_PER_CALL} Match IQ for each correct call. Your Power Pick counts double. A perfect match (all three correct) earns a +${PERFECT_BONUS} bonus. Anytime scorer calls settle on official competition data; abandoned matches are void.`],
   ['Weekly table', 'The table covers fixtures from Monday 00:00 to Sunday 23:59 site time and resets every Monday. Ties are broken by hit rate, then by earliest lock. Your all-time Match IQ and league tier never reset.'],
-  ['Prizes', `Each week the top 10 players receive a free bet from ${PARTNERS[0].name}. Prizes are funded by the partner and subject to its terms: 18+, verified account, licensed territory. Tribuna staff and partner employees are not eligible. No purchase or bet is required to play or win.`],
+  ['Prizes', `Each week the top ${PRIZE_TOP} players receive the ${PARTNERS[0].name} welcome offer, credited on Monday when the table resets. Prizes are funded by the partner and subject to its terms: new customers only, 18+, verified account, licensed territory. Tribuna staff and partner employees are not eligible. No purchase or bet is required to play or win.`],
   ['Fair play', 'One account per person. Automated or duplicate accounts are removed from the table without notice. Tribuna\'s decision on settlement is final.'],
   ['CaptainAI and market data', 'CaptainAI is a statistical model. Fans % aggregates locked calls from Tribuna users. Market % is derived from partner odds with the bookmaker margin removed. None of this is betting advice.'],
   ['Responsible play', 'Match IQ is a prediction game, not a betting product. Partner offers are clearly labelled and always optional. If gambling stops being fun, take a break: support is available at begambleaware.org.'],
@@ -855,6 +877,31 @@ function topTable(p, limit) {
     </table>`;
 }
 
+/* One prize component, three placements: the offer, what it takes, where the user stands. */
+function prizeBanner(p, opts = {}) {
+  const partner = PARTNERS[0];
+  const w = weekSummary();
+  const inPrize = p.iq > 0 && w.rank <= PRIZE_TOP;
+  const status = p.iq === 0
+    ? `Lock one prediction and you are in this week's table.`
+    : inPrize
+      ? `You are #${w.rank} of ${fmtK(WEEK_FIELD)} — inside the top ${PRIZE_TOP}.`
+      : `You are #${w.rank} — ${w.rank - PRIZE_TOP} ${plural(w.rank - PRIZE_TOP, 'place', 'places')} from the prize.`;
+  return `
+  <section class="prize-banner ${opts.compact ? 'compact' : ''}" aria-label="This week's prize">
+    <div class="pb-main">
+      <span class="pb-ic">${icon('i-gift')}</span>
+      <div>
+        <h3>Finish in the top ${PRIZE_TOP} this week</h3>
+        <p>${partner.name} adds its welcome offer: <b>${partner.offer.title}</b>. Credited on Monday when the table resets.</p>
+        <p class="pb-status ${inPrize ? 'on' : ''}">${status}</p>
+      </div>
+    </div>
+    ${opts.compact ? '' : `<div class="pb-cta">${opts.cta || `<button class="btn btn-secondary" data-action="nav" data-to="board" data-label="Table">See the table ${icon('i-arrow')}</button>`}</div>`}
+    <p class="pb-terms">Partner-funded prize, not a cash prize from Tribuna. ${partner.offer.terms} Play the game without betting: locking a prediction is always free.</p>
+  </section>`;
+}
+
 function viewLanding() {
   const p = state.profile;
   const w = weekSummary();
@@ -873,9 +920,11 @@ function viewLanding() {
     <div class="hero-stats">
       <div><b class="num">${fmtK(totalPredictions)}</b><span>calls locked this week</span></div>
       <div><b class="num">${humansHit}% <small>v</small> ${aiHit}%</b><span>humans v CaptainAI hit rate</span></div>
-      <div><b>Top 10</b><span>win a free bet weekly</span></div>
+      <div><b>Top ${PRIZE_TOP}</b><span>win a welcome bonus weekly</span></div>
     </div>
   </section>
+
+  ${prizeBanner(p)}
 
   <div class="cols">
   <div>
@@ -893,7 +942,7 @@ function viewLanding() {
       <div class="hd">
         <span id="lb-title" style="font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--ink)">Weekly leaderboard</span>
         <b>Humans <span class="num">${p.humans} : ${p.ai}</span> CaptainAI</b>
-        <span class="sub">Top 10 win a free bet from ${PARTNERS[0].name} · resets Monday</span>
+        <span class="sub">Top ${PRIZE_TOP} win a welcome bonus from ${PARTNERS[0].name} · resets Monday</span>
       </div>
       ${topTable(p, 10)}
       <div class="foot row between wrap" style="gap:8px">
@@ -917,9 +966,10 @@ function viewBoard() {
   const isPlayers = state.lbTab === 'players';
   return `
   <h1 class="q-title">Weekly table</h1>
-  <p class="q-sub">Every player who locked a call this week. ${WEEK_LABEL} · resets Monday 00:00.</p>
+  <p class="q-sub">The top of ${fmtK(WEEK_FIELD)} players who locked a call this week, plus your row. ${WEEK_LABEL} · resets Monday 00:00.</p>
   <div class="cols">
     <div>
+      ${prizeBanner(p, { cta: `<button class="btn btn-secondary" data-action="nav" data-to="hub" data-label="Challenges">${icon('i-bolt')} Play a challenge</button>` })}
       <section class="lb" aria-label="Weekly table">
         <div class="tabs" role="tablist" aria-label="Leaderboard">
           <button class="tab" role="tab" aria-selected="${isPlayers}" data-action="lb-tab" data-tab="players">Players</button>
@@ -979,6 +1029,7 @@ function viewHub() {
         <div><span>Match IQ</span><b class="num">${p.iq}</b></div>
         <div><span>Rank</span><b class="num">${p.iq > 0 || w.settled > 0 ? '#' + w.rank : '–'}</b></div>
       </div>
+      ${prizeBanner(p, { compact: true })}
       <div class="how">
         <b style="color:var(--ink)">How it works</b>
         <ol>
@@ -1396,10 +1447,10 @@ function playersTable(p, opts = {}) {
       <thead><tr><th>#</th><th>Player</th><th title="Matches played">P</th><th>Hit</th><th>IQ</th></tr></thead>
       <tbody>
         ${visible.map(row).join('')}
-        ${showMeBelow ? `<tr><td colspan="5" class="gap">${meIdx - TOP} more players</td></tr>${row(board[meIdx], meIdx)}` : ''}
+        ${showMeBelow ? `${meIdx > TOP ? `<tr><td colspan="5" class="gap">${plural(meIdx - TOP, 'more player', 'more players')}</td></tr>` : ''}${row(board[meIdx], meIdx)}` : ''}
       </tbody>
     </table>
-    <div class="foot">${p.iq === 0 ? 'Lock a prediction to enter the table. ' : ''}Ties break on hit rate, movement is versus yesterday. Top 10 win a free bet from ${PARTNERS[0].name} · partner-funded · 18+.</div>`;
+    <div class="foot">${p.iq === 0 ? 'Lock a prediction to enter the table. ' : ''}Ties break on hit rate, movement is versus yesterday.</div>`;
 }
 
 function fanbasesPanel(p) {
@@ -1466,12 +1517,14 @@ function viewRetention() {
           <button class="btn btn-primary btn-block" data-action="open-match" data-match="${nextOpen.id}">Make my 3 calls ${icon('i-arrow')}</button>
           <button class="btn btn-ghost" data-action="nav" data-to="hub" data-label="Challenges">${icon('i-grid')} All ${w.total} challenges</button>
         </div>
-      </section>` : `
+      </section>
+      ${prizeBanner(p, { compact: true })}` : `
       <section class="next">
         <h3>All ${w.total} challenges called</h3>
         <p>New fixtures drop Monday. Your table position is final at Sunday 23:59.</p>
         <div class="foot-cta"><button class="btn btn-secondary btn-block" data-action="nav" data-to="hub" data-label="Challenges">${icon('i-grid')} Review this week</button></div>
-      </section>`}
+      </section>
+      ${prizeBanner(p, { compact: true })}`}
     </div>
 
     <div class="rail">
@@ -1482,7 +1535,7 @@ function viewRetention() {
         </div>
         ${isPlayers ? playersTable(p) : fanbasesPanel(p)}
         <div class="foot row between wrap" style="gap:8px">
-          <span>${p.iq > 0 ? `You are #${w.rank} of ${leaderboard(p).length}.` : 'Lock a prediction to enter.'}</span>
+          <span>${p.iq > 0 ? `You are #${w.rank} of ${fmtK(WEEK_FIELD)}.` : 'Lock a prediction to enter.'}</span>
           <button class="btn btn-ghost btn-sm" data-action="nav" data-to="board" data-label="Table">Full table ${icon('i-arrow')}</button>
         </div>
       </section>

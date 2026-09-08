@@ -75,6 +75,8 @@ Kept out of the prototype so the core flow stays readable. Each is a follow-up, 
 
 Precedents: Sky Bet Super 6 is the reference for predictor-to-sportsbook; FotMob and OneFootball predictions are the content-side reference. Rollout: one top match per week, then top-5 leagues, then a weekly league with partner-funded prizes.
 
+Weekly prize: the top 100 of the weekly table receive the Partner A welcome offer, credited on Monday when the table resets. It is partner-funded rather than a Tribuna cash prize, which is what makes it self-financing: the prize is the same offer the handoff already promotes, so the reward and the conversion event are one thing. Carried on a banner on the overview, table and profile screens, always with the partner terms, new-customers-only wording and 18+.
+
 ## Built with
 
 Vibe-coded with Claude Code. Single HTML file, vanilla JavaScript, no dependencies.
