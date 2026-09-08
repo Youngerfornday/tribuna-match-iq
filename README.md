@@ -5,7 +5,8 @@ Prototype for the Tribuna.com iGaming Product/Project Manager test task.
 - Live prototype: https://youngerfornday.github.io/tribuna-match-iq/
 - Local: open `index.html` in any browser. One file, no build step, works offline.
 - Every screen has its own URL (`#/challenges`, `#/match/bay-bvb/play`, `#/board`, `#/me`), so deep links and the browser back button work. In production these map 1:1 to paths under `/match-iq/`.
-- Navigation: a Match IQ sub-nav (Overview / Challenges / Table / You) sits under the site header on every browse screen; the play flow replaces it with one labelled back link. Browse screens use a 1120px two-column layout from 1024px up, the play flow stays a single 620px column.
+- Navigation: a Match IQ sub-nav (Overview / Challenges / Table / You) sits under the site header on every browse screen; the play flow replaces it with one labelled back link. Challenges, Table and You use a 1120px two-column layout from 1024px up; the play flow stays a single 620px column.
+- Overview reads top to bottom: hero, how it works, prize banner, weekly leaderboard, rules. The table shows the top 10 and expands to the full top 100, which is the prize cut-off.
 
 Flow: match page → 3 blind calls (winner, over/under, scorer) → reveal CaptainAI / fans / market after each call → review the three calls and tap one as the Power Pick, then lock → odds at three partners (bet builder or single) → wait for full-time → result → Match IQ, streak, league, leaderboards → next match.
 
@@ -58,7 +59,9 @@ All events are visible in the prototype's Metrics panel at the bottom of every s
 
 ## Prototype notes
 
-- Everything is mocked: fan percentages, CaptainAI probabilities and reasoning, partner odds, the leaderboards and the match results.
+- Everything is mocked: fan percentages, CaptainAI probabilities and reasoning, partner odds, the leaderboards and the match results. Amounts are in euro.
+- The weekly table is a real field: the named players are hand-written, the rest of the visible top 100 is generated deterministically from a seed so the prize cut-off means something. The stated field size (12.5k) is the number the copy claims, not the number of rendered rows.
+- CaptainAI is drawn, not stock: one inline SVG figure, shown as a club crest on the overview and leaning out of the prize banner with the free bet. No casino mascot: a cartoon character selling a bonus is the first thing a gambling-compliance review removes, and the game already has an opponent worth illustrating.
 - Market % is computed in code from the average partner odds: implied probability with the bookmaker margin removed for mutually exclusive markets, raw implied probability for the scorer market.
 - Partners are "Partner A/B/C" on purpose. Real brands with invented odds would be a compliance problem in a demo.
 - Fans % has a cold-start problem: in the first days of a match the widget should show only CaptainAI and market until a vote threshold is reached.

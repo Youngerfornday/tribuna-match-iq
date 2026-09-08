@@ -84,7 +84,7 @@ body[data-layout="wide"]{--shell:1120px}
 @media (min-width:1024px){
   .cols{grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:24px}
   .rail{position:sticky;top:calc(var(--head-h) + var(--subnav-h) + 16px)}
-  .hero{padding:34px 32px}
+  .hero{padding:38px 36px}
   .hero .foot-cta{max-width:440px}
   .hero h1{font-size:58px;max-width:17ch}
   .hero p{font-size:17px;max-width:52ch}
@@ -133,7 +133,14 @@ body[data-layout="wide"]{--shell:1120px}
 .dot{width:10px;height:10px;border-radius:50%;flex:none;display:inline-block}
 
 /* ------------------------------------------------------------- landing */
-.hero{position:relative;overflow:hidden;padding:24px 20px;border-radius:16px;background:linear-gradient(150deg,#1d2418 0%,#171915 55%,#131b26 100%);border:1px solid var(--line-strong);box-shadow:var(--shadow)}
+.hero{position:relative;overflow:hidden;padding:24px 20px;border-radius:16px;background:linear-gradient(150deg,#1d2418 0%,#171915 55%,#131b26 100%);border:1px solid var(--line-strong);box-shadow:var(--shadow);display:flex;flex-direction:column;gap:18px}
+.hero-copy{position:relative;z-index:1;min-width:0}
+.hero-art{position:relative;z-index:1;order:-1;align-self:flex-end;width:132px}
+.cap-art{display:block;width:100%;height:auto;filter:drop-shadow(0 16px 34px rgba(0,0,0,.55))}
+.cap-scan{animation:capScan 5.5s cubic-bezier(.4,0,.2,1) infinite}
+@keyframes capScan{0%{transform:translateY(0)}55%{transform:translateY(37px)}100%{transform:translateY(37px)}}
+.cap-pulse{animation:capPulse 3.2s ease-in-out infinite;transform-origin:120px 30px}
+@keyframes capPulse{0%,100%{opacity:.2;transform:scale(.85)}50%{opacity:.55;transform:scale(1.15)}}
 .hero:before{content:"";position:absolute;inset:-50% -20% auto auto;width:320px;height:320px;border-radius:50%;background:radial-gradient(closest-side,rgba(215,255,61,.18),transparent 70%);pointer-events:none}
 .hero:after{content:"";position:absolute;inset:auto auto -60% -20%;width:280px;height:280px;border-radius:50%;background:radial-gradient(closest-side,rgba(57,135,229,.16),transparent 70%);pointer-events:none}
 .hero>*{position:relative}
@@ -141,10 +148,13 @@ body[data-layout="wide"]{--shell:1120px}
 .hero h1 em{font-style:normal;color:var(--accent)}
 .hero p{color:var(--ink-2);margin-top:12px;max-width:44ch}
 .hero .foot-cta{margin-top:18px}
-.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:18px;padding-top:16px;border-top:1px solid var(--line-strong)}
-.hero-stats b{display:block;font-family:var(--font-display);font-size:24px;font-weight:800;line-height:1.1}
-.hero-stats b small{font-size:14px;color:var(--ink-3);font-weight:600}
-.hero-stats span{display:block;font-size:12px;color:var(--ink-3);margin-top:2px;line-height:1.3}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:30px 0 10px}
+.sec-head h2{font-size:30px}
+.sec-head span{font-size:13px;color:var(--ink-3)}
+.lb-more{width:100%;min-height:48px;display:flex;align-items:center;justify-content:center;gap:8px;border-top:1px solid var(--line);font-size:14px;font-weight:600;color:var(--ink-2);transition:background .15s,color .15s}
+.lb-more:hover{background:var(--surface-2);color:var(--ink)}
+.lb-more .chev{color:var(--ink-3);transition:transform .2s}
+.lb-more[aria-expanded="true"] .chev{transform:rotate(180deg)}
 .steps3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:22px 0}
 .steps3 div{padding:14px 12px;border-radius:var(--radius-sm);background:var(--surface);border:1px solid var(--line)}
 .steps3 .n{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-family:var(--font-display);font-weight:800;font-size:15px}
@@ -162,7 +172,11 @@ body[data-layout="wide"]{--shell:1120px}
 @media (max-width:420px){
   .hero h1{font-size:38px}
   .steps3{grid-template-columns:1fr}
-  .hero-stats b{font-size:20px}
+}
+@media (min-width:900px){
+  .hero{flex-direction:row;align-items:center;gap:32px;padding:32px 30px}
+  .hero-copy{flex:1}
+  .hero-art{order:0;width:min(300px,32%);align-self:center}
 }
 
 /* ---------------------------------------------------------------- hub */
@@ -409,24 +423,29 @@ body[data-layout="wide"]{--shell:1120px}
 .fan .grp{grid-template-columns:120px 1fr}
 .fan .bar{height:16px}
 .fan .fill,.fan .track{height:14px}
-.prize-banner{margin-top:16px;padding:18px 20px;border-radius:var(--radius);background:linear-gradient(120deg,rgba(215,255,61,.10),rgba(23,25,21,.92) 58%);border:1px solid rgba(215,255,61,.32);display:grid;grid-template-columns:1fr auto;gap:14px 18px;align-items:center;box-shadow:var(--shadow)}
-.prize-banner .pb-main{display:flex;gap:14px;align-items:flex-start;min-width:0}
-.prize-banner .pb-ic{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);flex:none;font-size:19px}
-.prize-banner h3{font-family:var(--font-display);font-size:26px;font-weight:700;line-height:1.02}
-.prize-banner p{color:var(--ink-2);font-size:14px;margin-top:6px;max-width:58ch;line-height:1.5}
-.prize-banner b{color:var(--ink);font-weight:600}
-.prize-banner .pb-status{font-weight:600;color:var(--ink-2)}
+.prize-banner{position:relative;overflow:hidden;margin-top:18px;padding:24px;border-radius:16px;background:linear-gradient(104deg,#222a1a 0%,#171a12 46%,#0f1710 100%);border:1px solid rgba(215,255,61,.28);box-shadow:var(--shadow);display:grid;gap:8px}
+.prize-banner:before{content:"";position:absolute;inset:-45% -14% auto auto;width:440px;height:440px;border-radius:50%;background:radial-gradient(closest-side,rgba(215,255,61,.15),transparent 70%);pointer-events:none}
+.prize-banner .pb-copy{position:relative;z-index:1;min-width:0}
+.prize-banner h3{font-family:var(--font-display);font-size:36px;font-weight:800;line-height:.98;letter-spacing:-.01em;max-width:15ch}
+.prize-banner .pb-lead{color:var(--ink-2);font-size:15px;line-height:1.5;margin-top:10px;max-width:44ch}
+.prize-banner .pb-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:16px}
+.prize-banner .pb-status{font-weight:600;font-size:14px;color:var(--ink-2)}
 .prize-banner .pb-status.on{color:var(--accent)}
-.prize-banner .pb-cta .btn{white-space:nowrap}
-.prize-banner .pb-terms{grid-column:1/-1;margin-top:0;font-size:11px;color:var(--ink-3);max-width:104ch;line-height:1.5}
-.prize-banner.compact{grid-template-columns:1fr;padding:14px 16px;gap:10px}
-.prize-banner.compact h3{font-size:20px}
-.prize-banner.compact p{font-size:13px}
-@media (max-width:720px){
-  .prize-banner{grid-template-columns:1fr;padding:16px}
-  .prize-banner h3{font-size:22px}
-  .prize-banner .pb-cta .btn{width:100%}
+.prize-banner .pb-terms{margin-top:14px;font-size:11px;color:var(--ink-3);line-height:1.5;max-width:86ch}
+.prize-banner .pb-art{position:relative;z-index:1;justify-self:center;width:230px;margin:-6px 0 -18px}
+@media (min-width:820px){
+  .prize-banner{grid-template-columns:minmax(0,1fr) minmax(220px,300px);align-items:center;padding:26px 8px 26px 30px;gap:10px}
+  .prize-banner h3{font-size:42px}
+  .prize-banner .pb-art{justify-self:end;width:100%;margin:-10px -6px -26px 0}
 }
+.prize-row{display:flex;gap:12px;align-items:flex-start;margin-top:16px;padding:14px 16px;border-radius:var(--radius);background:linear-gradient(120deg,rgba(215,255,61,.09),rgba(23,25,21,.9) 60%);border:1px solid rgba(215,255,61,.26)}
+.prize-row b{font-family:var(--font-display);font-size:19px;font-weight:700;line-height:1.1;display:block}
+.prize-row p{font-size:13px;color:var(--ink-2);margin-top:5px;line-height:1.45}
+.prize-row .pb-status{font-weight:600;color:var(--ink-2)}
+.prize-row .pb-status.on{color:var(--accent)}
+.prize-row .pb-terms{font-size:11px;color:var(--ink-3);margin-top:6px}
+.pb-ic{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);flex:none;font-size:17px}
+.cap-promo{display:block;width:100%;height:auto;filter:drop-shadow(0 18px 40px rgba(0,0,0,.5))}
 .prize{margin-top:12px;font-size:13px;color:var(--ink-2);display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:var(--radius-sm);border:1px solid var(--line);background:var(--surface)}
 .next{margin-top:18px;padding:18px;border-radius:var(--radius);background:linear-gradient(135deg,#1c2116,#171915 70%);border:1px solid var(--line-strong)}
 .next h3{font-size:30px;margin:6px 0 4px}
@@ -562,10 +581,12 @@ const LEAGUES = [
   { name: 'Expert', min: 160 },
   { name: 'Captain', min: 300 },
 ];
+const CURRENCY = '\u20ac';
+const money = (n) => CURRENCY + (Number.isInteger(n) ? n : n.toFixed(2));
 const PARTNERS = [
-  { id: 'a', name: 'Partner A', color: '#1f6feb', offer: { title: 'Bet 10, get 30 in free bets', short: 'Welcome offer', terms: 'New customers only. Min first bet 10 at odds 1.50+. Free bets expire in 7 days. 18+. T&Cs apply.' } },
+  { id: 'a', name: 'Partner A', color: '#1f6feb', offer: { title: 'Bet \u20ac10, get \u20ac30 in free bets', reward: '\u20ac30', short: 'Welcome offer', terms: 'New customers only. Min first bet \u20ac10 at odds 1.50+. Free bets expire in 7 days. 18+. T&Cs apply.' } },
   { id: 'b', name: 'Partner B', color: '#b3261e', offer: null },
-  { id: 'c', name: 'Partner C', color: '#0f9d58', offer: { title: '100% first deposit match up to 50', short: 'Welcome offer', terms: 'New customers only. Min deposit 10. 5x wagering on bonus. 18+. T&Cs apply.' } },
+  { id: 'c', name: 'Partner C', color: '#0f9d58', offer: { title: '100% first deposit match up to \u20ac50', reward: '\u20ac50', short: 'Welcome offer', terms: 'New customers only. Min deposit \u20ac10. 5x wagering on bonus. 18+. T&Cs apply.' } },
 ];
 const CLUBS = {
   Arsenal: '#e0324a', Liverpool: '#8a2030', Chelsea: '#034694', 'Man City': '#6cabdd',
@@ -592,6 +613,31 @@ const FANBASES = [
   { club: 'Man United', hit: 44, n: 5100 }, { club: 'Tottenham', hit: 50, n: 3300 },
   { club: 'Newcastle', hit: 56, n: 2400 }, { club: 'Aston Villa', hit: 52, n: 1900 },
 ];
+
+/* The named players are only the people the copy talks about. The rest of the visible
+   field is generated once, deterministically, so the top 100 is a real cut-off and the
+   table can be expanded without shipping 100 hand-written rows. */
+const HANDLE_STEMS = ['tifo', 'curva', 'panenka', 'gegen', 'libero', 'regista', 'catenaccio', 'xg_model', 'pressing', 'fullback', 'trequarti', 'offside', 'ultras', 'terrace', 'kop_end', 'holte', 'yaya', 'tiki_taka', 'derby_day', 'matchday', 'away_end', 'clean_sheet', 'back_post', 'set_piece', 'low_block', 'false_nine', 'wing_back', 'stoppage', 'north_stand', 'touchline'];
+const HANDLE_TAILS = ['_88', '_10', '_ua', '_x', '7', '_fan', '_iq', '_99', '_21', '', '_pro', '_04'];
+const FIELD = (() => {
+  let seed = 20260908;
+  const rnd = () => ((seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648);
+  const names = [];
+  HANDLE_STEMS.forEach((stem) => HANDLE_TAILS.forEach((tail) => names.push(stem + tail)));
+  for (let i = names.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [names[i], names[j]] = [names[j], names[i]]; }
+  const clubs = FANBASES.map((f) => f.club);
+  const taken = new Set(PLAYERS.map((x) => x.name));
+  const out = [];
+  for (let i = 0; out.length < 120 && i < names.length; i++) {
+    if (taken.has(names[i])) continue;
+    const iq = i < 8 ? 132 - 3 * i : Math.round(110 - (i - 8) * 0.8 - (i % 3));
+    if (iq < 8) break;
+    const played = Math.max(1, Math.min(6, Math.round(iq / 24) + (i % 2)));
+    const correct = Math.max(0, Math.min(played * 3, Math.round(iq / 11)));
+    out.push({ name: names[i], club: clubs[i % clubs.length], played, correct, iq, mv: (i % 7) - 3 });
+  }
+  return out;
+})();
 
 const Q = (title, sub, exclusive, options, reason) => ({ title, sub, exclusive, options, reason });
 const O = (id, label, sub, ai, fans, odds) => ({ id, label, sub, ai, fans, odds });
@@ -783,7 +829,7 @@ const SESSION_ID = newId();
 const initialState = () => ({
   screen: 'landing', matchId: MATCHES[0].id, qIndex: 0,
   answers: {}, powerPick: null, oddsTab: 'builder', lbTab: 'players',
-  outcome: null, sheet: null, profile: loadProfile(), events: [],
+  outcome: null, sheet: null, lbFull: false, profile: loadProfile(), events: [],
 });
 let state = initialState();
 function setState(patch) { state = { ...state, ...patch }; render(); }
@@ -823,7 +869,7 @@ function rankOf(p) {
 }
 function leaderboard(p) {
   const me = { name: 'You', club: p.club, played: Object.values(p.matches).filter((e) => e.status === 'settled').length, correct: p.correct, iq: p.iq, prev: p.prevRank, me: true };
-  return [...PLAYERS, CAPTAIN, me].sort((a, b) => b.iq - a.iq || hitRate(b.correct, b.played * 3) - hitRate(a.correct, a.played * 3));
+  return [...PLAYERS, ...FIELD, CAPTAIN, me].sort((a, b) => b.iq - a.iq || hitRate(b.correct, b.played * 3) - hitRate(a.correct, a.played * 3));
 }
 
 const AI_SLIP = { matchId: 'bay-bvb', type: 'builder', legs: [{ qid: 'winner', oid: 'home' }, { qid: 'goals', oid: 'over' }, { qid: 'scorer', oid: 'kane' }] };
@@ -860,24 +906,104 @@ const TERMS = [
   ['Responsible play', 'Match IQ is a prediction game, not a betting product. Partner offers are clearly labelled and always optional. If gambling stops being fun, take a break: support is available at begambleaware.org.'],
 ];
 
-function topTable(p, limit) {
-  const board = leaderboard(p).slice(0, limit);
+/* CaptainAI has a face. The model is the opponent the whole game is named after, so it
+   gets the authored artwork: a club crest on the overview, the same character leaning out
+   of the prize banner. Ids are suffixed per instance so two figures can share a page. */
+function capDefs(k) {
   return `
-    <table aria-label="Weekly leaderboard, top ${limit}">
-      <thead><tr><th>#</th><th>Player</th><th title="Matches played">P</th><th>Hit</th><th>IQ</th></tr></thead>
-      <tbody>${board.map((r, i) => `
-        <tr class="${r.me ? 'me' : ''} ${r.ai ? 'ai' : ''}">
-          <td><span class="rank num">${i + 1} ${movement(r, i + 1)}</span></td>
-          <td><span class="pname"><span class="av">${r.ai ? icon('i-cpu') : r.name.slice(0, 2).toUpperCase()}</span>${r.club ? `<span class="club" style="background:${clubColor(r.club)}" title="${r.club}"></span>` : ''}<span class="nm">${r.name}</span></span></td>
-          <td class="num">${r.played}</td>
-          <td class="num">${r.played ? hitRate(r.correct, r.played * 3) + '%' : '–'}</td>
-          <td class="iq num">${r.iq}</td>
-        </tr>`).join('')}
-      </tbody>
-    </table>`;
+    <defs>
+      <linearGradient id="capVisor-${k}" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#a8cdf8"/><stop offset=".45" stop-color="#3987e5"/><stop offset="1" stop-color="#12305a"/>
+      </linearGradient>
+      <linearGradient id="capShell-${k}" x1=".15" y1="0" x2=".85" y2="1">
+        <stop offset="0" stop-color="#464d40"/><stop offset=".5" stop-color="#272c22"/><stop offset="1" stop-color="#14170f"/>
+      </linearGradient>
+      <linearGradient id="capPlate-${k}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#2e3429"/><stop offset="1" stop-color="#171a12"/>
+      </linearGradient>
+      <radialGradient id="capGlow-${k}" cx=".5" cy=".34" r=".62">
+        <stop offset="0" stop-color="#d7ff3d" stop-opacity=".3"/><stop offset="1" stop-color="#d7ff3d" stop-opacity="0"/>
+      </radialGradient>
+      <pattern id="capGrid-${k}" width="11" height="11" patternUnits="userSpaceOnUse">
+        <path d="M11 0H0v11" fill="none" stroke="#d7ff3d" stroke-opacity=".09" stroke-width="1"/>
+      </pattern>
+      <clipPath id="capVisorClip-${k}"><rect x="79" y="87" width="82" height="37" rx="18"/></clipPath>
+      ${k === 'crest' ? `<clipPath id="capCrest-${k}"><path d="M120 8 208 39v90c0 51-38 90-88 119-50-29-88-68-88-119V39z"/></clipPath>` : ''}
+    </defs>`;
 }
 
-/* One prize component, three placements: the offer, what it takes, where the user stands. */
+/* The figure is authored in the 240x264 box; both variants place it with a transform. */
+function capFigure(k) {
+  return `
+    <g>
+      <path d="M120 172c28 0 47 12 55 32l17 60H48l17-60c8-20 27-32 55-32z" fill="url(#capPlate-${k})" stroke="#3a4035" stroke-width="2"/>
+      <path d="M120 172c28 0 47 12 55 32H65c8-20 27-32 55-32z" fill="#000" fill-opacity=".22"/>
+      <circle cx="96" cy="212" r="13" fill="#d7ff3d"/>
+      <text x="96" y="219" text-anchor="middle" font-family="Barlow Condensed, Arial Narrow, sans-serif" font-size="19" font-weight="800" fill="#0e0f0c">C</text>
+      <g aria-hidden="true">
+        <rect x="128" y="212" width="7" height="9" rx="2" fill="#3987e5"/>
+        <rect x="139" y="206" width="7" height="15" rx="2" fill="#d95926"/>
+        <rect x="150" y="201" width="7" height="20" rx="2" fill="#199e70"/>
+      </g>
+      <rect x="106" y="148" width="28" height="30" rx="8" fill="#1c2018" stroke="#3a4035" stroke-width="2"/>
+      <ellipse cx="120" cy="106" rx="80" ry="74" fill="#000" fill-opacity=".28"/>
+      <rect x="56" y="94" width="15" height="30" rx="6" fill="url(#capPlate-${k})" stroke="#3a4035" stroke-width="2"/>
+      <rect x="169" y="94" width="15" height="30" rx="6" fill="url(#capPlate-${k})" stroke="#3a4035" stroke-width="2"/>
+      <rect x="65" y="52" width="110" height="108" rx="40" fill="url(#capShell-${k})" stroke="#4d5546" stroke-width="2"/>
+      <path d="M65 78c14-14 34-22 55-22s41 8 55 22" fill="none" stroke="#5c6455" stroke-width="2" stroke-linecap="round"/>
+      <rect x="79" y="87" width="82" height="37" rx="18" fill="url(#capVisor-${k})"/>
+      <g clip-path="url(#capVisorClip-${k})">
+        <rect class="cap-scan" x="79" y="80" width="82" height="10" fill="#eaf7ff" opacity=".22"/>
+      </g>
+      <rect x="95" y="100" width="17" height="9" rx="4.5" fill="#d7ff3d"/>
+      <rect x="128" y="100" width="17" height="9" rx="4.5" fill="#d7ff3d"/>
+      <rect x="79" y="87" width="82" height="37" rx="18" fill="none" stroke="#0e0f0c" stroke-opacity=".55" stroke-width="2"/>
+      <path d="M104 136h32M107 143h26M110 150h20" stroke="#5c6455" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M120 52V32" stroke="#5c6455" stroke-width="3" stroke-linecap="round"/>
+      <circle class="cap-pulse" cx="120" cy="26" r="10" fill="#d7ff3d" opacity=".25"/>
+      <circle cx="120" cy="26" r="5" fill="#d7ff3d"/>
+    </g>`;
+}
+
+function captainArt() {
+  const k = 'crest';
+  return `
+  <svg class="cap-art" viewBox="0 0 240 264" role="img" aria-labelledby="cap-art-title">
+    <title id="cap-art-title">CaptainAI, the model you are playing against</title>
+    ${capDefs(k)}
+    <g clip-path="url(#capCrest-${k})">
+      <rect width="240" height="264" fill="#101309"/>
+      <rect width="240" height="264" fill="url(#capGrid-${k})"/>
+      <rect width="240" height="264" fill="url(#capGlow-${k})"/>
+      ${capFigure(k)}
+    </g>
+    <path d="M120 8 208 39v90c0 51-38 90-88 119-50-29-88-68-88-119V39z" fill="none" stroke="#4a5142" stroke-width="2.5"/>
+  </svg>`;
+}
+
+/* Promo pose: same character, leaning out of the banner with the free bet in hand. */
+function captainPromo(rewardShort) {
+  const k = 'promo';
+  return `
+  <svg class="cap-promo" viewBox="0 0 300 220" preserveAspectRatio="xMidYMax meet" aria-hidden="true" focusable="false">
+    ${capDefs(k)}
+    <circle cx="168" cy="104" r="104" fill="url(#capGlow-${k})"/>
+    <g>
+      <path d="M104 34h-16v14c0 10 7 18 16 20M232 34h16v14c0 10-7 18-16 20" fill="none" stroke="#d7ff3d" stroke-opacity=".38" stroke-width="4"/>
+      <path d="M104 26h128v34c0 32-26 58-58 58h-12c-32 0-58-26-58-58z" fill="none" stroke="#d7ff3d" stroke-opacity=".3" stroke-width="4"/>
+      <path d="M152 118h32v24h-32zM132 142h72v12h-72z" fill="none" stroke="#d7ff3d" stroke-opacity=".3" stroke-width="4"/>
+    </g>
+    <g transform="translate(78 -14) scale(.88)">${capFigure(k)}</g>
+    <g transform="rotate(-10 56 168)">
+      <rect x="2" y="136" width="108" height="60" rx="10" fill="#12150e" stroke="#d7ff3d" stroke-width="2"/>
+      <path d="M2 161a9 9 0 0 1 0 12M110 161a9 9 0 0 0 0 12" fill="#0e0f0c"/>
+      <text x="16" y="160" font-family="Barlow, Arial, sans-serif" font-size="12" font-weight="700" letter-spacing="1.4" fill="#878c80">FREE BET</text>
+      <text x="16" y="186" font-family="Barlow Condensed, Arial Narrow, sans-serif" font-size="30" font-weight="800" fill="#d7ff3d">${rewardShort}</text>
+    </g>
+  </svg>`;
+}
+
+/* One prize component, two shapes: a promo banner where it has room, a plain row in a rail. */
 function prizeBanner(p, opts = {}) {
   const partner = PARTNERS[0];
   const w = weekSummary();
@@ -887,18 +1013,29 @@ function prizeBanner(p, opts = {}) {
     : inPrize
       ? `You are #${w.rank} of ${fmtK(WEEK_FIELD)} — inside the top ${PRIZE_TOP}.`
       : `You are #${w.rank} — ${w.rank - PRIZE_TOP} ${plural(w.rank - PRIZE_TOP, 'place', 'places')} from the prize.`;
-  return `
-  <section class="prize-banner ${opts.compact ? 'compact' : ''}" aria-label="This week's prize">
-    <div class="pb-main">
+  if (opts.compact) {
+    return `
+    <section class="prize-row" aria-label="This week's prize">
       <span class="pb-ic">${icon('i-gift')}</span>
       <div>
-        <h3>Finish in the top ${PRIZE_TOP} this week</h3>
-        <p>${partner.name} adds its welcome offer: <b>${partner.offer.title}</b>. Credited on Monday when the table resets.</p>
-        <p class="pb-status ${inPrize ? 'on' : ''}">${status}</p>
+        <b>Top ${PRIZE_TOP} win the ${partner.name} welcome offer</b>
+        <p>${partner.offer.title}, credited Monday. <span class="pb-status ${inPrize ? 'on' : ''}">${status}</span></p>
+        <p class="pb-terms">Partner-funded · new customers only · 18+ · T&amp;Cs apply</p>
       </div>
+    </section>`;
+  }
+  return `
+  <section class="prize-banner" aria-label="This week's prize">
+    <div class="pb-copy">
+      <h3>${partner.offer.title}</h3>
+      <p class="pb-lead">Finish in the top ${PRIZE_TOP} this week and ${partner.name} adds its welcome offer, credited on Monday.</p>
+      <div class="pb-actions">
+        ${opts.cta || `<button class="btn btn-primary" data-action="nav" data-to="board" data-label="Table">See the table ${icon('i-arrow')}</button>`}
+        <span class="pb-status ${inPrize ? 'on' : ''}">${status}</span>
+      </div>
+      <p class="pb-terms">Partner-funded, not a cash prize from Tribuna · new customers only · 18+ · T&amp;Cs apply · locking a prediction is always free.</p>
     </div>
-    ${opts.compact ? '' : `<div class="pb-cta">${opts.cta || `<button class="btn btn-secondary" data-action="nav" data-to="board" data-label="Table">See the table ${icon('i-arrow')}</button>`}</div>`}
-    <p class="pb-terms">Partner-funded prize, not a cash prize from Tribuna. ${partner.offer.terms} Play the game without betting: locking a prediction is always free.</p>
+    <div class="pb-art">${captainPromo('+' + partner.offer.reward)}</div>
   </section>`;
 }
 
@@ -906,54 +1043,37 @@ function viewLanding() {
   const p = state.profile;
   const w = weekSummary();
   const totalPredictions = FANBASES.reduce((a, f) => a + f.n, 0);
-  const humansHit = hitRate(PLAYERS.reduce((a, x) => a + x.correct, 0), PLAYERS.reduce((a, x) => a + x.played, 0) * 3);
-  const aiHit = hitRate(CAPTAIN.correct, CAPTAIN.played * 3);
   return `
-  <section class="hero span-all" aria-labelledby="hero-title">
-    <div class="row wrap" style="gap:8px"><span class="chip">${WEEK_LABEL} · ${MATCHES.length} matches</span><span class="chip">${fmtK(totalPredictions)} calls locked</span></div>
-    <h1 id="hero-title">Call the match. <em>Beat CaptainAI.</em> Climb the table.</h1>
-    <p>Three calls per match, locked before kick-off. Compare yours with the model, ${fmtK(totalPredictions)} fans and the betting market, then watch the points land at full-time.</p>
-    <div class="foot-cta">
-      <button class="btn btn-primary btn-block" data-action="nav" data-to="hub" data-label="Challenges">${w.locked > 0 ? `Continue · ${w.locked} of ${w.total} called` : 'Play this week\'s challenges'} ${icon('i-arrow')}</button>
-      ${p.iq > 0 ? `<button class="btn btn-ghost" data-action="nav" data-to="retention" data-label="You">My Match IQ · ${p.iq} · ${leagueFor(p.iq).name}</button>` : ''}
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-copy">
+      <div class="row wrap" style="gap:8px"><span class="chip">${WEEK_LABEL} · ${MATCHES.length} matches</span><span class="chip">${fmtK(totalPredictions)} calls locked</span></div>
+      <h1 id="hero-title">Call the match. <em>Beat CaptainAI.</em> Climb the table.</h1>
+      <p>Three calls per match, locked before kick-off. Compare yours with the model, ${fmtK(totalPredictions)} fans and the betting market, then watch the points land at full-time.</p>
+      <div class="foot-cta">
+        <button class="btn btn-primary btn-block" data-action="nav" data-to="hub" data-label="Challenges">${w.locked > 0 ? `Continue · ${w.locked} of ${w.total} called` : 'Play this week\'s challenges'} ${icon('i-arrow')}</button>
+        ${p.iq > 0 ? `<button class="btn btn-ghost" data-action="nav" data-to="retention" data-label="You">My Match IQ · ${p.iq} · ${leagueFor(p.iq).name}</button>` : ''}
+      </div>
     </div>
-    <div class="hero-stats">
-      <div><b class="num">${fmtK(totalPredictions)}</b><span>calls locked this week</span></div>
-      <div><b class="num">${humansHit}% <small>v</small> ${aiHit}%</b><span>humans v CaptainAI hit rate</span></div>
-      <div><b>Top ${PRIZE_TOP}</b><span>win a welcome bonus weekly</span></div>
-    </div>
+    <div class="hero-art" aria-hidden="false">${captainArt()}</div>
   </section>
 
-  ${prizeBanner(p)}
-
-  <div class="cols">
-  <div>
   <section class="steps3" aria-label="How it works">
     <div><span class="n">1</span><b>Make 3 blind calls</b><p>Winner, goals, scorer. Nothing revealed until you commit.</p></div>
     <div><span class="n">2</span><b>Compare and lock</b><p>See CaptainAI, fans and the market, then tap your Power Pick for double points.</p></div>
     <div><span class="n">3</span><b>Score at full-time</b><p>+${POINTS_PER_CALL} per correct call. Streaks, leagues and a weekly table.</p></div>
   </section>
 
-  ${CONFIG.features.aiSlip ? aiSlipCard() : ''}
-  </div>
+  ${prizeBanner(p)}
 
-  <div class="rail">
-    <section class="lb" aria-labelledby="lb-title">
-      <div class="hd">
-        <span id="lb-title" style="font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--ink)">Weekly leaderboard</span>
-        <b>Humans <span class="num">${p.humans} : ${p.ai}</span> CaptainAI</b>
-        <span class="sub">Top ${PRIZE_TOP} win a welcome bonus from ${PARTNERS[0].name} · resets Monday</span>
-      </div>
-      ${topTable(p, 10)}
-      <div class="foot row between wrap" style="gap:8px">
-        <span>${p.iq > 0 ? `You are #${w.rank}.` : 'Lock a prediction to enter the table.'}</span>
-        <button class="btn btn-ghost btn-sm" data-action="nav" data-to="board" data-label="Table">See full table ${icon('i-arrow')}</button>
-      </div>
-    </section>
-  </div>
-  </div>
+  <section class="board-section" aria-labelledby="lb-title">
+    <div class="sec-head">
+      <h2 id="lb-title">Weekly leaderboard</h2>
+      <span>${p.iq > 0 ? `You are #${w.rank} of ${fmtK(WEEK_FIELD)}` : `${fmtK(WEEK_FIELD)} players this week`} · resets Monday</span>
+    </div>
+    <div class="lb">${playersTable(p, { limit: 10, expandable: true })}</div>
+  </section>
 
-  <section class="terms span-all" aria-labelledby="terms-title">
+  <section class="terms" aria-labelledby="terms-title">
     <h2 id="terms-title">Game rules and terms</h2>
     ${TERMS.map(([t, body]) => `<details><summary>${t} ${icon('i-chev', 'chev')}</summary><p>${body}</p></details>`).join('')}
     <p class="tiny dim" style="margin-top:12px">Version 1.0 · ${WEEK_LABEL} · Prototype copy, not legal text.</p>
@@ -975,7 +1095,7 @@ function viewBoard() {
           <button class="tab" role="tab" aria-selected="${isPlayers}" data-action="lb-tab" data-tab="players">Players</button>
           <button class="tab" role="tab" aria-selected="${!isPlayers}" data-action="lb-tab" data-tab="fanbases">Fanbases</button>
         </div>
-        ${isPlayers ? playersTable(p, { full: true }) : fanbasesPanel(p)}
+        ${isPlayers ? playersTable(p, { limit: 10, expandable: true }) : fanbasesPanel(p)}
       </section>
     </div>
 
@@ -1021,6 +1141,7 @@ function viewHub() {
           <span class="status">${status}</span>
         </button>`;
       }).join('')}`).join('')}
+      ${CONFIG.features.aiSlip ? aiSlipCard() : ''}
     </div>
 
     <div class="rail">
@@ -1030,14 +1151,6 @@ function viewHub() {
         <div><span>Rank</span><b class="num">${p.iq > 0 || w.settled > 0 ? '#' + w.rank : '–'}</b></div>
       </div>
       ${prizeBanner(p, { compact: true })}
-      <div class="how">
-        <b style="color:var(--ink)">How it works</b>
-        <ol>
-          <li>Make three blind calls before kick-off. Then see what CaptainAI, fans and the market think.</li>
-          <li>Tap the call you trust most: it is your Power Pick and counts double. +${POINTS_PER_CALL} per correct call, +${PERFECT_BONUS} for a perfect match.</li>
-          <li>Results settle at full-time. Weekly table resets every Monday.</li>
-        </ol>
-      </div>
     </div>
   </div>`;
 }
@@ -1270,7 +1383,7 @@ function viewOdds() {
     ${PARTNERS.map((p, i) => `
     <div class="odds-row ${odds[i] === best ? 'best' : ''}">
       <span class="bk">${p.name}<small>${odds[i] === best ? 'Best price' : 'Partner offer'}</small>${p.offer ? `<span class="offer">${icon('i-gift')} ${p.offer.short}</span>` : ''}</span>
-      <span class="o num">${fmtOdds(odds[i])}<small>10 returns ${(odds[i] * 10).toFixed(2)}</small></span>
+      <span class="o num">${fmtOdds(odds[i])}<small>${money(10)} returns ${money(odds[i] * 10)}</small></span>
       <button class="btn btn-sm ${odds[i] === best ? 'btn-primary' : 'btn-secondary'}" data-action="handoff" data-partner="${p.id}">View</button>
     </div>`).join('')}
   </div>
@@ -1320,7 +1433,7 @@ function viewWait() {
     return `
   <div class="back-it">
     <div class="row between wrap" style="gap:8px"><span class="eyebrow">Back this prediction</span>${best.partner.offer ? `<span class="chip chip-accent">${icon('i-gift')} ${best.partner.offer.short}</span>` : ''}</div>
-    <p class="small muted" style="margin-top:6px">Your three calls as a Bet Builder. Stake 10 returns <b style="color:var(--ink)" class="num">${(best.odds * 10).toFixed(2)}</b> at the best price.</p>
+    <p class="small muted" style="margin-top:6px">Your three calls as a Bet Builder. Stake ${money(10)} returns <b style="color:var(--ink)" class="num">${money(best.odds * 10)}</b> at the best price.</p>
     <div class="foot-cta" style="margin-top:12px">
       ${betCta(slip, 'Back it', 'wait_screen')}
       <button class="btn btn-ghost" data-action="to-odds">Compare all ${PARTNERS.length} partners</button>
@@ -1416,8 +1529,9 @@ function quickBet() {
 }
 
 function movement(row, rank) {
-  if (row.prev == null) return `<span class="mv new">new</span>`;
-  const d = row.prev - rank;
+  const prev = row.mv != null ? rank + row.mv : row.prev;
+  if (prev == null) return `<span class="mv new">new</span>`;
+  const d = prev - rank;
   if (d === 0) return `<span class="mv">–</span>`;
   return d > 0 ? `<span class="mv up">▲${d}</span>` : `<span class="mv down">▼${-d}</span>`;
 }
@@ -1425,7 +1539,8 @@ function movement(row, rank) {
 function playersTable(p, opts = {}) {
   const board = leaderboard(p);
   const meIdx = board.findIndex((r) => r.me);
-  const TOP = opts.full ? board.length : 8;
+  const expanded = opts.expandable && state.lbFull;
+  const TOP = Math.min(board.length, expanded ? PRIZE_TOP : opts.limit || 8);
   const visible = board.slice(0, TOP);
   const showMeBelow = meIdx >= TOP;
   const row = (r, i) => `
@@ -1439,10 +1554,10 @@ function playersTable(p, opts = {}) {
   const humansHit = hitRate(PLAYERS.reduce((a, x) => a + x.correct, 0) + p.correct, (PLAYERS.reduce((a, x) => a + x.played, 0) + Object.values(p.matches).filter((e) => e.status === 'settled').length) * 3);
   const aiHit = hitRate(CAPTAIN.correct, CAPTAIN.played * 3);
   return `
-    <div class="hd">
+    ${opts.bare ? '' : `<div class="hd">
       <b>Humans <span class="num">${p.humans} : ${p.ai}</span> CaptainAI</b>
       <span class="sub">Matches won this week · hit rate ${humansHit}% v ${aiHit}%</span>
-    </div>
+    </div>`}
     <table role="tabpanel" aria-label="Weekly leaderboard">
       <thead><tr><th>#</th><th>Player</th><th title="Matches played">P</th><th>Hit</th><th>IQ</th></tr></thead>
       <tbody>
@@ -1450,6 +1565,7 @@ function playersTable(p, opts = {}) {
         ${showMeBelow ? `${meIdx > TOP ? `<tr><td colspan="5" class="gap">${plural(meIdx - TOP, 'more player', 'more players')}</td></tr>` : ''}${row(board[meIdx], meIdx)}` : ''}
       </tbody>
     </table>
+    ${opts.expandable ? `<button class="lb-more" data-action="lb-expand" aria-expanded="${expanded}">${expanded ? `Show the top ${opts.limit || 10}` : `Show the top ${PRIZE_TOP} — everyone in the prize`} ${icon('i-chev', 'chev')}</button>` : ''}
     <div class="foot">${p.iq === 0 ? 'Lock a prediction to enter the table. ' : ''}Ties break on hit rate, movement is versus yesterday.</div>`;
 }
 
@@ -1587,7 +1703,7 @@ function viewSheet() {
       <div class="mini-slip">
         <div><span>Your slip · ${isBuilder ? 'Bet Builder' : 'Single'}</span><span>${legs.length} ${legs.length === 1 ? 'selection' : 'selections'}</span></div>
         ${legs.map((l) => `<div><span>${l.o.label} <span class="dim">· ${l.q.title}</span></span><span class="num">${fmtOdds(l.o.odds[idx])}</span></div>`).join('')}
-        <div><span>Stake 10 at ${fmtOdds(odds)}</span><span class="tot num">Returns ${(odds * 10).toFixed(2)}</span></div>
+        <div><span>Stake ${money(10)} at ${fmtOdds(odds)}</span><span class="tot num">Returns ${money(odds * 10)}</span></div>
       </div>
       ${partner.offer ? `
       <div class="offer">
@@ -1908,6 +2024,7 @@ const ACTIONS = {
     updateProfile({ prevRank: rank });
   },
   'lb-tab'(btn) { setState({ lbTab: btn.dataset.tab }); },
+  'lb-expand'() { const lbFull = !state.lbFull; track('leaderboard_expand', { expanded: lbFull }); setState({ lbFull }); },
   'read-more'() { track('content_click', { screen: state.screen }); toast('Opens the full article on Tribuna (mock)'); },
   reset() {
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) { /* ignore */ }
