@@ -4,7 +4,7 @@ Prototype for the Tribuna.com iGaming Product/Project Manager test task.
 
 - **Live prototype:** https://youngerfornday.github.io/tribuna-match-iq/
 - **Answer deck (Ukrainian):** https://youngerfornday.github.io/tribuna-match-iq/deck.html — the three answers as a 14-slide deck, built from the prototype's own tokens. Arrow keys navigate, Cmd+P prints one slide per page.
-- **Run it locally:** open `index.html` in any browser. No build step, no dependencies, works offline. The only other files are two illustrations and a social preview card in `art/`.
+- **Run it locally:** open `index.html` in any browser. No build step, no dependencies. Over HTTPS it installs as a PWA and works offline; the rest of the repo is the illustrations, icons and social card in `art/`, a manifest and a service worker.
 
 Flow: match page → 3 blind calls (winner, over/under, scorer) → reveal CaptainAI / fans / market after each call → review the three calls and tap one as the Power Pick, then lock → odds at three partners (bet builder or single) → wait for full-time → result → Match IQ, streak, league, leaderboards → next match.
 
@@ -76,6 +76,8 @@ All events are visible in the prototype's Metrics panel at the bottom of every s
 - One streak freeze per week, spent automatically when a kick-off passes without a call, and the profile says when it saved you.
 - Duels travel in the link: the challenger's slip is encoded into the URL, the opponent plays the same match blind, and both slips are only compared at full-time. Showing the challenger's calls first would break the blind-then-reveal rule the whole game rests on.
 - The weekly quest is computed from the fixtures, not stored: call every Sunday match and the week pays +25 Match IQ, awarded the moment the last one is locked.
+- Installable and offline: a manifest, icons and a service worker that caches the shell. Navigations go network-first so a deploy lands immediately, and fall back to the cached page when there is no connection. A prototype gets opened on phones in bad reception, and a link that fails there is a link nobody looks at.
+- One partner at a time can suspend its market. The row hides the price and disables its button, the best price moves to a live book, and a suspension while the handoff sheet is open blocks the exit instead of sending someone out on a price that no longer exists.
 - Prices move while you are on the odds screen, and the handoff will not send you out on a price you did not accept: if it moved between opening the sheet and continuing, the sheet says so and asks again. The feed is simulated - the prices are fixed data - but the behaviour it forces on the UI is the real one.
 - Partner order follows the market (`PARTNER_ORDER` by geo, UA leads with FAVBET), while the best price is highlighted wherever it sits. Ordering is a market decision; price is not.
 - The first result asks whether to save the streak to a Tribuna account. It is the soft registration gate, shown once, and nothing is gated behind refusing it.
@@ -97,7 +99,7 @@ All events are visible in the prototype's Metrics panel at the bottom of every s
 Kept out of the prototype so the core flow stays readable. Each is a follow-up, not a missing piece:
 
 - Push notifications for "result is in" and "streak at risk", and the weekly reset job behind them. The prototype says where they belong rather than faking a permission prompt.
-- The odds feed itself. Prices are fixed data with a simulated drift on top; a real feed brings its own contract for suspensions, market closes and partner outages.
+- The odds feed itself. Prices are fixed data with a simulated drift and suspension on top: the UI contract those force is implemented, the connection to a real book is not.
 - Server-side notifications and the scheduled jobs behind them. The prototype opts you in through the browser's own Notification permission and fires the full-time notice locally, which is as far as a client can honestly go.
 - A friends list and identity beyond a local handle. Duels carry a name through the link, but a real account is what makes an opponent the same person next week.
 

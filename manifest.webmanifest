@@ -1,0 +1,16 @@
+{
+  "name": "Tribuna Match IQ",
+  "short_name": "Match IQ",
+  "description": "Three calls per match, locked before kick-off. Compare yours with CaptainAI, the fans and the market.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0e0f0c",
+  "theme_color": "#0e0f0c",
+  "categories": ["sports", "games"],
+  "icons": [
+    { "src": "art/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "art/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
