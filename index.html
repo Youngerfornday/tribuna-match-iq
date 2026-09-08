@@ -523,6 +523,16 @@ body[data-layout="wide"]{--shell:1120px}
 .standing .st-main b{font-family:var(--font-display);font-size:24px;font-weight:700;line-height:1.1;display:block}
 .standing .st-main span{display:block;font-size:13px;color:var(--ink-3);margin-top:3px}
 .standing .st-cta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.rivals{margin-top:16px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--line);overflow:hidden}
+.rivals .hd{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:14px 16px 6px}
+.rivals .hd h2{font-family:var(--font-display);font-size:22px;font-weight:700}
+.rivals .hd span{font-size:12px;color:var(--ink-3)}
+.rival{display:flex;align-items:center;gap:12px;padding:10px 16px;border-top:1px solid var(--line)}
+.rival .av{width:32px;height:32px;border-radius:50%;background:var(--surface-3);display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--ink-2);flex:none}
+.rival .t{flex:1;min-width:0}
+.rival .t b{display:block;font-weight:600;font-size:15px}
+.rival .t small{display:block;font-size:12px;color:var(--ink-3);margin-top:2px}
+.rivals .foot{padding:10px 16px 14px;font-size:12px;color:var(--ink-3);border-top:1px solid var(--line)}
 .shelf{margin-top:16px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--line);overflow:hidden}
 .shelf .hd{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:14px 16px 4px}
 .shelf .hd h2{font-family:var(--font-display);font-size:22px;font-weight:700}
@@ -940,7 +950,7 @@ const CONFIG = Object.freeze({
 const DEFAULT_PROFILE = Object.freeze({
   uid: null, name: null, iq: 0, streak: 0, correct: 0, total: 0, aiCorrect: 0, marketCorrect: 0, badges: [],
   humans: 2, ai: 3, club: null, prevRank: null, ageConfirmed: false, welcomeSeen: false, welcomeClaimed: null,
-  accountSaved: false, accountPrompted: false, questDone: false, freezes: 1, freezeUsed: false, week: null, notify: false, duels: {}, matches: {},
+  accountSaved: false, accountPrompted: false, questDone: false, freezes: 1, freezeUsed: false, week: null, notify: false, rivals: [], matches: {},
 });
 const newId = () => (crypto.randomUUID ? crypto.randomUUID() : 'u-' + Math.random().toString(36).slice(2, 10));
 function loadProfile() {
@@ -1792,6 +1802,23 @@ function fanbasesPanel(p) {
    first half: every call you locked this week and what it scored. */
 /* The shelf lives on the profile: earned badges in accent, the rest visible with the
    condition that unlocks them, because a locked badge is the reason to play again. */
+function rivalsPanel(p) {
+  const rivals = p.rivals || [];
+  if (!rivals.length) return '';
+  const nextOpen = MATCHES.find((m) => statusOf(m, p) === 'open');
+  return `
+  <section class="rivals" aria-label="Rivals">
+    <div class="hd"><h2>Rivals</h2><span>Head to head</span></div>
+    ${rivals.map((r) => `
+    <div class="rival">
+      <span class="av">${r.name.slice(0, 2).toUpperCase()}</span>
+      <span class="t"><b>${r.name}</b><small>${r.w}W · ${r.l}L${r.d ? ` · ${r.d}D` : ''}</small></span>
+      ${nextOpen ? `<button class="btn btn-ghost btn-sm" data-action="open-match" data-match="${nextOpen.id}">Rematch ${icon('i-arrow')}</button>` : ''}
+    </div>`).join('')}
+    <div class="foot">A rematch is a new challenge link on the next open match.</div>
+  </section>`;
+}
+
 function badgeShelf(p) {
   const owned = p.badges || [];
   return `
@@ -1906,6 +1933,7 @@ function viewRetention() {
 
     <div class="rail">
       ${myWeek(p)}
+      ${rivalsPanel(p)}
       ${badgeShelf(p)}
     </div>
   </div>`;
@@ -2522,6 +2550,24 @@ const ACTIONS = {
       humans: p.humans + (outcome.you > outcome.ai ? 1 : 0),
       ai: p.ai + (outcome.ai > outcome.you ? 1 : 0),
     });
+    /* A settled duel becomes a head-to-head record. This is the honest version of a friends
+       list: it only ever knows the people you actually played. */
+    const duel = entryOf(state.profile, m.id).duel;
+    if (duel) {
+      const theirs = computeOutcome(m, duel.answers, duel.powerPick);
+      const rivals = [...(state.profile.rivals || [])];
+      const at = rivals.findIndex((r) => r.name === duel.from);
+      const rec = at >= 0 ? { ...rivals[at] } : { name: duel.from, w: 0, l: 0, d: 0 };
+      if (outcome.points > theirs.points) rec.w += 1;
+      else if (outcome.points < theirs.points) rec.l += 1;
+      else rec.d += 1;
+      rec.last = m.id;
+      rec.at = Date.now();
+      if (at >= 0) rivals[at] = rec; else rivals.unshift(rec);
+      updateProfile({ rivals: rivals.sort((a, b) => b.at - a.at).slice(0, 8) });
+      track('duel_settled', { rival: duel.from, you: outcome.points, them: theirs.points });
+    }
+
     /* Badges persist on the profile; only the ones earned for the first time are announced. */
     const weekly = weekSummary().locked >= 3 ? ['week3'] : [];
     const owned = state.profile.badges || [];

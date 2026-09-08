@@ -74,6 +74,7 @@ All events are visible in the prototype's Metrics panel at the bottom of every s
 
 - The Monday reset is real: the profile carries an ISO week key and rolls itself over. Entries, the quest, the humans-versus-model score and last week's rank clear; Match IQ, league, badges and the streak carry over, which is exactly the split the rules promise.
 - One streak freeze per week, spent automatically when a kick-off passes without a call, and the profile says when it saved you.
+- Rivals are the honest version of a friends list: the profile remembers the head-to-head record of everyone you actually duelled, and offers a rematch on the next open match. Nothing is invented about people you have not played.
 - Duels travel in the link: the challenger's slip is encoded into the URL, the opponent plays the same match blind, and both slips are only compared at full-time. Showing the challenger's calls first would break the blind-then-reveal rule the whole game rests on.
 - The weekly quest is computed from the fixtures, not stored: call every Sunday match and the week pays +25 Match IQ, awarded the moment the last one is locked.
 - Installable and offline: a manifest, icons and a service worker that caches the shell. Navigations go network-first so a deploy lands immediately, and fall back to the cached page when there is no connection. A prototype gets opened on phones in bad reception, and a link that fails there is a link nobody looks at.
@@ -101,7 +102,7 @@ Kept out of the prototype so the core flow stays readable. Each is a follow-up, 
 - Push notifications for "result is in" and "streak at risk", and the weekly reset job behind them. The prototype says where they belong rather than faking a permission prompt.
 - The odds feed itself. Prices are fixed data with a simulated drift and suspension on top: the UI contract those force is implemented, the connection to a real book is not.
 - Server-side notifications and the scheduled jobs behind them. The prototype opts you in through the browser's own Notification permission and fires the full-time notice locally, which is as far as a client can honestly go.
-- A friends list and identity beyond a local handle. Duels carry a name through the link, but a real account is what makes an opponent the same person next week.
+- Cross-device identity. A handle is stored locally and travels inside a duel link, and rivals are remembered from the duels actually played, but only an account makes the same person the same opponent on another device.
 
 Precedents: Sky Bet Super 6 is the reference for predictor-to-sportsbook; FotMob and OneFootball predictions are the content-side reference. Rollout: one top match per week, then top-5 leagues, then a weekly league with partner-funded prizes.
 
