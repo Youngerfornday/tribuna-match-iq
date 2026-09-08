@@ -68,9 +68,9 @@ code,.mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size
 .slide{
   scroll-snap-align:start;scroll-snap-stop:always;
   min-height:100dvh;display:flex;flex-direction:column;justify-content:center;
-  padding:60px 88px 68px 104px;border-bottom:1px solid var(--line);
+  padding:52px 88px 60px 104px;border-bottom:1px solid var(--line);
 }
-.inner{width:100%;max-width:var(--shell);margin:0 auto;display:flex;flex-direction:column;gap:32px}
+.inner{width:100%;max-width:var(--shell);margin:0 auto;display:flex;flex-direction:column;gap:28px}
 .head{display:flex;flex-direction:column;gap:14px}
 
 /* Numbering is real structure: three questions, ordered slides inside each. */
@@ -145,6 +145,16 @@ h2{font-size:clamp(32px,4.5vw,58px);max-width:21ch}
 .formula .f{font-family:var(--font-display);font-size:clamp(22px,2.7vw,34px);font-weight:700;line-height:1.25}
 .formula .f em{font-style:normal;color:var(--accent)}
 .formula .cap{font-size:14px;color:var(--ink-3);line-height:1.55}
+/* Slides carrying six blocks or a long list get a tighter rhythm so they still fit 16:9. */
+.slide.dense{padding-top:40px;padding-bottom:48px}
+.slide.dense h2{font-size:clamp(30px,3.7vw,46px);max-width:24ch}
+.slide.dense .inner{gap:22px}
+.slide.dense .card{padding:16px 18px;gap:7px}
+.slide.dense .card h3{font-size:20px}
+.slide.dense .card p{font-size:14.5px}
+.slide.dense .list li{font-size:14.5px;gap:11px}
+.slide.dense .formula{padding:20px 24px}
+.slide.dense figcaption{font-size:12px;line-height:1.4}
 .note{font-size:14.5px;color:var(--ink-3);line-height:1.55;border-left:2px solid var(--line-strong);padding-left:14px;max-width:92ch}
 .note b{color:var(--ink-2)}
 .fn{font-size:12.5px;color:var(--ink-3);line-height:1.5}
@@ -171,9 +181,11 @@ h1 .lime{color:var(--accent)}
 .art-frame::after{
   content:"";position:absolute;inset:-1px;pointer-events:none;
   background:
-    linear-gradient(90deg,var(--bg) 0,rgba(14,15,12,0) 18%,rgba(14,15,12,0) 82%,var(--bg) 100%),
-    linear-gradient(180deg,var(--bg) 0,rgba(14,15,12,0) 15%,rgba(14,15,12,0) 85%,var(--bg) 100%);
+    linear-gradient(90deg,var(--bg) 0,rgba(14,15,12,0) 26%,rgba(14,15,12,0) 74%,var(--bg) 100%),
+    linear-gradient(180deg,var(--bg) 0,rgba(14,15,12,0) 22%,rgba(14,15,12,0) 78%,var(--bg) 100%);
 }
+/* In two-column slides the artwork is a supporting note, not the subject. */
+.split figure{max-width:270px;margin-left:auto}
 figure{margin:0}
 figcaption{margin-top:2px;font-size:12.5px;color:var(--ink-3);line-height:1.45}
 .stamp{position:absolute;top:34px;right:32px;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
@@ -237,7 +249,7 @@ figcaption{margin-top:2px;font-size:12.5px;color:var(--ink-3);line-height:1.45}
           <p class="kicker">Три відповіді: суть, конверсія, метрики</p>
           <p class="lead" style="margin-top:14px">Гра-прогноз на сторінці матчу. Читач робить три прогнози наосліп, звіряє їх із CaptainAI, уболівальниками та ринком — і лише потім бачить ціну власного сценарію.</p>
           <div class="toc">
-            <a href="#s11"><span class="n">01</span><span><span class="t">Суть проєкту</span><span class="q">У чому сіль і яку проблему користувача це вирішує</span></span></a>
+            <a href="#s11"><span class="n">01</span><span><span class="t">Суть проєкту</span><span class="q">Що це за продукт і яку проблему читача він вирішує</span></span></a>
             <a href="#s21"><span class="n">02</span><span><span class="t">iGaming-конверсія</span><span class="q">Як інструмент природно мотивує ставку чи перехід до букмекера</span></span></a>
             <a href="#s31"><span class="n">03</span><span><span class="t">Метрики</span><span class="q">North Star, допоміжні метрики і те, як саме ми їх рахуємо</span></span></a>
           </div>
@@ -249,7 +261,7 @@ figcaption{margin-top:2px;font-size:12.5px;color:var(--ink-3);line-height:1.45}
         </div>
         <figure>
           <span class="art-frame"><img class="art" src="art/captain-ai.webp" alt="CaptainAI — модель, проти якої грає користувач" width="390" height="484"></span>
-          <figcaption>CaptainAI — суперник читача. Не «AI-функція», а персонаж, з яким є рахунок.</figcaption>
+          <figcaption>CaptainAI — суперник читача. Не «AI-функція», а персонаж, з яким ви ведете особистий рахунок.</figcaption>
         </figure>
       </div>
       <div class="chips">
@@ -267,14 +279,14 @@ figcaption{margin-top:2px;font-size:12.5px;color:var(--ink-3);line-height:1.45}
       <div class="head">
         <div class="eyebrow"><span class="no">1.1</span>Суть проєкту<span class="sep"></span>Проблема користувача</div>
         <h2>«Маю думку про цей матч — і нема куди її подіти»</h2>
-        <p class="lead">Читач відкриває превʼю, бо вже має гіпотезу: Арсенал візьме, забʼє Сака, буде більше 2.5. Сьогодні ця думка помирає в коментарях.</p>
+        <p class="lead">Читач відкриває превʼю, бо вже має власну версію матчу: Арсенал візьме, забʼє Сака, буде більше 2.5. Сьогодні цій думці нікуди подітися — хіба що в коментарі.</p>
       </div>
       <div class="grid g3">
         <div class="card"><span class="k"><span class="i">01</span> · Барʼєр</span><h3>Немає ставки в матчі</h3><p>Емоційної, не грошової. Особистого інтересу в матчі немає — лише рахунок на табло.</p></div>
-        <div class="card"><span class="k"><span class="i">02</span> · Барʼєр</span><h3>Немає дзеркала</h3><p>Свою компетентність нема з чим звірити: я розумію футбол краще за середнього фана чи гірше?</p></div>
-        <div class="card"><span class="k"><span class="i">03</span> · Барʼєр</span><h3>Немає накопичення</h3><p>Вгадане вчора сьогодні не існує. Сезон здогадок ні в що не складається.</p></div>
+        <div class="card"><span class="k"><span class="i">02</span> · Барʼєр</span><h3>Немає дзеркала</h3><p>Власне чуття нема з чим порівняти: я розумію матч краще за середнього читача чи гірше?</p></div>
+        <div class="card"><span class="k"><span class="i">03</span> · Барʼєр</span><h3>Немає накопичення</h3><p>Вгадане вчора сьогодні ніде не враховано. Цілий сезон влучних здогадок не дає нічого.</p></div>
       </div>
-      <div class="note"><b>Проблема бізнесу.</b> Сторінка матчу не має дії до матчу, причини повернутись після нього і другого контентного кліку між ними. А блок 1X2 звертається до читача в найгіршу мить — до того, як у нього зʼявилась думка, яку варто підкріпити грішми.</div>
+      <div class="note"><b>Проблема бізнесу.</b> На сторінці матчу немає що зробити до гри, немає причини повернутись після неї і немає приводу для другого кліку в контент. А блок 1X2 — наявний блок коефіцієнтів на сторінці матчу (перемога господарів, нічия, перемога гостей) — звертається до читача в найгіршу мить: коли той ще не встиг сформувати думку, яку варто підкріпити грішми.</div>
     </div>
   </section>
 
@@ -308,7 +320,7 @@ figcaption{margin-top:2px;font-size:12.5px;color:var(--ink-3);line-height:1.45}
     <div class="inner">
       <div class="head">
         <div class="eyebrow"><span class="no">1.3</span>Суть проєкту<span class="sep"></span>Головний принцип</div>
-        <h2>Спершу зобовʼязання, потім порівняння</h2>
+        <h2>Спершу власний вибір, потім чужі оцінки</h2>
         <p class="lead">Спершу вибір наосліп, потім розкриття чужих оцінок. Це не деталь інтерфейсу: на цьому тримається і залученість, і конверсія.</p>
       </div>
       <div class="grid g2">
@@ -320,30 +332,30 @@ figcaption{margin-top:2px;font-size:12.5px;color:var(--ink-3);line-height:1.45}
           <h3 style="font-size:21px;margin-bottom:14px">Чому це виграшно саме для Tribuna</h3>
           <ul class="list">
             <li><span class="m"></span><span><b>Клубні спільноти — актив, якого немає у FotMob.</b> Таблиця «клуб проти клубу» робить прогноз командною справою: я граю за North Stand, а не за себе.</span></li>
-            <li><span class="m"></span><span><b>CaptainAI — наявний контент у ролі опонента.</b> Модель, що просто друкує ймовірності, нудна. Модель, з якою є рахунок, — привід повернутися.</span></li>
+            <li><span class="m"></span><span><b>CaptainAI — наявний контент у ролі опонента.</b> Модель, яка просто показує ймовірності, нікому не цікава. Модель, з якою ведеш особистий рахунок, — привід повернутися.</span></li>
             <li><span class="m"></span><span><b>Кожне розкриття і кожен результат ведуть у контент:</b> розкриття — у превʼю, результат — у звіт.</span></li>
           </ul>
         </div>
-        <div class="card"><span class="k">Межі</span><h3>Чим це не є</h3><p>Не сервіс платних прогнозів: жодних «гарантованих ставок». Не фентезі-ліга: немає складу і щоденного зобовʼязання. Не гра для досвідченого беттора: ціль — читач, який уже прийшов на превʼю.</p></div>
+        <div class="card"><span class="k">Межі</span><h3>Чим це не є</h3><p>Не сервіс платних прогнозів: жодних «гарантованих ставок». Не фентезі-ліга: немає складу гравців і щоденних обовʼязків. Не гра для досвідченого беттора: наша аудиторія — читач, який уже прийшов на превʼю.</p></div>
       </div>
     </div>
   </section>
 
   <!-- ------------------------------------------------------------- 1.4 -->
-  <section class="slide" id="s14" data-label="1.4 Поле й розгортання">
+  <section class="slide" id="s14" data-label="1.4 Досвід ринку">
     <div class="inner">
       <div class="head">
-        <div class="eyebrow"><span class="no">1.4</span>Суть проєкту<span class="sep"></span>Поле й розгортання</div>
-        <h2>Механіка перевірена — нове тут місце, де вона живе</h2>
+        <div class="eyebrow"><span class="no">1.4</span>Суть проєкту<span class="sep"></span>Досвід ринку й розгортання</div>
+        <h2>Механіка перевірена ринком — новим є місце, де вона живе</h2>
       </div>
       <div class="grid g3">
-        <div class="card"><span class="k">Взірець конверсії</span><h3>Sky Bet Super 6</h3><p>Безкоштовна гра-прогноз як верх воронки букмекера. Доводить, що прогноз конвертує краще за банер.</p></div>
-        <div class="card"><span class="k">Взірець контенту</span><h3>FotMob, OneFootball</h3><p>Прогнози всередині матч-центру. Доводять, що механіка не заважає читанню.</p></div>
+        <div class="card"><span class="k">Приклад із беттингу</span><h3>Sky Bet Super 6</h3><p>Безкоштовна гра-прогноз як вхід у воронку букмекера. Доводить, що прогноз конвертує краще за банер.</p></div>
+        <div class="card"><span class="k">Приклад із медіа</span><h3>FotMob, OneFootball</h3><p>Прогнози всередині матч-центру. Доводять, що механіка не заважає читанню.</p></div>
         <div class="card card-accent"><span class="k">Що додає Tribuna</span><h3>Клубні спільноти</h3><p>Ані Sky Bet, ані FotMob не мають клубних спільнот як структури. Тут прогноз стає командним видом спорту.</p></div>
       </div>
       <div class="split">
         <div class="card"><span class="k">Розгортання</span><h3>Один топ-матч на тиждень → топ-5 ліг → тижнева ліга з партнерськими призами</h3><p>Перший етап навмисно вузький: одна гра на тиждень збирає всіх учасників в одну таблицю, а редакційну підтримку робить реальною.</p></div>
-        <div class="card"><span class="k">Що далі</span><h3>Наступні кроки, не прогалини</h3><p>Полиця значків і картка для поширення. «Зберегти серію в акаунт» як мʼяка реєстрація. Weekend Quest, заморозка серії, дуелі. Живі коефіцієнти з порядком партнерів за країною та сповіщення «результат готовий».</p></div>
+        <div class="card"><span class="k">Що далі</span><h3>Наступні кроки, не прогалини</h3><p>Колекція значків і картка для поширення. «Зберегти серію в акаунт» як мʼяка реєстрація. Weekend Quest, заморозка серії, дуелі. Живі коефіцієнти з порядком партнерів за країною та сповіщення «результат готовий».</p></div>
       </div>
     </div>
   </section>
@@ -358,10 +370,10 @@ figcaption{margin-top:2px;font-size:12.5px;color:var(--ink-3);line-height:1.45}
       </div>
       <div class="grid g3">
         <div class="card"><span class="k"><span class="i">01</span> · Механіка</span><h3>Коефіцієнтів не існує до фіксації</h3><p>Ціни приховані, доки сценарій не зафіксовано. Різниця між «поставте на Арсенал» і «ваш сценарій коштує 4.20».</p></div>
-        <div class="card card-accent"><span class="k"><span class="i">02</span> · Механіка</span><h3>Сценарій сам стає конструктором ставки</h3><p>Три прогнози = три події в експресі, зібраному без жодного зусилля. Найприбутковіший для букмекера тип ставки дістається йому вже зібраним.</p></div>
+        <div class="card card-accent"><span class="k"><span class="i">02</span> · Механіка</span><h3>Сценарій сам стає конструктором ставки</h3><p>Три прогнози — це готовий експрес із трьох подій, який читач склав, навіть не думаючи про ставку. Найприбутковіший для букмекера тип ставки дістається йому вже зібраним.</p></div>
         <div class="card"><span class="k"><span class="i">03</span> · Механіка</span><h3>Power Pick — ординаром</h3><p>Експрес із трьох подій — високий барʼєр для того, хто ніколи не ставив. Ординар на найвпевненіший прогноз — найлегший вхід.</p></div>
         <div class="card"><span class="k"><span class="i">04</span> · Механіка</span><h3>Три партнери, краща ціна підсвічена</h3><p>Чесна версія «порівняй коефіцієнти»: видно, що шукали вигоду, а не продавали конкретного букмекера.</p></div>
-        <div class="card"><span class="k"><span class="i">05</span> · Механіка</span><h3>Вітальна пропозиція після першого переходу</h3><p>Не на вході, а коли намір підтверджений дією. Один раз на профіль, закривається, позначена як ілюстративна.</p></div>
+        <div class="card"><span class="k"><span class="i">05</span> · Механіка</span><h3>Вітальна пропозиція після першого переходу</h3><p>Не на вході, а коли намір уже підтверджений дією. Показуємо один раз на профіль, вікно закривається, пропозиція позначена як ілюстративна.</p></div>
         <div class="card"><span class="k"><span class="i">06</span> · Механіка</span><h3>Тижневий приз: топ-100 таблиці</h3><p>Приз від партнера, а не грошовий від Tribuna. Приз і конверсійна подія — одне й те саме, тому механіка сама себе фінансує.</p></div>
       </div>
     </div>
@@ -421,7 +433,7 @@ figcaption{margin-top:2px;font-size:12.5px;color:var(--ink-3);line-height:1.45}
             <tr><td>Побачив ціни</td><td><code>odds_viewed</code></td><td class="t-num">odds view rate</td><td>перехід до цін не мотивований</td></tr>
             <tr><td>Відкрив картку партнера</td><td><code>handoff_opened</code></td><td class="t-num">intent rate</td><td>пропозиція партнера не переконує</td></tr>
             <tr><td>Пішов до партнера</td><td><code>bookmaker_click</code></td><td class="t-num">handoff conversion</td><td>ціни неконкурентні або партнер не той для цієї країни</td></tr>
-            <tr><td>Зареєструвався, поповнив</td><td>постбек партнера</td><td class="t-num">якість гравця</td><td>женемо неякісний трафік</td></tr>
+            <tr><td>Зареєструвався, поповнив</td><td>постбек партнера</td><td class="t-num">якість гравця</td><td>трафік іде неякісний</td></tr>
           </tbody>
         </table>
       </div>
@@ -430,7 +442,7 @@ figcaption{margin-top:2px;font-size:12.5px;color:var(--ink-3);line-height:1.45}
   </section>
 
   <!-- ------------------------------------------------------------- 2.4 -->
-  <section class="slide" id="s24" data-label="2.4 Запобіжники">
+  <section class="slide dense" id="s24" data-label="2.4 Запобіжники">
     <div class="inner">
       <div class="head">
         <div class="eyebrow"><span class="no">2.4</span>iGaming-конверсія<span class="sep"></span>Відповідальна гра</div>
@@ -447,14 +459,14 @@ figcaption{margin-top:2px;font-size:12.5px;color:var(--ink-3);line-height:1.45}
         </ul>
         <figure>
           <span class="art-frame"><img class="art" src="art/captain-king.webp" alt="Переможець тижневої таблиці з кубком і безкоштовною ставкою" width="360" height="447"></span>
-          <figcaption><b style="color:var(--ink-2)">Персонаж — переможець гри, а не талісман казино.</b> Мультяшний гральний маскот у медіа з молодою аудиторією — перше, до чого виникнуть питання в юристів партнера. Ілюстрації зроблено спеціально для прототипу: узяти арт із сайту оператора — це порушення авторських прав.</figcaption>
+          <figcaption><b style="color:var(--ink-2)">Персонаж — переможець гри, а не талісман казино.</b> Гральний маскот на медіа з молодою аудиторією — перше питання від юристів партнера. Ілюстрацію намальовано для прототипу.</figcaption>
         </figure>
       </div>
     </div>
   </section>
 
   <!-- ------------------------------------------------------------- 3.1 -->
-  <section class="slide" id="s31" data-label="3.1 North Star">
+  <section class="slide dense" id="s31" data-label="3.1 North Star">
     <div class="inner">
       <div class="head">
         <div class="eyebrow"><span class="no">3.1</span>Метрики<span class="sep"></span>North Star Metric</div>
@@ -466,13 +478,13 @@ figcaption{margin-top:2px;font-size:12.5px;color:var(--ink-3);line-height:1.45}
       </div>
       <div class="grid g3">
         <div class="card"><span class="k">Одиниця виміру</span><h3>Користувач, не подія</h3><p>Десять переходів однієї людини = 1. Найактивніший гравець не роздує метрику.</p></div>
-        <div class="card"><span class="k">Вікно</span><h3>ISO-тиждень, Europe/Kyiv</h3><p>Пн–нд, синхронно зі скиданням таблиці й призами в понеділок: приз і метрика в одному календарі.</p></div>
-        <div class="card"><span class="k">Знаменник</span><h3>Тижнева аудиторія віджета</h3><p>Поруч тримаємо <span class="mono">WBIP / weekly widget-exposed users</span>, інакше сезонність футболу видаватиме себе за успіх продукту.</p></div>
+        <div class="card"><span class="k">Вікно</span><h3>ISO-тиждень, Europe/Kyiv</h3><p>Пн–нд, синхронно з оновленням таблиці й призами в понеділок: приз і метрика живуть в одному календарі.</p></div>
+        <div class="card"><span class="k">Знаменник</span><h3>Читачі, які бачили гру</h3><p>Поруч з абсолютним числом тримаємо частку <span class="mono">WBIP / читачі, які бачили гру</span> — інакше сезонність футболу видаватиме себе за успіх продукту.</p></div>
       </div>
       <div class="grid g3">
-        <div class="card"><span class="k">Чому не залученість і не кліки</span><h3>Поодинці обидва брешуть</h3><p>«Активні прогнозисти» ростуть без впливу на виручку. Самі переходи ловлять випадкові дотики по банеру. Перетин росте лише тоді, коли гра працює <b>і</b> веде до партнера.</p></div>
-        <div class="card"><span class="k">Свідоме послаблення</span><h3>Перехід не мусить бути з того самого прогнозу</h3><p>«Зафіксував у середу, поставив у суботу» — нормальна поведінка. Прямий звʼязок міряємо окремо: <b>attach rate</b> — частка <code>prediction_locked</code>, за якими є <code>bookmaker_click</code> із тим самим матчем у межах 72 год.</p></div>
-        <div class="card"><span class="k">Чому не виручка</span><h3>На неї не можна реагувати щотижня</h3><p>Виручка приходить із затримкою постбеків і залежить від умов партнерів, ринків і сезону. NSM має бути тим, на що впливає тижневий реліз.</p></div>
+        <div class="card"><span class="k">Чому не залученість і не кліки</span><h3>Поодинці обидва брешуть</h3><p>«Активні прогнозисти» ростуть без впливу на виручку. Самі лише переходи рахують і випадкові дотики по банеру. Перетин двох умов росте тільки тоді, коли гра працює <b>і</b> веде до партнера.</p></div>
+        <div class="card"><span class="k">Свідома поступка</span><h3>Перехід не мусить бути з того самого прогнозу</h3><p>«Зафіксував у середу, поставив у суботу» — нормальна поведінка. Прямий звʼязок міряємо окремо, метрикою <b>attach rate</b>: частка прогнозів, за якими є перехід до партнера з тим самим матчем у межах 72 годин.</p></div>
+        <div class="card"><span class="k">Чому не виручка</span><h3>На неї не можна реагувати щотижня</h3><p>Вона приходить із затримкою постбеків і залежить від умов партнерів, ринків і сезону. NSM має бути тим, на що впливає тижневий реліз.</p></div>
       </div>
     </div>
   </section>
@@ -482,11 +494,11 @@ figcaption{margin-top:2px;font-size:12.5px;color:var(--ink-3);line-height:1.45}
     <div class="inner">
       <div class="head">
         <div class="eyebrow"><span class="no">3.2</span>Метрики<span class="sep"></span>Допоміжні метрики</div>
-        <h2>По одній метриці на кожну ланку петлі</h2>
+        <h2>По одній метриці на кожну ланку циклу</h2>
       </div>
       <div class="scroll-x">
         <table class="tbl">
-          <thead><tr><th>Метрика</th><th>Як рахуємо</th><th>Що діагностує</th><th>Орієнтир<sup style="color:var(--accent)">*</sup></th><th>Що робимо при провалі</th></tr></thead>
+          <thead><tr><th>Метрика</th><th>Як рахуємо</th><th>Що показує</th><th>Орієнтир<sup style="color:var(--accent)">*</sup></th><th>Що робимо при провалі</th></tr></thead>
           <tbody>
             <tr>
               <td>Challenge<br>completion rate</td>
@@ -498,7 +510,7 @@ figcaption{margin-top:2px;font-size:12.5px;color:var(--ink-3);line-height:1.45}
             <tr>
               <td>Return-to-<br>result rate</td>
               <td>частка <code>prediction_locked</code> із <code>result_viewed</code> протягом 48 год</td>
-              <td>Петлю повернення</td>
+              <td>Чи повертаються по результат</td>
               <td class="t-num">40%+ без сповіщень</td>
               <td>вмикаємо сповіщення «результат готовий» і «серія під загрозою»</td>
             </tr>
@@ -519,14 +531,14 @@ figcaption{margin-top:2px;font-size:12.5px;color:var(--ink-3);line-height:1.45}
             <tr>
               <td>Welcome offer<br>claim rate</td>
               <td><code>welcome_offer_claimed / welcome_offer_shown</code></td>
-              <td>Роботу разового вікна</td>
+              <td>Чи працює вікно з пропозицією</td>
               <td class="t-num">калібруємо</td>
               <td>низький показник при високому <code>welcome_offer_to_table</code> теж вважаємо успіхом: користувач пішов у таблицю по тижневий приз</td>
             </tr>
           </tbody>
         </table>
       </div>
-      <p class="fn"><sup>*</sup> Орієнтири — первинні гіпотези, які калібруються на даних перших двох тижнів. Формули фіксуються до запуску: метрика з дрейфуючим визначенням гірша за відсутню.</p>
+      <p class="fn"><sup>*</sup> Орієнтири — первинні гіпотези, які калібруються на даних перших двох тижнів. Формули фіксуємо до запуску: метрика, визначення якої змінюється на ходу, гірша за відсутню.</p>
     </div>
   </section>
 
@@ -535,17 +547,17 @@ figcaption{margin-top:2px;font-size:12.5px;color:var(--ink-3);line-height:1.45}
     <div class="inner">
       <div class="head">
         <div class="eyebrow"><span class="no">3.3</span>Метрики<span class="sep"></span>Запобіжники</div>
-        <h2>Метрики, погіршення яких скасовує перемогу NSM</h2>
+        <h2>Метрики, які скасовують перемогу NSM, якщо просіли самі</h2>
       </div>
       <div class="grid g4">
         <div class="card"><span class="k"><span class="i">01</span> · Бізнес</span><h3>FTD і registration rate</h3><p>З постбеків партнерів. Більше переходів при нижчому FTD означає неякісний трафік.</p></div>
-        <div class="card"><span class="k"><span class="i">02</span> · Канібалізація</span><h3>CTR блоку 1X2</h3><p>Якщо Match IQ перетягнув кліки, які й так були, чистого приросту немає.</p></div>
+        <div class="card"><span class="k"><span class="i">02</span> · Канібалізація</span><h3>CTR наявного блоку 1X2</h3><p>Блок «Bet on this match · 1X2» під превʼю. Якщо Match IQ лише перетягнув на себе кліки, що й так були, чистого приросту немає. Обидва маршрути розмічені різними <code>source</code>, тому канібалізацію видно в даних.</p></div>
         <div class="card"><span class="k"><span class="i">03</span> · Відповідальна гра</span><h3>Сигнали ризику</h3><p>Аномальна частота переходів, скарги, спрацювання підтверджень віку, звернення по самообмеження.</p></div>
         <div class="card"><span class="k"><span class="i">04</span> · Основний продукт</span><h3>Швидкість сторінки</h3><p>LCP та INP: віджет не має псувати контент, заради якого читач прийшов.</p></div>
       </div>
       <div class="split">
         <div>
-          <h3 style="font-size:21px;margin-bottom:14px">Зрізи, у яких дивимось усе вищезгадане</h3>
+          <h3 style="font-size:21px;margin-bottom:14px">Зрізи, у яких дивимось кожну метрику</h3>
           <p class="lead" style="font-size:17px">Новий проти повторного гравця · залогінений проти анонімного · ліга і статус матчу · партнер · країна · платформа · клуб · тип купона.</p>
         </div>
         <div class="card card-accent"><span class="k">Найважливіший зріз</span><h3>Тижневі когорти W1 → W4</h3><p>Гра з таблицями лідерів майже завжди дає гарний перший тиждень і провал на четвертому. Тому дивимось не сумарну цифру, а утримання по когортах.</p></div>
@@ -561,18 +573,18 @@ figcaption{margin-top:2px;font-size:12.5px;color:var(--ink-3);line-height:1.45}
         <h2>Що зробити, щоб числу можна було вірити</h2>
       </div>
       <div class="grid g3">
-        <div class="card"><span class="k">Ідентичність</span><h3>У NSM — лише залогінені</h3><p>Одиниця — <code>user_id</code>. Анонімні мають <code>anon_id</code> і при вході в акаунт зшиваються до 30 днів назад, але в NSM не входять: без сталої ідентичності «унікальний за тиждень» — вигадка.</p></div>
-        <div class="card"><span class="k">Атрибуція</span><h3>click_id → постбек</h3><p>У партнерське посилання йде <code>click_id</code> = хеш(user_id, match, partner, ts). Партнер повертає його у постбеку — так депозит зшивається з конкретним прогнозом. Вікно 30 днів, за останнім кліком.</p></div>
-        <div class="card"><span class="k">Усунення дублів</span><h3>Повтор за 5 хвилин = один намір</h3><p>Повторні <code>bookmaker_click</code> до того самого партнера склеюються в метриці. Для NSM неважливо, для handoff conversion — критично.</p></div>
+        <div class="card"><span class="k">Ідентичність</span><h3>У NSM — лише залогінені</h3><p>Одиниця — <code>user_id</code>. Анонімні мають <code>anon_id</code> : коли він заходить в акаунт, його дії за попередні 30 днів привʼязуються до профілю. У NSM анонімні не входять — без сталого впізнавання «унікальний користувач за тиждень» перетворюється на вигадку.</p></div>
+        <div class="card"><span class="k">Атрибуція</span><h3>click_id → постбек</h3><p>У партнерське посилання йде <code>click_id</code> = хеш(user_id, match, partner, ts). Партнер повертає його у постбеку — так депозит привʼязується до конкретного прогнозу. Вікно 30 днів, зараховуємо за останнім кліком.</p></div>
+        <div class="card"><span class="k">Усунення дублів</span><h3>Повтор за 5 хвилин = один намір</h3><p>Повторні <code>bookmaker_click</code> до того самого партнера рахуються як один. Для NSM це неважливо, для handoff conversion — критично.</p></div>
         <div class="card"><span class="k">Довіра до цифр</span><h3>Холодний старт голосування</h3><p>«63% уболівальників» на вибірці з 40 голосів — шум, що виглядає як факт. До порогу голосів показуємо лише CaptainAI і ринок: одна абсурдна цифра коштує дорожче за відсутню.</p></div>
-        <div class="card"><span class="k">Гігієна даних</span><h3>Внутрішні профілі виключені</h3><p>Тестові акаунти позначені і виключені, інакше на обсягах перших тижнів команда порахує сама себе.</p></div>
-        <div class="card"><span class="k">Ритм</span><h3>Понеділковий огляд</h3><p>Разом з оновленням таблиці: NSM і його нормована версія, допоміжні метрики, запобіжники, когорти, статус експериментів. Одна сторінка, ті самі визначення щотижня.</p></div>
+        <div class="card"><span class="k">Гігієна даних</span><h3>Внутрішні профілі виключені</h3><p>Тестові акаунти позначені і виключені: на малих обсягах перших тижнів команда інакше потрапить у власну статистику.</p></div>
+        <div class="card"><span class="k">Ритм</span><h3>Понеділковий огляд</h3><p>Разом з оновленням таблиці: NSM у людях і у відсотку від аудиторії, допоміжні метрики, запобіжники, когорти, статус експериментів. Одна сторінка, ті самі визначення щотижня.</p></div>
       </div>
     </div>
   </section>
 
   <!-- ------------------------------------------------------------- 3.5 -->
-  <section class="slide" id="s35" data-label="3.5 Гіпотеза й експерименти">
+  <section class="slide dense" id="s35" data-label="3.5 Гіпотеза й експерименти">
     <div class="inner">
       <div class="head">
         <div class="eyebrow"><span class="no">3.5</span>Метрики<span class="sep"></span>Гіпотеза й перевірка</div>
@@ -580,16 +592,16 @@ figcaption{margin-top:2px;font-size:12.5px;color:var(--ink-3);line-height:1.45}
       </div>
       <div class="formula">
         <p class="f">Вибір наосліп із подальшим розкриттям підніме переходи до партнерів серед залогінених читачів на <em>20%</em>, а 7-денне повернення на сторінку матчу — на <em>15%</em></p>
-        <p class="cap"><b style="color:var(--ink-2)">Критерій успіху:</b> NSM зростає чотири тижні поспіль без просідання FTD rate у партнерів і без просідання CTR блоку 1X2. Чотири тижні — щоб відсіяти сплеск запуску і вплив одного топ-матчу в календарі.</p>
+        <p class="cap"><b style="color:var(--ink-2)">Критерій успіху:</b> NSM зростає чотири тижні поспіль без просідання FTD rate у партнерів і без просідання CTR наявного блоку 1X2. Чотири тижні — щоб відсіяти сплеск запуску і вплив одного топ-матчу в календарі.</p>
       </div>
       <div class="grid g3">
-        <div class="card"><span class="k"><span class="i">01</span> · Експеримент</span><h3>Розкриття після вибору проти розкриття до нього</h3><p><span class="tag tag-dec">Метрика рішення</span> completion rate, вторинна — <code>bookmaker_click / prediction_locked</code>.<br>Очікуємо перемогу вибору наосліп: порівняння має вагу лише після зобовʼязання. Це перевірка головного принципу, тому вона перша.</p></div>
-        <div class="card"><span class="k"><span class="i">02</span> · Експеримент</span><h3>Ціни до фіксації проти цін після неї</h3><p><span class="tag tag-dec">Метрика рішення</span> FTD rate із постбеків, а не CTR сам собою.<br>Очікуємо перемогу «після»: користувача не перервали посеред гри. Показ до фіксації, імовірно, дасть більше кліків і гірші депозити.</p></div>
+        <div class="card"><span class="k"><span class="i">01</span> · Експеримент</span><h3>Розкриття після вибору проти розкриття до нього</h3><p><span class="tag tag-dec">Метрика рішення</span> completion rate, вторинна — <code>bookmaker_click / prediction_locked</code>.<br>Очікуємо, що вибір наосліп переможе: порівняння важить лише після власного вибору. Це перевірка головного принципу, тому вона перша.</p></div>
+        <div class="card"><span class="k"><span class="i">02</span> · Експеримент</span><h3>Ціни до фіксації проти цін після неї</h3><p><span class="tag tag-dec">Метрика рішення</span> FTD rate із постбеків, а не CTR сам по собі.<br>Очікуємо, що варіант «після» переможе: читача не перервали посеред гри. Показ до фіксації дасть більше кліків і гірші депозити.</p></div>
         <div class="card"><span class="k"><span class="i">03</span> · Експеримент</span><h3>Ординар проти експреса за замовчуванням</h3><p><span class="tag tag-dec">Метрика рішення</span> handoff conversion серед тих, хто раніше не переходив до партнерів.<br>Тільки для нових користувачів.</p></div>
       </div>
       <div class="foot">
         <span class="badge18">18+</span>
-        <p>Прототип: коефіцієнти, ймовірності CaptainAI, відсотки уболівальників, вітальні пропозиції, таблиці й результати матчів вигадані та ілюстративні. Справжні умови партнерів різняться за ринками і змінюються. Грайте відповідально.</p>
+        <p>Прототип: коефіцієнти, ймовірності CaptainAI, відсотки уболівальників, вітальні пропозиції, таблиці й результати матчів вигадані та ілюстративні. Справжні умови партнерів різняться за ринками. Грайте відповідально.</p>
       </div>
     </div>
   </section>
