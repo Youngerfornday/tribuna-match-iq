@@ -399,6 +399,8 @@ body[data-layout="wide"]{--shell:1120px}
 .duel span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);font-weight:600}
 .duel b{font-family:var(--font-display);font-size:28px;font-weight:800;line-height:1.1}
 .duel div.win{border-color:var(--accent)}
+.rank-line{margin-top:12px;font-size:14px;color:var(--ink-2)}
+.rank-line b{color:var(--accent);font-family:var(--font-display);font-size:18px;font-weight:800}
 .insight{margin-top:12px;display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:var(--radius-sm);background:var(--surface);border:1px solid var(--line);font-size:14px;color:var(--ink-2)}
 
 /* retention */
@@ -1483,7 +1485,10 @@ function viewResult() {
   const m = currentMatch();
   const r = m.result;
   const out = state.outcome;
+  const p = state.profile;
   const top = Math.max(out.you, out.ai, out.fans);
+  const rank = rankOf(p);
+  const moved = p.prevRank && p.prevRank !== rank ? p.prevRank - rank : 0;
   return `
   <div class="shell-head"><span class="chip chip-accent">${icon('i-check')} Full-time</span><span class="chip">${m.competition}</span></div>
   <h1 class="q-title">Your result</h1>
@@ -1506,6 +1511,7 @@ function viewResult() {
     <div><span class="eyebrow">Match IQ earned</span><div class="n num" data-countup="${out.points}">0<small>pts</small></div></div>
     ${icon('i-bolt')}
   </div>
+  <p class="rank-line">You are <b>#${rank}</b> of ${fmtK(WEEK_FIELD)} this week${moved > 0 ? `, up ${plural(moved, 'place', 'places')}` : moved < 0 ? `, down ${plural(-moved, 'place', 'places')}` : ''}${rank <= PRIZE_TOP ? ' — inside the top ' + PRIZE_TOP : ''}.</p>
   <div class="duel" aria-label="Correct calls: you versus CaptainAI versus fans">
     <div class="${out.you === top ? 'win' : ''}"><span>You</span><b class="num">${out.you}/3</b></div>
     <div class="${out.ai === top ? 'win' : ''}"><span>CaptainAI</span><b class="num">${out.ai}/3</b></div>
