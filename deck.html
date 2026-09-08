@@ -43,7 +43,7 @@
   --radius:12px;
   --radius-sm:8px;
   --ease:cubic-bezier(.16,1,.3,1);
-  --shell:1120px;
+  --shell:clamp(1060px,76vw,1360px);
 }
 *{box-sizing:border-box}
 body{
@@ -77,8 +77,8 @@ code,.mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size
 .eyebrow{display:flex;align-items:center;gap:11px;flex-wrap:wrap;font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
 .eyebrow .no{font-family:var(--font-display);font-weight:800;font-size:13px;letter-spacing:.1em;color:var(--accent-ink);background:var(--accent);border-radius:4px;padding:3px 7px}
 .eyebrow .sep{width:20px;height:1px;background:var(--line-strong);flex:none}
-h2{font-size:clamp(32px,4.5vw,58px);max-width:21ch}
-.lead{font-size:clamp(16px,1.5vw,21px);color:var(--ink-2);max-width:66ch}
+h2{font-size:clamp(32px,4.5vw,66px);max-width:21ch}
+.lead{font-size:clamp(16px,1.5vw,23px);color:var(--ink-2);max-width:66ch}
 .lead b{color:var(--ink)}
 
 /* ---------------------------------------------------------------- pieces */
@@ -88,8 +88,8 @@ h2{font-size:clamp(32px,4.5vw,58px);max-width:21ch}
 .g4{grid-template-columns:repeat(4,minmax(0,1fr))}
 .split{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:32px;align-items:start}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;display:flex;flex-direction:column;gap:9px}
-.card h3{font-size:22px;letter-spacing:0}
-.card p{font-size:15.5px;color:var(--ink-2);line-height:1.5}
+.card h3{font-size:clamp(22px,1.35vw,26px);letter-spacing:0}
+.card p{font-size:clamp(15.5px,1.05vw,17.5px);color:var(--ink-2);line-height:1.5}
 .card-accent{border-color:transparent;background:linear-gradient(180deg,rgba(215,255,61,.10),rgba(215,255,61,.03));box-shadow:inset 0 0 0 1px rgba(215,255,61,.28)}
 .card-accent h3{color:var(--accent)}
 .card-plain{background:none;border:0;padding:0}
@@ -111,8 +111,8 @@ h2{font-size:clamp(32px,4.5vw,58px);max-width:21ch}
 .step{padding:18px 18px 20px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:8px;background:var(--surface)}
 .step:last-child{border-right:0}
 .step .n{font-family:var(--font-display);font-size:13px;font-weight:800;letter-spacing:.08em;color:var(--ink-3)}
-.step h3{font-size:19px;line-height:1.1}
-.step p{font-size:13.5px;color:var(--ink-3);line-height:1.45}
+.step h3{font-size:clamp(19px,1.2vw,22px);line-height:1.1}
+.step p{font-size:clamp(13.5px,0.92vw,15.5px);color:var(--ink-3);line-height:1.45}
 .step-lock{background:linear-gradient(180deg,rgba(215,255,61,.10),rgba(215,255,61,.02))}
 .step-lock .n,.step-lock h3{color:var(--accent)}
 
@@ -129,7 +129,7 @@ h2{font-size:clamp(32px,4.5vw,58px);max-width:21ch}
 .market .dot,.market .fill{background:var(--market)} .market .val{color:var(--market-text)}
 
 /* tables */
-.tbl{font-size:15px}
+.tbl{font-size:clamp(15px,1vw,17px)}
 .tbl th{text-align:left;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);padding:0 14px 10px 0;border-bottom:1px solid var(--line);white-space:nowrap}
 .tbl td{padding:12px 14px 12px 0;border-bottom:1px solid var(--line);color:var(--ink-2);vertical-align:top}
 .tbl tr:last-child td{border-bottom:0}
@@ -138,11 +138,11 @@ h2{font-size:clamp(32px,4.5vw,58px);max-width:21ch}
 .scroll-x{overflow-x:auto}
 
 .list{display:flex;flex-direction:column;gap:12px;margin:0;padding:0;list-style:none}
-.list li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;font-size:15.5px;color:var(--ink-2);line-height:1.55}
+.list li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;font-size:clamp(15.5px,1.05vw,17.5px);color:var(--ink-2);line-height:1.55}
 .list li .m{width:7px;height:7px;border-radius:2px;background:var(--accent);transform:rotate(45deg);margin-top:9px;flex:none}
 
 .formula{background:var(--surface-2);border:1px solid var(--line-strong);border-radius:var(--radius);padding:26px 28px;display:flex;flex-direction:column;gap:12px}
-.formula .f{font-family:var(--font-display);font-size:clamp(22px,2.7vw,34px);font-weight:700;line-height:1.25}
+.formula .f{font-family:var(--font-display);font-size:clamp(22px,2.7vw,40px);font-weight:700;line-height:1.25}
 .formula .f em{font-style:normal;color:var(--accent)}
 .formula .cap{font-size:14px;color:var(--ink-3);line-height:1.55}
 /* Slides carrying six blocks or a long list get a tighter rhythm so they still fit 16:9. */
@@ -155,7 +155,7 @@ h2{font-size:clamp(32px,4.5vw,58px);max-width:21ch}
 .slide.dense .list li{font-size:14.5px;gap:11px}
 .slide.dense .formula{padding:20px 24px}
 .slide.dense figcaption{font-size:12px;line-height:1.4}
-.note{font-size:14.5px;color:var(--ink-3);line-height:1.55;border-left:2px solid var(--line-strong);padding-left:14px;max-width:92ch}
+.note{font-size:clamp(14.5px,0.95vw,16.5px);color:var(--ink-3);line-height:1.55;border-left:2px solid var(--line-strong);padding-left:14px;max-width:92ch}
 .note b{color:var(--ink-2)}
 .fn{font-size:12.5px;color:var(--ink-3);line-height:1.5}
 .fn sup{color:var(--accent);font-weight:700}
@@ -186,6 +186,23 @@ h1 .lime{color:var(--accent)}
 }
 /* In two-column slides the artwork is a supporting note, not the subject. */
 .split figure{max-width:270px;margin-left:auto}
+/* A slide whose illustration is atmosphere, not a column: it lives in the field,
+   dissolved into the ground, with the text keeping its own measure. */
+.slide.field{position:relative;overflow:hidden}
+.slide.field .inner{position:relative;z-index:1}
+.slide.field .rail-list{max-width:62ch;display:flex;flex-direction:column;gap:20px}
+.slide-art{
+  position:absolute;right:max(3vw,16px);top:50%;transform:translateY(-50%);
+  width:min(30vw,440px);z-index:0;pointer-events:none;display:block;
+}
+.slide-art img{width:100%;display:block}
+.slide-art::after{
+  content:"";position:absolute;inset:-1px;pointer-events:none;
+  background:
+    linear-gradient(90deg,var(--bg) 0,rgba(14,15,12,0) 34%,rgba(14,15,12,0) 72%,var(--bg) 100%),
+    linear-gradient(180deg,var(--bg) 0,rgba(14,15,12,0) 24%,rgba(14,15,12,0) 76%,var(--bg) 100%);
+}
+@media (max-width:1100px){.slide-art{display:none}}
 figure{margin:0}
 figcaption{margin-top:2px;font-size:12.5px;color:var(--ink-3);line-height:1.45}
 .stamp{position:absolute;top:34px;right:32px;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
@@ -442,13 +459,14 @@ figcaption{margin-top:2px;font-size:12.5px;color:var(--ink-3);line-height:1.45}
   </section>
 
   <!-- ------------------------------------------------------------- 2.4 -->
-  <section class="slide dense" id="s24" data-label="2.4 Запобіжники">
+  <section class="slide dense field" id="s24" data-label="2.4 Запобіжники">
+    <span class="slide-art"><img src="art/captain-king.webp" alt="Переможець тижневої таблиці з кубком і безкоштовною ставкою" width="440" height="546"></span>
     <div class="inner">
       <div class="head">
         <div class="eyebrow"><span class="no">2.4</span>iGaming-конверсія<span class="sep"></span>Відповідальна гра</div>
         <h2>Запобіжники — умова роботи з ліцензованими партнерами</h2>
       </div>
-      <div class="split">
+      <div class="rail-list">
         <ul class="list">
           <li><span class="m"></span><span><b>18+</b> на кожному екрані, у правилах і футері; підтвердження віку перед першим переходом.</span></li>
           <li><span class="m"></span><span><b>«Коефіцієнти ілюстративні»</b> на картці партнера, у правилах і футері: демо не має читатись як справжня пропозиція.</span></li>
@@ -457,10 +475,7 @@ figcaption{margin-top:2px;font-size:12.5px;color:var(--ink-3);line-height:1.45}
           <li><span class="m"></span><span><b>Блок 1X2 залишається.</b> Match IQ додає другий маршрут до тих самих партнерів — для читача, який уже визначився, — а не замінює перший.</span></li>
           <li><span class="m"></span><span><b>Ніяких «гарантованих прогнозів», штучних дедлайнів і грошових призів від Tribuna</b> — останнє вже інша ліцензійна категорія.</span></li>
         </ul>
-        <figure>
-          <span class="art-frame"><img class="art" src="art/captain-king.webp" alt="Переможець тижневої таблиці з кубком і безкоштовною ставкою" width="360" height="447"></span>
-          <figcaption><b style="color:var(--ink-2)">Персонаж — переможець гри, а не талісман казино.</b> Гральний маскот на медіа з молодою аудиторією — перше питання від юристів партнера. Ілюстрацію намальовано для прототипу.</figcaption>
-        </figure>
+        <p class="fn" style="max-width:60ch;margin-top:4px"><b style="color:var(--ink-2)">Персонаж на слайді — переможець гри, а не талісман казино.</b> Гральний маскот на медіа з молодою аудиторією — перше питання від юристів партнера. Ілюстрацію намальовано для прототипу.</p>
       </div>
     </div>
   </section>
