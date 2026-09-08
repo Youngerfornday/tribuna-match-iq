@@ -153,7 +153,7 @@ body[data-layout="wide"]{--shell:1120px}
 .hero{position:relative;overflow:hidden;padding:24px 20px;border-radius:16px;background:linear-gradient(150deg,#1d2418 0%,#171915 55%,#131b26 100%);border:1px solid var(--line-strong);box-shadow:var(--shadow);display:flex;flex-direction:column;gap:18px}
 .hero-copy{position:relative;z-index:1;min-width:0}
 .hero-art{position:relative;z-index:1;order:-1;align-self:flex-end;width:180px;aspect-ratio:1/1;margin:-12px -12px -8px 0}
-.hero-photo{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 38%;filter:brightness(1.09) saturate(1.04);-webkit-mask-image:radial-gradient(66% 62% at 53% 45%,#000 40%,rgba(0,0,0,.55) 68%,transparent 86%);mask-image:radial-gradient(66% 62% at 53% 45%,#000 40%,rgba(0,0,0,.55) 68%,transparent 86%)}
+.hero-photo{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 38%;filter:brightness(1.09) saturate(1.04);-webkit-mask-image:radial-gradient(80% 78% at 52% 48%,#000 42%,rgba(0,0,0,.5) 72%,transparent 98%);mask-image:radial-gradient(80% 78% at 52% 48%,#000 42%,rgba(0,0,0,.5) 72%,transparent 98%)}
 .hero:before{content:"";position:absolute;inset:-50% -20% auto auto;width:320px;height:320px;border-radius:50%;background:radial-gradient(closest-side,rgba(215,255,61,.18),transparent 70%);pointer-events:none}
 .hero:after{content:"";position:absolute;inset:auto auto -60% -20%;width:280px;height:280px;border-radius:50%;background:radial-gradient(closest-side,rgba(57,135,229,.16),transparent 70%);pointer-events:none}
 .hero>*{position:relative}
@@ -167,7 +167,12 @@ body[data-layout="wide"]{--shell:1120px}
 .lb-more{width:100%;min-height:48px;display:flex;align-items:center;justify-content:center;gap:8px;border-top:1px solid var(--line);font-size:14px;font-weight:600;color:var(--ink-2);transition:background .15s,color .15s}
 .lb-more:hover{background:var(--surface-2);color:var(--ink)}
 .lb-more .chev{color:var(--ink-3);transition:transform .2s}
-.lb-more[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.sheet-table{max-width:660px}
+.sheet-table .st-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
+.sheet-table .st-head h2{font-size:26px}
+.sheet-table .st-head p{font-size:13px;color:var(--ink-3);margin-top:4px}
+.sheet-table .st-scroll{max-height:min(62vh,540px);overflow:auto;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface-2)}
+.sheet-table .st-scroll thead th{position:sticky;top:0;background:var(--surface-2);z-index:1}
 .steps3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:22px 0}
 .steps3 div{padding:14px 12px;border-radius:var(--radius-sm);background:var(--surface);border:1px solid var(--line)}
 .steps3 .n{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-family:var(--font-display);font-weight:800;font-size:15px}
@@ -518,11 +523,11 @@ body[data-layout="wide"]{--shell:1120px}
 .prize-banner .pb-status.on{color:var(--accent)}
 .prize-banner .pb-terms{margin-top:14px;font-size:11px;color:var(--ink-3);line-height:1.5;max-width:86ch}
 .prize-banner .pb-art{position:relative;z-index:1;justify-self:center;width:min(230px,72%);aspect-ratio:760/944;margin:-6px 0 -30px}
-.pb-photo{display:block;width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(.94) saturate(1.06);-webkit-mask-image:radial-gradient(66% 62% at 53% 45%,#000 40%,rgba(0,0,0,.55) 68%,transparent 86%);mask-image:radial-gradient(66% 62% at 53% 45%,#000 40%,rgba(0,0,0,.55) 68%,transparent 86%)}
+.pb-photo{display:block;width:100%;height:100%;object-fit:contain;object-position:bottom center;filter:brightness(.94) saturate(1.06);-webkit-mask-image:radial-gradient(80% 78% at 52% 48%,#000 42%,rgba(0,0,0,.5) 72%,transparent 98%);mask-image:radial-gradient(80% 78% at 52% 48%,#000 42%,rgba(0,0,0,.5) 72%,transparent 98%)}
 @media (min-width:820px){
-  .prize-banner{grid-template-columns:minmax(0,1fr) minmax(220px,300px);align-items:center;padding:26px 8px 26px 30px;gap:10px}
+  .prize-banner{grid-template-columns:minmax(0,1fr) minmax(280px,360px);align-items:center;padding:26px 14px 26px 30px;gap:18px}
   .prize-banner h2{font-size:42px}
-  .prize-banner .pb-art{justify-self:end;width:min(300px,100%);margin:-24px 6px -34px 0}
+  .prize-banner .pb-art{justify-self:end;width:100%;margin:0 0 -30px}
 }
 .standing{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:16px;padding:14px 18px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--line)}
 .standing .st-main b{font-family:var(--font-display);font-size:24px;font-weight:700;line-height:1.1;display:block}
@@ -1078,7 +1083,7 @@ function aiSlipCard() {
     <p>Three legs the model likes most this weekend. Combined model probability ${conf}%, the market pays ${fmtOdds(best.odds)}.</p>
     <div class="legs">${legs.map((l) => `<span class="chip">${l.o.label} <span class="dim num">${fmtOdds(l.o.odds[best.idx])}</span></span>`).join('')}</div>
     <div class="foot-cta">
-      ${betCta(AI_SLIP, 'Bet this slip', 'ai_slip')}
+      ${betCta(AI_SLIP, 'Bet this slip', 'ai_slip', 'btn-secondary')}
       <button class="btn btn-ghost" data-action="open-match" data-match="${m.id}">Make my own calls on this match ${icon('i-arrow')}</button>
     </div>
     <p class="tiny dim" style="margin-top:8px">18+ · Partner offer · Model output is information, not advice.</p>
@@ -1114,9 +1119,10 @@ function prizeBanner(p, opts = {}) {
     ? `${partner.name} adds its welcome offer — ${partner.offer.title} — credited on Monday when the table resets.`
     : `Lock three calls on any match and claim the ${partner.name} welcome offer. The game is free, the offer is partner-funded.`;
   const note = started ? standing : `Then finish in the top ${PRIZE_TOP} of the weekly table and Monday brings a second partner offer.`;
+  const kind = opts.quietCta ? 'btn-secondary' : 'btn-primary';
   const cta = opts.cta || (started
-    ? `<button class="btn btn-primary" data-action="nav" data-to="board" data-label="Table">See the table ${icon('i-arrow')}</button>`
-    : `<button class="btn btn-primary" data-action="nav" data-to="hub" data-label="Challenges">Make my first prediction ${icon('i-arrow')}</button>`);
+    ? `<button class="btn ${kind}" data-action="nav" data-to="board" data-label="Table">See the table ${icon('i-arrow')}</button>`
+    : `<button class="btn ${kind}" data-action="nav" data-to="hub" data-label="Challenges">Make my first prediction ${icon('i-arrow')}</button>`);
 
   if (opts.compact) {
     return `
@@ -1172,7 +1178,7 @@ function viewLanding() {
     <div><span class="n">3</span><b>Score at full-time</b><p>+${POINTS_PER_CALL} per correct call. Streaks, leagues and a weekly table.</p></div>
   </section>
 
-  ${prizeBanner(p)}
+  ${prizeBanner(p, { quietCta: true })}
 
   <section class="board-section" aria-labelledby="lb-title">
     <div class="sec-head">
@@ -1207,7 +1213,7 @@ function viewBoard() {
         : `Lock one prediction and you enter this week's table straight away`}</span>
     </div>
     <div class="st-cta">
-      <button class="btn btn-secondary btn-sm" data-action="nav" data-to="hub" data-label="Challenges">${p.iq > 0 ? 'Keep climbing' : 'Enter the table'} ${icon('i-arrow')}</button>
+      <button class="btn btn-ghost btn-sm" data-action="nav" data-to="hub" data-label="Challenges">${p.iq > 0 ? 'Keep climbing' : 'Enter the table'} ${icon('i-arrow')}</button>
       ${p.iq > 0 ? `<button class="btn btn-ghost btn-sm" data-action="nav" data-to="retention" data-label="You">${icon('i-chart')} Your Match IQ</button>` : ''}
     </div>
   </section>
@@ -1571,7 +1577,7 @@ function viewOdds() {
       <div class="t">${offerPartner.offer.title}</div>
       <p class="fine">Your slip is pre-filled when you continue. ${offerPartner.offer.terms}</p>
     </div>
-    <button class="btn btn-primary" data-action="handoff" data-partner="${offerPartner.id}">Claim offer ${icon('i-ext')}</button>
+    <button class="btn btn-secondary" data-action="handoff" data-partner="${offerPartner.id}">Claim offer ${icon('i-ext')}</button>
   </div>` : ''}
 
   <div class="call">
@@ -1695,7 +1701,7 @@ function viewResult() {
         <input id="handle" type="text" maxlength="16" placeholder="Pick a name for the table" value="${p.name || ''}" autocomplete="nickname">
       </label>
       <div class="save-cta">
-        <button class="btn btn-primary btn-sm" data-action="account-save">Save to my account</button>
+        <button class="btn btn-secondary btn-sm" data-action="account-save">Save to my account</button>
         <button class="btn btn-ghost btn-sm" data-action="account-later">Not now</button>
       </div>
     </div>
@@ -1761,8 +1767,7 @@ function movement(row, rank) {
 function playersTable(p, opts = {}) {
   const board = leaderboard(p);
   const meIdx = board.findIndex((r) => r.me);
-  const expanded = opts.expandable && state.lbFull;
-  const TOP = Math.min(board.length, expanded ? PRIZE_TOP : opts.limit || 8);
+  const TOP = Math.min(board.length, opts.limit || 8);
   const visible = board.slice(0, TOP);
   const showMeBelow = meIdx >= TOP;
   const row = (r, i) => `
@@ -1787,7 +1792,7 @@ function playersTable(p, opts = {}) {
         ${showMeBelow ? `${meIdx > TOP ? `<tr><td colspan="5" class="gap">${plural(meIdx - TOP, 'more player', 'more players')}</td></tr>` : ''}${row(board[meIdx], meIdx)}` : ''}
       </tbody>
     </table>
-    ${opts.expandable ? `<button class="lb-more" data-action="lb-expand" aria-expanded="${expanded}">${expanded ? `Show the top ${opts.limit || 10}` : `Show the top ${PRIZE_TOP} — everyone in the prize`} ${icon('i-chev', 'chev')}</button>` : ''}
+    ${opts.expandable ? `<button class="lb-more" data-action="lb-expand">Show the top ${PRIZE_TOP} — everyone in the prize ${icon('i-arrow')}</button>` : ''}
     <div class="foot">${p.iq === 0 ? 'Lock a prediction to enter the table. ' : ''}Ties break on hit rate, movement is versus yesterday.</div>`;
 }
 
@@ -1965,6 +1970,27 @@ function viewRetention() {
   </div>`;
 }
 
+/* The full week's table is long by design, so it opens in a dialog: the page behind it
+   keeps its shape, and the list scrolls inside. */
+function viewTableSheet() {
+  const p = state.profile;
+  const w = weekSummary();
+  return `
+  <div class="sheet-wrap" data-action="close-sheet">
+    <div class="sheet sheet-table" role="dialog" aria-modal="true" aria-labelledby="table-title" data-stop>
+      <div class="grab" aria-hidden="true"></div>
+      <div class="st-head">
+        <div>
+          <h2 id="table-title">Weekly table · top ${PRIZE_TOP}</h2>
+          <p>${WEEK_LABEL} · ${p.iq > 0 ? `you are #${w.rank} of ${fmtK(WEEK_FIELD)}` : `${fmtK(WEEK_FIELD)} players this week`}</p>
+        </div>
+        <button class="btn btn-ghost btn-sm" data-action="close-sheet" aria-label="Close the table">${icon('i-x')}</button>
+      </div>
+      <div class="st-scroll lb">${playersTable(p, { limit: PRIZE_TOP, bare: true })}</div>
+    </div>
+  </div>`;
+}
+
 /* Shown once, right after the first handoff: the offer the user just earned, and the
    weekly prize as the reason to play the rest of the week. Dismissible, never blocking. */
 function viewWelcomeSheet() {
@@ -2024,14 +2050,15 @@ function currentSlip() {
   const legs = state.oddsTab === 'builder' ? QUESTION_ORDER : [state.powerPick];
   return { matchId: state.matchId, type: state.oddsTab, legs: legs.map((qid) => ({ qid, oid: state.answers[qid] })) };
 }
-function betCta(slip, label, source) {
+function betCta(slip, label, source, kind = 'btn-primary') {
   const best = bestPartnerFor(slip);
-  return `<button class="btn btn-primary btn-block" data-action="handoff" data-partner="${best.partner.id}" data-slip='${JSON.stringify(slip)}' data-source="${source}">${label} · ${fmtOdds(best.odds)} at ${best.partner.name} ${icon('i-ext')}</button>`;
+  return `<button class="btn ${kind} btn-block" data-action="handoff" data-partner="${best.partner.id}" data-slip='${JSON.stringify(slip)}' data-source="${source}">${label} · ${fmtOdds(best.odds)} at ${best.partner.name} ${icon('i-ext')}</button>`;
 }
 
 function viewSheet() {
   if (!state.sheet) return '';
   if (state.sheet.kind === 'welcome') return viewWelcomeSheet();
+  if (state.sheet.kind === 'table') return viewTableSheet();
   const { partnerId, slip } = state.sheet;
   const partner = PARTNERS.find((p) => p.id === partnerId);
   const idx = PARTNERS.indexOf(partner);
@@ -2698,7 +2725,7 @@ const ACTIONS = {
   },
   'restore-cancel'() { track('profile_restore_declined', {}); setState({ restore: null }); },
   'lb-tab'(btn) { setState({ lbTab: btn.dataset.tab }); },
-  'lb-expand'() { const lbFull = !state.lbFull; track('leaderboard_expand', { expanded: lbFull }); setState({ lbFull }); },
+  'lb-expand'(btn) { track('leaderboard_expand', { top: PRIZE_TOP }); openSheet({ kind: 'table' }, btn); },
   'read-more'() { track('content_click', { screen: state.screen }); toast('Opens the full article on Tribuna (mock)'); },
   reset() {
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) { /* ignore */ }
