@@ -1,8 +1,8 @@
 /* The prototype is a single page plus two illustrations, so the whole thing fits in a
    cache. Navigations go to the network first, so a deploy is picked up immediately, and
    fall back to the cached shell when there is none. */
-const CACHE = 'match-iq-v2';
-const SHELL = ['./', './index.html', './manifest.webmanifest', './art/captain-ai.webp?v=2', './art/captain-king.webp?v=2', './art/icon-192.png', './art/icon-512.png'];
+const CACHE = 'match-iq-v3';
+const SHELL = ['./', './index.html', './manifest.webmanifest', './art/captain-ai.webp?v=3', './art/captain-king.webp?v=3', './art/icon-192.png', './art/icon-512.png'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
