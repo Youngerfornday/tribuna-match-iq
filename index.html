@@ -434,6 +434,11 @@ body[data-layout="wide"]{--shell:1120px}
 .duel-score .side.win b{color:var(--accent)}
 .duel-score .vs{font-size:12px;color:var(--ink-3);font-weight:600}
 .duel-score .calls-line{font-size:12px;color:var(--ink-3);margin-top:4px}
+.restore{display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;padding:14px 16px;border-radius:var(--radius);background:linear-gradient(110deg,rgba(215,255,61,.09),var(--surface) 60%);border:1px solid rgba(215,255,61,.35)}
+.restore .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none;background:var(--accent);color:var(--accent-ink);font-size:16px}
+.restore b{font-family:var(--font-display);font-size:19px;font-weight:700;line-height:1.1;display:block}
+.restore p{font-size:13px;color:var(--ink-2);margin:5px 0 10px;line-height:1.45}
+.move-device{margin-top:12px}
 .save-card{display:flex;gap:12px;align-items:flex-start;margin-top:16px;padding:14px 16px;border-radius:var(--radius);background:var(--surface);border:1px dashed var(--line-strong)}
 .save-card .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none;background:var(--surface-2);color:#ff9b3d;font-size:17px}
 .save-card b{font-family:var(--font-display);font-size:19px;font-weight:700;line-height:1.1;display:block}
@@ -1490,12 +1495,20 @@ function legsOf() {
    and the handoff has to make you accept the new one. */
 const PRICE_TICK_MS = 20000;
 const driftOf = (i) => (CONFIG.features.livePrices ? state.drift[i] || 1 : 1);
+/* Everything that reads a price goes through this. A real provider answers the same three
+   questions - what does this selection pay at partner i, is that market open, and when did
+   we last hear from it - so swapping the mock for a feed is a swap, not a rewrite. */
+const oddsFeed = {
+  price: (odds, i) => odds[i] * driftOf(i),
+  isSuspended: (i) => !!state.suspended[i],
+  updatedAt: () => state.pricedAt,
+};
 function builderOdds() {
-  return PARTNERS.map((_, i) => round2(legsOf().reduce((acc, l) => acc * l.o.odds[i], 1) * driftOf(i)));
+  return PARTNERS.map((_, i) => round2(legsOf().reduce((acc, l) => acc * oddsFeed.price(l.o.odds, i), 1)));
 }
 function singleOdds() {
   const leg = legsOf().find((l) => l.q.id === state.powerPick);
-  return leg.o.odds.map((o, i) => round2(o * driftOf(i)));
+  return leg.o.odds.map((_, i) => round2(oddsFeed.price(leg.o.odds, i)));
 }
 /* Display order for the current market, paired with each partner's index in PARTNERS
    so the odds arrays stay canonical. */
@@ -1513,7 +1526,7 @@ function currentOdds() {
 function viewOdds() {
   const isBuilder = state.oddsTab === 'builder';
   const odds = currentOdds();
-  const live = odds.filter((o, i) => !state.suspended[i]);
+  const live = odds.filter((o, i) => !oddsFeed.isSuspended(i));
   const best = live.length ? Math.max(...live) : Math.max(...odds);
   const pp = legsOf().find((l) => l.q.id === state.powerPick);
   const market = marketFor(pp.q, pp.o.id);
@@ -1539,7 +1552,7 @@ function viewOdds() {
   </div>
   <div class="odds-table" role="tabpanel">
     ${partnersInOrder().map(({ p, i }) => {
-      const off = state.suspended[i];
+      const off = oddsFeed.isSuspended(i);
       const isBest = !off && odds[i] === best;
       return `
     <div class="odds-row ${isBest ? 'best' : ''} ${off ? 'off' : ''}">
@@ -1887,6 +1900,18 @@ function viewRetention() {
   const bar = (label, value, color) => `
     <div class="grp"><div class="name">${label}</div><div class="bars"><div class="bar"><div class="track"><div class="fill" style="background:${color}" data-w="${value}"></div></div><span class="val num">${value}%</span></div></div></div>`;
   return `
+  ${state.restore ? `
+  <section class="restore" aria-label="Restore a profile">
+    <span class="ic">${icon('i-arrow')}</span>
+    <div>
+      <b>A profile arrived from another device</b>
+      <p>${state.restore.name ? `${state.restore.name} · ` : ''}${state.restore.iq} Match IQ, ${plural((state.restore.badges || []).length, 'badge', 'badges')}. Restoring replaces what is on this device.</p>
+      <div class="save-cta">
+        <button class="btn btn-primary btn-sm" data-action="restore-apply">Restore it here</button>
+        <button class="btn btn-ghost btn-sm" data-action="restore-cancel">Keep this device's profile</button>
+      </div>
+    </div>
+  </section>` : ''}
   <h1 class="q-title">Your Match IQ</h1>
   <p class="q-sub">${WEEK_LABEL} · ${w.locked} of ${w.total} matches called · table resets Monday 00:00</p>
   <div class="cols">
@@ -1929,6 +1954,7 @@ function viewRetention() {
         <div class="foot-cta"><button class="btn btn-secondary btn-block" data-action="nav" data-to="hub" data-label="Challenges">${icon('i-grid')} Review this week</button></div>
       </section>
       ${prizeBanner(p, { compact: true })}`}
+      ${p.iq > 0 ? `<button class="btn btn-ghost btn-sm move-device" data-action="transfer">${icon('i-share')} Move this profile to another device</button>` : ''}
     </div>
 
     <div class="rail">
@@ -1987,7 +2013,7 @@ function slipLegs(slip) {
   return slip.legs.map((l) => { const q = { id: l.qid, ...m.questions[l.qid] }; return { q, o: optionOf(q, l.oid) }; });
 }
 function slipOdds(slip, partnerIdx) {
-  return round2(slipLegs(slip).reduce((acc, l) => acc * l.o.odds[partnerIdx], 1) * driftOf(partnerIdx));
+  return round2(slipLegs(slip).reduce((acc, l) => acc * oddsFeed.price(l.o.odds, partnerIdx), 1));
 }
 function bestPartnerFor(slip) {
   const odds = PARTNERS.map((_, i) => slipOdds(slip, i));
@@ -2041,9 +2067,9 @@ function viewSheet() {
       ${state.profile.ageConfirmed
         ? `<div class="rg" style="margin-top:12px"><span class="badge18">18+</span><span>Age confirmed on this device. Only bet what you can afford to lose.</span></div>`
         : `<label class="age"><input type="checkbox" data-action="age-confirm"><span>I confirm I am 18 or over, in a licensed territory, and I accept ${partner.name}'s terms.</span></label>`}
-      ${state.suspended[idx] ? `<div class="price-moved" role="status">${icon('i-clock')}<span><b>${partner.name} has suspended this market.</b> Prices come back when the book re-opens it; the other partners are still live.</span></div>` : ''}
+      ${oddsFeed.isSuspended(idx) ? `<div class="price-moved" role="status">${icon('i-clock')}<span><b>${partner.name} has suspended this market.</b> Prices come back when the book re-opens it; the other partners are still live.</span></div>` : ''}
       <div class="foot-cta">
-        <button class="btn btn-primary btn-block" data-action="bookmaker" data-partner="${partner.id}" ${state.profile.ageConfirmed && !state.suspended[idx] ? '' : 'disabled'}>${state.suspended[idx] ? 'Suspended at ' + partner.name : `Continue to ${partner.name}`} ${icon('i-ext')}</button>
+        <button class="btn btn-primary btn-block" data-action="bookmaker" data-partner="${partner.id}" ${state.profile.ageConfirmed && !oddsFeed.isSuspended(idx) ? '' : 'disabled'}>${oddsFeed.isSuspended(idx) ? 'Suspended at ' + partner.name : `Continue to ${partner.name}`} ${icon('i-ext')}</button>
         <button class="btn btn-ghost" data-action="close-sheet">Stay on Tribuna</button>
       </div>
     </div>
@@ -2167,6 +2193,27 @@ function duelLink(matchId, answers, powerPick, name) {
   return `${base}#/duel/${encodeDuel(matchId, answers, powerPick, name)}`;
 }
 
+/* ======================================================== profile transfer */
+/* No account, but a profile should still be able to move. The link carries the whole
+   thing, the receiving device is asked before anything is overwritten, and the payload
+   is deliberately small: progress, not history. */
+const TRANSFER_FIELDS = ['name', 'iq', 'streak', 'correct', 'total', 'aiCorrect', 'marketCorrect', 'humans', 'ai', 'club', 'badges', 'rivals', 'week', 'questDone', 'freezes', 'accountSaved', 'matches'];
+function encodeProfile(p) {
+  const slim = {};
+  TRANSFER_FIELDS.forEach((k) => { if (p[k] !== undefined && p[k] !== null) slim[k] = p[k]; });
+  return btoa(unescape(encodeURIComponent(JSON.stringify(slim)))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+function decodeProfile(code) {
+  try {
+    const d = JSON.parse(decodeURIComponent(escape(atob(code.replace(/-/g, '+').replace(/_/g, '/')))));
+    if (!d || typeof d.iq !== 'number') return null;
+    return d;
+  } catch (e) { return null; }
+}
+function transferLink(p) {
+  return `${location.href.split('#')[0]}#/restore/${encodeProfile(p)}`;
+}
+
 /* ================================================================ routing */
 /* Hash routes so every screen is deep-linkable and the browser back button works.
    In production these map 1:1 to real paths under /match-iq/. */
@@ -2185,6 +2232,10 @@ function parseHash(hash) {
   if (parts[0] === 'board') return { screen: 'board' };
   if (parts[0] === 'me') return { screen: 'retention' };
   if (parts[0] === 'match' && matchById(parts[1])) return { screen: SUBROUTES[parts[2]] || 'match', matchId: parts[1] };
+  if (parts[0] === 'restore' && parts[1]) {
+    const incoming = decodeProfile(parts[1]);
+    if (incoming) return { screen: 'retention', restore: incoming };
+  }
   if (parts[0] === 'duel' && parts[1]) {
     const duel = decodeDuel(parts[1]);
     if (duel) return { screen: 'match', matchId: duel.matchId, duel };
@@ -2214,6 +2265,7 @@ function applyRoute(r) {
   const patch = { screen: res.screen, sheet: null };
   /* An incoming duel is stored against the match, then the link is replaced by the plain
      match URL so a refresh does not re-add it. */
+  if (r.restore) state = { ...state, restore: r.restore };
   if (r.duel && !entryOf(state.profile, r.duel.matchId).duel) {
     updateEntry(r.duel.matchId, { duel: { answers: r.duel.answers, powerPick: r.duel.powerPick, from: r.duel.from } });
     track('duel_received', { match: r.duel.matchId });
@@ -2351,6 +2403,7 @@ async function copyText(text) {
 }
 /* The sheet trigger is re-created by every render, so focus is returned by selector,
    not by node reference. */
+let kickoffTimer = null;
 let lastFocus = null;
 function focusKey(el) {
   const d = el && el.dataset;
@@ -2416,6 +2469,7 @@ const ACTIONS = {
     const m = currentMatch();
     if (statusOf(m, state.profile) !== 'open') { toast('Calls closed at kick-off'); go('match'); return; }
     updateProfile({ streak: state.profile.streak + 1 });
+    ACTIONS.scheduleKickoff();
     updateEntry(m.id, { status: 'locked', answers: state.answers, powerPick: state.powerPick, lockedAt: Date.now() });
     track('prediction_locked', { match: m.id, powerPick: state.powerPick, streak: state.profile.streak });
     const quest = questProgress(state.profile);
@@ -2444,7 +2498,7 @@ const ACTIONS = {
   bookmaker(btn) {
     if (!state.profile.ageConfirmed) { toast('Confirm you are 18 or over to continue'); return; }
     const partner = PARTNERS.find((p) => p.id === btn.dataset.partner);
-    if (state.suspended[PARTNERS.indexOf(partner)]) { toast(`${partner.name} has suspended this market`); return; }
+    if (oddsFeed.isSuspended(PARTNERS.indexOf(partner))) { toast(`${partner.name} has suspended this market`); return; }
     const { slip, source, seenOdds } = state.sheet;
     const odds = slipOdds(slip, PARTNERS.indexOf(partner));
     /* The price moved while the sheet was open: never send someone out on a price they
@@ -2480,6 +2534,17 @@ const ACTIONS = {
   'close-welcome'() { track('welcome_offer_dismissed', {}); closeSheet(); },
   'to-wait'() { go('wait', { sheet: null }); },
   'to-odds'() { track('odds_viewed', { tab: state.oddsTab, source: 'wait_screen' }); go('odds', { sheet: null }); },
+  /* The client can only schedule while it is open; a server would own this in production. */
+  scheduleKickoff() {
+    clearTimeout(kickoffTimer);
+    const m = currentMatch();
+    if (!state.profile.notify || !('Notification' in window) || Notification.permission !== 'granted') return;
+    const ms = kickoffOf(m) - Date.now();
+    if (ms <= 0 || ms > 6 * 3600 * 1000) return;
+    kickoffTimer = setTimeout(() => {
+      try { new Notification('Tribuna Match IQ', { body: `${m.home.name} v ${m.away.name} is under way. Your prediction is live.`, tag: 'kickoff-' + m.id }); } catch (e) { /* no service worker, no notification */ }
+    }, ms);
+  },
   async notify() {
     if (!('Notification' in window)) { toast('This browser cannot show notifications'); return; }
     if (state.profile.notify) {
@@ -2495,8 +2560,9 @@ const ACTIONS = {
     track('notify_opt_in', { permission });
     if (permission !== 'granted') { toast('Notifications are blocked for this site'); return; }
     updateProfile({ notify: true });
+    ACTIONS.scheduleKickoff();
     render();
-    toast('We will ping you when the result lands');
+    toast('We will ping you at kick-off and when the result lands');
   },
   async share() {
     const text = shareText();
@@ -2610,6 +2676,27 @@ const ACTIONS = {
     const ok = await copyText(`${text} ${link}`);
     toast(ok ? 'Challenge link copied. Send it to a friend.' : 'Could not copy on this browser');
   },
+  async transfer() {
+    const link = transferLink(state.profile);
+    track('profile_transfer_link', { iq: state.profile.iq });
+    const text = 'My Tribuna Match IQ profile. Open this on the other device to move it over.';
+    if (navigator.share) {
+      try { await navigator.share({ title: 'Tribuna Match IQ', text, url: link }); return; } catch (e) { if (e && e.name === 'AbortError') return; }
+    }
+    const ok = await copyText(`${text} ${link}`);
+    toast(ok ? 'Transfer link copied. Open it on the other device.' : 'Could not copy on this browser');
+  },
+  'restore-apply'() {
+    const incoming = state.restore;
+    if (!incoming) return;
+    const profile = { ...DEFAULT_PROFILE, ...incoming, uid: state.profile.uid };
+    saveProfile(profile);
+    track('profile_restored', { iq: profile.iq });
+    state = { ...state, profile, restore: null };
+    render();
+    toast('Profile restored on this device');
+  },
+  'restore-cancel'() { track('profile_restore_declined', {}); setState({ restore: null }); },
   'lb-tab'(btn) { setState({ lbTab: btn.dataset.tab }); },
   'lb-expand'() { const lbFull = !state.lbFull; track('leaderboard_expand', { expanded: lbFull }); setState({ lbFull }); },
   'read-more'() { track('content_click', { screen: state.screen }); toast('Opens the full article on Tribuna (mock)'); },
