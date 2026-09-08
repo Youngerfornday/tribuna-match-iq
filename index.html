@@ -173,6 +173,11 @@ body[data-layout="wide"]{--shell:1120px}
 .sheet-table .st-head p{font-size:13px;color:var(--ink-3);margin-top:4px}
 .sheet-table .st-scroll{max-height:min(62vh,540px);overflow:auto;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface-2)}
 .sheet-table .st-scroll thead th{position:sticky;top:0;background:var(--surface-2);z-index:1}
+@media (max-width:480px){
+  .sheet-table .st-scroll td,.sheet-table .st-scroll th{padding-left:6px;padding-right:6px}
+  .sheet-table .st-scroll td:first-child,.sheet-table .st-scroll th:first-child{padding-left:10px;width:48px}
+  .sheet-table .st-scroll td:last-child,.sheet-table .st-scroll th:last-child{padding-right:10px}
+}
 .steps3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:22px 0}
 .steps3 div{padding:14px 12px;border-radius:var(--radius-sm);background:var(--surface);border:1px solid var(--line)}
 .steps3 .n{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-family:var(--font-display);font-weight:800;font-size:15px}
