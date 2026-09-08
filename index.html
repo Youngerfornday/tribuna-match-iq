@@ -134,8 +134,8 @@ body[data-layout="wide"]{--shell:1120px}
 /* ------------------------------------------------------------- landing */
 .hero{position:relative;overflow:hidden;padding:24px 20px;border-radius:16px;background:linear-gradient(150deg,#1d2418 0%,#171915 55%,#131b26 100%);border:1px solid var(--line-strong);box-shadow:var(--shadow);display:flex;flex-direction:column;gap:18px}
 .hero-copy{position:relative;z-index:1;min-width:0}
-.hero-art{position:relative;z-index:1;order:-1;align-self:flex-end;width:150px;aspect-ratio:4/3}
-.hero-photo{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 8%;filter:brightness(.96) saturate(1.05);-webkit-mask-image:radial-gradient(64% 74% at 50% 42%,#000 42%,rgba(0,0,0,.5) 72%,transparent 90%);mask-image:radial-gradient(64% 74% at 50% 42%,#000 42%,rgba(0,0,0,.5) 72%,transparent 90%)}
+.hero-art{position:relative;z-index:1;order:-1;align-self:flex-end;width:170px;aspect-ratio:4/3;margin:-14px -14px -10px 0}
+.hero-photo{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 10%;filter:brightness(.84) contrast(1.34) saturate(1.06) hue-rotate(-8deg);-webkit-mask-image:radial-gradient(62% 66% at 52% 44%,#000 38%,rgba(0,0,0,.5) 70%,transparent 88%);mask-image:radial-gradient(62% 66% at 52% 44%,#000 38%,rgba(0,0,0,.5) 70%,transparent 88%)}
 .hero:before{content:"";position:absolute;inset:-50% -20% auto auto;width:320px;height:320px;border-radius:50%;background:radial-gradient(closest-side,rgba(215,255,61,.18),transparent 70%);pointer-events:none}
 .hero:after{content:"";position:absolute;inset:auto auto -60% -20%;width:280px;height:280px;border-radius:50%;background:radial-gradient(closest-side,rgba(57,135,229,.16),transparent 70%);pointer-events:none}
 .hero>*{position:relative}
@@ -171,7 +171,7 @@ body[data-layout="wide"]{--shell:1120px}
 @media (min-width:900px){
   .hero{flex-direction:row;align-items:center;gap:32px;padding:32px 30px}
   .hero-copy{flex:1}
-  .hero-art{order:0;width:min(340px,36%);align-self:center}
+  .hero-art{order:0;width:min(420px,42%);align-self:flex-end;margin:0 -22px -38px 0}
 }
 
 /* ---------------------------------------------------------------- hub */
@@ -317,7 +317,7 @@ body[data-layout="wide"]{--shell:1120px}
 .odds-row.best{background:linear-gradient(90deg,var(--accent-dim),transparent 60%)}
 .odds-row .bk{font-weight:600;min-width:0}
 .odds-row .bk small{display:block;font-size:12px;color:var(--ink-3);font-weight:400}
-.odds-row .bk .offer{display:inline-flex;align-items:center;gap:4px;margin-top:6px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--accent)}
+.odds-row .bk .offer{display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:4px 9px;border-radius:20px;background:var(--accent-dim);border:1px solid rgba(215,255,61,.4);font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--accent)}
 .odds-row .o{font-family:var(--font-display);font-size:26px;font-weight:800;text-align:right;line-height:1}
 .odds-row .o small{display:block;font-family:var(--font-body);font-size:12px;color:var(--ink-3);font-weight:500;margin-top:2px}
 .call{margin-top:14px;padding:14px 16px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--line)}
@@ -327,9 +327,12 @@ body[data-layout="wide"]{--shell:1120px}
 .call .cmp span{display:block;font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
 .call .cmp b{font-family:var(--font-display);font-size:24px;font-weight:800}
 .call .note{font-size:13px;color:var(--ink-2);margin-top:10px}
-.offer-card{margin-top:14px;padding:16px;border-radius:var(--radius);background:linear-gradient(135deg,#1c2116,#171915 70%);border:1px solid var(--line-strong);display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
-.offer-card .t{font-family:var(--font-display);font-size:24px;font-weight:700;line-height:1.05;margin-top:4px}
-.offer-card .terms{font-size:12px;color:var(--ink-3);margin-top:6px}
+.offer-card{margin-top:16px;padding:16px 18px;border-radius:var(--radius);background:linear-gradient(115deg,rgba(215,255,61,.13),rgba(23,25,21,.92) 62%);border:1px solid rgba(215,255,61,.38);display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;box-shadow:var(--shadow)}
+.offer-card .ic{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);font-size:19px;flex:none;align-self:start}
+.offer-card .lbl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.offer-card .t{font-family:var(--font-display);font-size:26px;font-weight:800;line-height:1.02;margin-top:3px}
+.offer-card .fine{font-size:12px;color:var(--ink-3);margin-top:7px;line-height:1.5}
+@media (max-width:560px){.offer-card{grid-template-columns:auto 1fr}.offer-card .btn{grid-column:1/-1;width:100%}}
 
 /* waiting */
 .wait{margin-top:18px;text-align:center;padding:28px 18px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--line)}
@@ -434,6 +437,10 @@ body[data-layout="wide"]{--shell:1120px}
   .prize-banner h3{font-size:42px}
   .prize-banner .pb-art{justify-self:end;width:min(300px,100%);margin:-24px 6px -34px 0}
 }
+.standing{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:16px;padding:14px 18px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--line)}
+.standing .st-main b{font-family:var(--font-display);font-size:24px;font-weight:700;line-height:1.1;display:block}
+.standing .st-main span{display:block;font-size:13px;color:var(--ink-3);margin-top:3px}
+.standing .st-cta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .myweek{border-radius:var(--radius);background:var(--surface);border:1px solid var(--line);overflow:hidden}
 .myweek .hd{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:14px 16px 10px;flex-wrap:wrap}
 .myweek .hd b{font-family:var(--font-display);font-size:22px;font-weight:700}
@@ -485,7 +492,7 @@ body[data-layout="wide"]{--shell:1120px}
 .sheet .mini-slip .tot{font-family:var(--font-display);font-size:18px;font-weight:700}
 .sheet .offer{margin-top:12px;padding:14px;border-radius:var(--radius-sm);background:var(--accent-dim);border:1px solid rgba(215,255,61,.3)}
 .sheet .offer .t{font-family:var(--font-display);font-size:22px;font-weight:700;line-height:1.05}
-.sheet .offer .terms{font-size:12px;color:var(--ink-2);margin-top:6px}
+.sheet .offer .fine{font-size:12px;color:var(--ink-2);margin-top:6px}
 .sheet .foot-cta{margin-top:16px}
 .offer-pick{display:grid;gap:10px;margin-top:16px}
 .opick{display:flex;align-items:center;gap:12px;padding:14px;border-radius:var(--radius);border:1px solid var(--line-strong);background:var(--surface-2);min-height:64px;transition:border-color .15s,background .15s}
@@ -947,7 +954,7 @@ function prizeBanner(p, opts = {}) {
   const standing = p.iq > 0
     ? (inPrize
       ? `You are #${w.rank} of ${fmtK(WEEK_FIELD)} — inside the top ${PRIZE_TOP}.`
-      : `You are #${w.rank} — ${w.rank - PRIZE_TOP} ${plural(w.rank - PRIZE_TOP, 'place', 'places')} from the prize.`)
+      : `You are #${w.rank} — ${plural(w.rank - PRIZE_TOP, 'place', 'places')} from the prize.`)
     : `Your locked calls score at full-time, and that is when you enter the table.`;
   const headline = started ? `Finish in the top ${PRIZE_TOP} this week` : `Your first prediction unlocks ${partner.offer.reward} in free bets`;
   const lead = started
@@ -976,7 +983,7 @@ function prizeBanner(p, opts = {}) {
       <p class="pb-lead">${lead}</p>
       <div class="pb-actions">
         ${cta}
-        <span class="pb-status ${started && inPrize ? 'on' : ''}">${note}</span>
+        ${opts.hideStatus ? '' : `<span class="pb-status ${started && inPrize ? 'on' : ''}">${note}</span>`}
       </div>
       <p class="pb-terms">Partner-funded, not a cash prize from Tribuna · new customers only · 18+ · T&amp;Cs apply · locking a prediction is always free.</p>
     </div>
@@ -1036,31 +1043,29 @@ function viewBoard() {
   return `
   <h1 class="q-title">Weekly table</h1>
   <p class="q-sub">The top of ${fmtK(WEEK_FIELD)} players who locked a call this week, plus your row. ${WEEK_LABEL} · resets Monday 00:00.</p>
-  <div class="cols">
-    <div>
-      ${prizeBanner(p, { cta: `<button class="btn btn-secondary" data-action="nav" data-to="hub" data-label="Challenges">${icon('i-bolt')} Play a challenge</button>` })}
-      <section class="lb" aria-label="Weekly table">
-        <div class="tabs" role="tablist" aria-label="Leaderboard">
-          <button class="tab" role="tab" aria-selected="${isPlayers}" data-action="lb-tab" data-tab="players">Players</button>
-          <button class="tab" role="tab" aria-selected="${!isPlayers}" data-action="lb-tab" data-tab="fanbases">Fanbases</button>
-        </div>
-        ${isPlayers ? playersTable(p, { limit: 10, expandable: true }) : fanbasesPanel(p)}
-      </section>
-    </div>
 
-    <div class="rail">
-      <section class="next">
-        <h3>${p.iq > 0 ? `You are #${w.rank}` : 'Not in the table yet'}</h3>
-        <p>${p.iq > 0
-          ? `${p.iq} Match IQ · ${leagueFor(p.iq).name} · ${w.locked} of ${w.total} matches called this week.`
-          : `Lock one prediction and you enter this week's table straight away.`}</p>
-        <div class="foot-cta">
-          <button class="btn btn-primary btn-block" data-action="nav" data-to="hub" data-label="Challenges">${p.iq > 0 ? 'Keep climbing' : 'Enter the table'} ${icon('i-arrow')}</button>
-          ${p.iq > 0 ? `<button class="btn btn-ghost" data-action="nav" data-to="retention" data-label="You">${icon('i-chart')} Your Match IQ</button>` : ''}
-        </div>
-      </section>
+  ${prizeBanner(p, { hideStatus: true, cta: `<button class="btn btn-primary" data-action="nav" data-to="hub" data-label="Challenges">${icon('i-bolt')} Play a challenge</button>` })}
+
+  <section class="standing" aria-label="Your position">
+    <div class="st-main">
+      <b>${p.iq > 0 ? `You are #${w.rank}` : 'You are not in the table yet'}</b>
+      <span>${p.iq > 0
+        ? `${p.iq} Match IQ · ${leagueFor(p.iq).name} · ${w.locked} of ${w.total} matches called this week`
+        : `Lock one prediction and you enter this week's table straight away`}</span>
     </div>
-  </div>`;
+    <div class="st-cta">
+      <button class="btn btn-secondary btn-sm" data-action="nav" data-to="hub" data-label="Challenges">${p.iq > 0 ? 'Keep climbing' : 'Enter the table'} ${icon('i-arrow')}</button>
+      ${p.iq > 0 ? `<button class="btn btn-ghost btn-sm" data-action="nav" data-to="retention" data-label="You">${icon('i-chart')} Your Match IQ</button>` : ''}
+    </div>
+  </section>
+
+  <section class="lb" aria-label="Weekly table">
+    <div class="tabs" role="tablist" aria-label="Leaderboard">
+      <button class="tab" role="tab" aria-selected="${isPlayers}" data-action="lb-tab" data-tab="players">Players</button>
+      <button class="tab" role="tab" aria-selected="${!isPlayers}" data-action="lb-tab" data-tab="fanbases">Fanbases</button>
+    </div>
+    ${isPlayers ? playersTable(p, { limit: 10, expandable: true }) : fanbasesPanel(p)}
+  </section>`;
 }
 
 function viewHub() {
@@ -1336,7 +1341,7 @@ function viewOdds() {
   <div class="odds-table" role="tabpanel">
     ${PARTNERS.map((p, i) => `
     <div class="odds-row ${odds[i] === best ? 'best' : ''}">
-      <span class="bk">${p.name}<small>${odds[i] === best ? 'Best price' : 'Partner offer'}</small>${p.offer ? `<span class="offer">${icon('i-gift')} ${p.offer.short}</span>` : ''}</span>
+      <span class="bk">${p.name}<small>${odds[i] === best ? 'Best price' : 'Partner offer'}</small>${p.offer ? `<span class="offer">${icon('i-gift')} ${p.offer.reward} welcome offer</span>` : ''}</span>
       <span class="o num">${fmtOdds(odds[i])}<small>${money(10)} returns ${money(odds[i] * 10)}</small></span>
       <button class="btn btn-sm ${odds[i] === best ? 'btn-primary' : 'btn-secondary'}" data-action="handoff" data-partner="${p.id}">View</button>
     </div>`).join('')}
@@ -1344,12 +1349,13 @@ function viewOdds() {
 
   ${offerPartner ? `
   <div class="offer-card">
+    <span class="ic">${icon('i-gift')}</span>
     <div>
-      <span class="eyebrow">${icon('i-gift')} New to ${offerPartner.name}?</span>
+      <span class="lbl">New to ${offerPartner.name}</span>
       <div class="t">${offerPartner.offer.title}</div>
-      <p class="terms">Your slip is pre-filled when you continue. ${offerPartner.offer.terms}</p>
+      <p class="fine">Your slip is pre-filled when you continue. ${offerPartner.offer.terms}</p>
     </div>
-    <button class="btn btn-sm btn-secondary" data-action="handoff" data-partner="${offerPartner.id}">Claim</button>
+    <button class="btn btn-primary" data-action="handoff" data-partner="${offerPartner.id}">Claim offer ${icon('i-ext')}</button>
   </div>` : ''}
 
   <div class="call">
@@ -1733,7 +1739,7 @@ function viewSheet() {
       <div class="offer">
         <span class="eyebrow" style="color:var(--accent)">${icon('i-gift')} Welcome offer applied</span>
         <div class="t">${partner.offer.title}</div>
-        <p class="terms">${partner.offer.terms}</p>
+        <p class="fine">${partner.offer.terms}</p>
       </div>` : ''}
       ${state.profile.ageConfirmed
         ? `<div class="rg" style="margin-top:12px"><span class="badge18">18+</span><span>Age confirmed on this device. Only bet what you can afford to lose.</span></div>`
