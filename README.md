@@ -4,6 +4,7 @@ Prototype for the Tribuna.com iGaming Product/Project Manager test task.
 
 - Live prototype: https://youngerfornday.github.io/tribuna-match-iq/
 - Local: open `index.html` in any browser. One file, no build step, works offline.
+- Every screen has its own URL (`#/challenges`, `#/match/bay-bvb/play`, `#/board`, `#/me`), so deep links and the browser back button work. In production these map 1:1 to paths under `/match-iq/`.
 
 Flow: match page → 3 blind calls (winner, over/under, scorer) → reveal CaptainAI / fans / market → Power Pick → lock → odds at three partners (bet builder or single) → wait for full-time → result → Match IQ, streak, league, leaderboards → next match.
 

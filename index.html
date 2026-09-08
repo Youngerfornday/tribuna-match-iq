@@ -26,6 +26,7 @@
   --accent-ink:#0e0f0c;
   --accent-dim:rgba(215,255,61,.14);
   --ai:#3987e5;
+  --ai-text:#8db9f2;
   --fans:#d95926;
   --market:#199e70;
   --danger:#e66767;
@@ -38,47 +39,37 @@
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{
-  margin:0;background:var(--bg);color:var(--ink);
-  font-family:var(--font-body);font-size:16px;line-height:1.5;
-  -webkit-font-smoothing:antialiased;
-}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+body.sheet-open{overflow:hidden}
 ::selection{background:var(--accent);color:var(--accent-ink)}
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
 ::-webkit-scrollbar{width:10px;height:10px}
 ::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:8px;border:2px solid var(--bg)}
 ::-webkit-scrollbar-track{background:var(--bg)}
-button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0;margin:0;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0;margin:0;-webkit-tap-highlight-color:transparent;text-align:left}
 a{color:var(--accent);text-underline-offset:3px;text-decoration-thickness:1px}
 h1,h2,h3{font-family:var(--font-display);font-weight:700;line-height:1;letter-spacing:-.01em;margin:0;text-wrap:balance}
 p{margin:0}
+table{border-collapse:collapse}
 .num{font-variant-numeric:tabular-nums}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.hidden{display:none!important}
 svg.i{width:1em;height:1em;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.15em}
 
 /* --------------------------------------------------------------- site mock */
-.site-head{
-  position:sticky;top:0;z-index:20;background:rgba(14,15,12,.88);backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--line);
-}
-.site-head .row{max-width:560px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:18px}
-.wordmark{font-family:var(--font-display);font-weight:800;font-size:22px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);display:flex;align-items:center;gap:8px}
+.site-head{position:sticky;top:0;z-index:20;background:rgba(14,15,12,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.site-head .row{max-width:560px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:18px}
+.wordmark{font-family:var(--font-display);font-weight:800;font-size:22px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);display:flex;align-items:center;gap:8px;min-height:44px}
 .wordmark i{width:10px;height:10px;background:var(--accent);border-radius:2px;transform:rotate(45deg)}
-.site-nav{display:flex;gap:14px;font-size:13px;color:var(--ink-2);margin-left:auto;font-weight:500}
-.site-nav span{opacity:.9}
-.site-nav .on{color:var(--ink);border-bottom:2px solid var(--accent);padding-bottom:2px}
+.site-nav{display:flex;gap:4px;margin-left:auto}
+.site-nav button{font-size:13px;color:var(--ink-2);font-weight:500;min-height:44px;padding:0 8px;border-bottom:2px solid transparent}
+.site-nav button.on{color:var(--ink);border-bottom-color:var(--accent)}
 .page{max-width:560px;margin:0 auto;padding:20px 20px 40px;min-height:70vh}
 .site-foot{max-width:560px;margin:0 auto;padding:16px 20px 40px;color:var(--ink-3);font-size:12px;line-height:1.5;border-top:1px solid var(--line)}
-.site-foot .rg{display:flex;gap:10px;align-items:flex-start}
+.rg{display:flex;gap:10px;align-items:flex-start;font-size:12px;color:var(--ink-3);line-height:1.45}
 .badge18{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border:1.5px solid var(--ink-3);border-radius:50%;font-weight:700;font-size:11px;flex:none;color:var(--ink-2)}
 
 /* -------------------------------------------------------------- primitives */
-.btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  min-height:48px;padding:0 20px;border-radius:var(--radius-sm);
-  font-weight:600;font-size:16px;transition:transform .15s var(--ease),background .15s,color .15s,box-shadow .15s;
-}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:var(--radius-sm);font-weight:600;font-size:16px;transition:transform .15s var(--ease),background .15s,color .15s;text-align:center}
 .btn:active{transform:scale(.98)}
 .btn-primary{background:var(--accent);color:var(--accent-ink);box-shadow:0 6px 18px -8px rgba(0,0,0,.7)}
 .btn-primary:hover{background:#e4ff6b}
@@ -87,12 +78,12 @@ svg.i{width:1em;height:1em;flex:none;fill:none;stroke:currentColor;stroke-width:
 .btn-ghost{color:var(--ink-2);min-height:44px;padding:0 10px}
 .btn-ghost:hover{color:var(--ink)}
 .btn-block{width:100%}
+.btn-sm{min-height:40px;padding:0 14px;font-size:14px}
 .btn[disabled]{opacity:.45;cursor:not-allowed;transform:none}
 .chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600;letter-spacing:.02em;border:1px solid var(--line-strong);color:var(--ink-2);white-space:nowrap}
 .chip-accent{background:var(--accent-dim);border-color:transparent;color:var(--accent)}
 .chip-warn{background:rgba(230,103,103,.14);border-color:transparent;color:#ff9b9b}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
-.stack>*+*{margin-top:14px}
+.chip-ai{background:rgba(57,135,229,.16);border-color:transparent;color:var(--ai-text)}
 .muted{color:var(--ink-2)}
 .dim{color:var(--ink-3)}
 .small{font-size:13px}
@@ -104,15 +95,75 @@ svg.i{width:1em;height:1em;flex:none;fill:none;stroke:currentColor;stroke-width:
 .swatch{width:10px;height:10px;border-radius:3px;flex:none}
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink-2);font-weight:500}
 .legend .row{gap:6px}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.ai-dot{width:22px;height:22px;border-radius:6px;background:rgba(57,135,229,.18);color:var(--ai-text);display:grid;place-items:center;flex:none;margin-top:1px}
+.back{transform:rotate(180deg)}
+.crest{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:20px;color:#fff;letter-spacing:.02em;border:2px solid rgba(255,255,255,.08);flex:none}
+.crest.sm{width:30px;height:30px;font-size:12px}
+.dot{width:10px;height:10px;border-radius:50%;flex:none;display:inline-block}
+
+/* ------------------------------------------------------------- landing */
+.hero{position:relative;overflow:hidden;padding:24px 20px;border-radius:16px;background:linear-gradient(150deg,#1d2418 0%,#171915 55%,#131b26 100%);border:1px solid var(--line-strong);box-shadow:var(--shadow)}
+.hero:before{content:"";position:absolute;inset:-50% -20% auto auto;width:320px;height:320px;border-radius:50%;background:radial-gradient(closest-side,rgba(215,255,61,.18),transparent 70%);pointer-events:none}
+.hero:after{content:"";position:absolute;inset:auto auto -60% -20%;width:280px;height:280px;border-radius:50%;background:radial-gradient(closest-side,rgba(57,135,229,.16),transparent 70%);pointer-events:none}
+.hero>*{position:relative}
+.hero h1{font-size:44px;line-height:.95;margin-top:14px;max-width:15ch}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero p{color:var(--ink-2);margin-top:12px;max-width:44ch}
+.hero .foot-cta{margin-top:18px}
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:18px;padding-top:16px;border-top:1px solid var(--line-strong)}
+.hero-stats b{display:block;font-family:var(--font-display);font-size:24px;font-weight:800;line-height:1.1}
+.hero-stats b small{font-size:14px;color:var(--ink-3);font-weight:600}
+.hero-stats span{display:block;font-size:12px;color:var(--ink-3);margin-top:2px;line-height:1.3}
+.steps3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:22px 0}
+.steps3 div{padding:14px 12px;border-radius:var(--radius-sm);background:var(--surface);border:1px solid var(--line)}
+.steps3 .n{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-family:var(--font-display);font-weight:800;font-size:15px}
+.steps3 b{display:block;font-family:var(--font-display);font-size:19px;font-weight:700;margin-top:10px;line-height:1.05}
+.steps3 p{font-size:13px;color:var(--ink-2);margin-top:6px;line-height:1.4}
+.terms{margin-top:26px;padding-top:18px;border-top:1px solid var(--line)}
+.terms h2{font-size:26px;margin-bottom:8px}
+.terms details{border-bottom:1px solid var(--line)}
+.terms summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;padding:12px 0;font-weight:600;font-size:15px;min-height:44px}
+.terms summary::-webkit-details-marker{display:none}
+.terms summary .chev{margin-left:auto;color:var(--ink-3);transition:transform .2s}
+.terms details[open] summary .chev{transform:rotate(180deg)}
+.terms details p{font-size:14px;color:var(--ink-2);padding:0 0 14px;line-height:1.55;max-width:62ch}
+@media (max-width:420px){
+  .hero h1{font-size:38px}
+  .steps3{grid-template-columns:1fr}
+  .hero-stats b{font-size:20px}
+}
+
+/* ---------------------------------------------------------------- hub */
+.hub-head{margin:4px 0 16px}
+.hub-head h1{font-size:40px}
+.hub-head p{color:var(--ink-2);margin-top:6px}
+.week{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:22px}
+.week div{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);padding:12px}
+.week span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);font-weight:600}
+.week b{font-family:var(--font-display);font-size:26px;font-weight:800;line-height:1.1}
+.week b small{font-size:13px;color:var(--ink-3);font-family:var(--font-body);font-weight:600;margin-left:3px}
+.day{margin:18px 0 8px;display:flex;align-items:baseline;gap:10px}
+.day h2{font-size:22px}
+.day span{font-size:12px;color:var(--ink-3)}
+.fixture{width:100%;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:14px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--line);margin-top:8px;transition:border-color .15s,background .15s}
+.fixture:hover{border-color:#4b5245;background:var(--surface-2)}
+.fixture.open{border-color:var(--line-strong)}
+.fixture .teams-sm{display:flex;align-items:center;gap:10px}
+.fixture .names{font-family:var(--font-display);font-size:20px;font-weight:700;line-height:1.05}
+.fixture .names small{display:block;font-family:var(--font-body);font-size:12px;color:var(--ink-3);font-weight:400;margin-top:3px}
+.fixture .status{display:flex;flex-direction:column;align-items:flex-end;gap:6px;font-size:12px;color:var(--ink-3)}
+.fixture .status .pts{font-family:var(--font-display);font-size:22px;font-weight:800;color:var(--accent)}
+.how{margin-top:22px;padding:16px;border-radius:var(--radius);border:1px dashed var(--line-strong);color:var(--ink-2);font-size:14px}
+.how ol{margin:8px 0 0;padding-left:18px}
+.how li+li{margin-top:4px}
 
 /* --------------------------------------------------------------- match page */
 .match-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
-.match-card .comp{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
 .teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;margin:14px 0 10px}
 .team{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
-.crest{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:20px;color:#fff;letter-spacing:.02em;border:2px solid rgba(255,255,255,.08)}
 .team b{font-family:var(--font-display);font-size:20px;font-weight:700;line-height:1.05}
-.kick{font-family:var(--font-display);font-size:34px;font-weight:800;line-height:1;color:var(--ink);letter-spacing:.02em}
+.kick{font-family:var(--font-display);font-size:34px;font-weight:800;line-height:1;color:var(--ink);letter-spacing:.02em;text-align:center}
 .kick small{display:block;font-family:var(--font-body);font-size:12px;font-weight:500;color:var(--ink-3);letter-spacing:.06em;text-transform:uppercase;margin-top:6px}
 .countdown{font-variant-numeric:tabular-nums}
 .venue{font-size:13px;color:var(--ink-3);text-align:center}
@@ -120,27 +171,45 @@ svg.i{width:1em;height:1em;flex:none;fill:none;stroke:currentColor;stroke-width:
 .preview p{color:var(--ink-2);font-size:16px;line-height:1.6;max-width:62ch}
 .preview p+p{margin-top:10px}
 .byline{font-size:12px;color:var(--ink-3);margin-top:8px}
-.widget{
-  margin:22px 0;border-radius:var(--radius);padding:20px;position:relative;overflow:hidden;
-  background:linear-gradient(135deg,#1c2116 0%,#171915 60%);border:1px solid var(--line-strong);box-shadow:var(--shadow);
-}
+.widget{margin:22px 0;border-radius:var(--radius);padding:20px;position:relative;overflow:hidden;background:linear-gradient(135deg,#1c2116 0%,#171915 60%);border:1px solid var(--line-strong);box-shadow:var(--shadow)}
 .widget:before{content:"";position:absolute;inset:-40% -30% auto auto;width:260px;height:260px;border-radius:50%;background:radial-gradient(closest-side,rgba(215,255,61,.16),transparent 70%);pointer-events:none}
-.widget h2{font-size:34px;line-height:.98;max-width:12ch}
+.widget h2{font-size:34px;line-height:.98;max-width:12ch;margin-top:12px}
 .widget h2 em{font-style:normal;color:var(--accent)}
 .widget p{color:var(--ink-2);margin-top:10px;max-width:40ch}
 .widget .facts{display:flex;gap:14px;margin:14px 0 18px;font-size:13px;color:var(--ink-2);flex-wrap:wrap}
 .widget .facts .row{gap:6px}
+.widget .more{margin-top:12px;font-size:13px}
 .club-pick{margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
 .club-pick .row{gap:8px;margin-top:8px}
 .club-btn{flex:1;min-height:44px;border-radius:var(--radius-sm);border:1px solid var(--line-strong);background:var(--surface-2);font-weight:600;font-size:14px;display:flex;align-items:center;justify-content:center;gap:8px}
-.club-btn[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-dim)}
-.club-btn .dot{width:12px;height:12px;border-radius:50%;flex:none}
+.state-box{margin-top:14px;padding:14px;border-radius:var(--radius-sm);background:var(--surface-2);border:1px solid var(--line);display:flex;align-items:center;gap:12px}
+.state-box .t{font-weight:600}
+.state-box .t small{display:block;font-size:12px;color:var(--ink-3);font-weight:400}
 .odds-plain{margin-top:8px}
-.odds-plain .head{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.odds-plain .head{display:flex;justify-content:space-between;align-items:center}
 .odds-plain .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
-.odds-plain .cell{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:10px;text-align:center}
-.odds-plain .cell span{display:block;font-size:12px;color:var(--ink-3)}
-.odds-plain .cell b{font-family:var(--font-display);font-size:20px}
+.odds-plain .cell,.quick .cell{width:100%;background:var(--surface-2);border:1px solid var(--line-strong);border-radius:var(--radius-sm);padding:10px;text-align:center;min-height:64px;transition:border-color .15s,background .15s}
+.odds-plain .cell:hover,.quick .cell:hover{border-color:var(--accent);background:var(--accent-dim)}
+.odds-plain .cell span,.quick .cell span{display:block;font-size:12px;color:var(--ink-3)}
+.odds-plain .cell b,.quick .cell b{font-family:var(--font-display);font-size:22px;display:block;line-height:1.1}
+.odds-plain .cell .bk,.quick .cell .bk{font-size:11px;color:var(--accent);font-weight:600}
+.quick{margin-top:22px;padding:16px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--line)}
+.quick h3{font-size:24px;margin:6px 0 10px}
+.quick .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.aislip{margin:0 0 22px;padding:18px;border-radius:var(--radius);background:linear-gradient(135deg,#131b26,#171915 70%);border:1px solid #2b3a4d;box-shadow:var(--shadow)}
+.aislip h2{font-size:28px;margin-top:12px;line-height:1.02}
+.aislip p{color:var(--ink-2);font-size:14px;margin-top:8px}
+.aislip .legs{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.pick .meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;font-size:12px;color:var(--ink-2)}
+.pick .meta .row{gap:5px}
+.pick .meta .agree{display:inline-flex;align-items:center;gap:4px;color:var(--ai-text);font-weight:600}
+.hint{margin-top:14px;display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:var(--radius-sm);background:var(--surface);border:1px solid var(--line);font-size:14px;color:var(--ink-2)}
+.stakes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.stakes div{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);padding:12px 10px;text-align:center}
+.stakes span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);font-weight:600}
+.stakes b{font-family:var(--font-display);font-size:26px;font-weight:800;line-height:1.1;display:block;margin-top:2px}
+.stakes small{font-size:12px;color:var(--ink-2)}
+.back-it{margin-top:16px;padding:16px;border-radius:var(--radius);background:linear-gradient(135deg,#1c2116,#171915 70%);border:1px solid var(--line-strong)}
 
 /* ------------------------------------------------------------ challenge shell */
 .shell-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
@@ -151,24 +220,19 @@ svg.i{width:1em;height:1em;flex:none;fill:none;stroke:currentColor;stroke-width:
 .q-title{font-size:40px;line-height:.95;margin:6px 0 4px}
 .q-sub{color:var(--ink-2);font-size:15px}
 .options{display:grid;gap:10px;margin-top:18px}
-.opt{
-  display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;
-  min-height:60px;padding:14px 16px;border-radius:var(--radius);border:1px solid var(--line-strong);
-  background:var(--surface);transition:border-color .15s,background .15s,transform .15s var(--ease);
-}
+.opt{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:60px;padding:14px 16px;border-radius:var(--radius);border:1px solid var(--line-strong);background:var(--surface);transition:border-color .15s,background .15s}
 .opt:hover{border-color:#4b5245;background:var(--surface-2)}
 .opt[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-dim)}
-.opt[disabled]{cursor:default;transform:none}
+.opt[disabled]{cursor:default}
 .opt[disabled]:hover{border-color:var(--line-strong);background:var(--surface)}
 .opt[disabled][aria-pressed="true"]{border-color:var(--accent);background:var(--accent-dim)}
 .opt .lbl{font-family:var(--font-display);font-size:24px;font-weight:700;line-height:1}
-.opt .sub{font-size:13px;color:var(--ink-3);margin-top:3px;font-family:var(--font-body);font-weight:400}
+.opt .sub{display:block;font-size:13px;color:var(--ink-3);margin-top:3px}
 .opt .tag{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
 
-/* reveal (grouped bar chart) */
 .reveal{margin-top:18px;padding:16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);animation:rise .5s var(--ease) both}
 @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-.reveal h3{font-size:20px;font-weight:700}
+.reveal h3{font-size:20px}
 .reveal .legend{margin:8px 0 14px}
 .grp{display:grid;grid-template-columns:96px 1fr;gap:12px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
 .grp:first-of-type{border-top:0}
@@ -180,19 +244,14 @@ svg.i{width:1em;height:1em;flex:none;fill:none;stroke:currentColor;stroke-width:
 .bar .fill{height:10px;border-radius:0 4px 4px 0;transform:scaleX(0);transform-origin:left;transition:transform .9s var(--ease)}
 .fill.in{transform:scaleX(1)}
 .bar .val{font-size:12px;color:var(--ink-2);text-align:right}
-.grp.you .name{color:var(--ink)}
 .reason{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);font-size:14px;color:var(--ink-2);display:flex;gap:10px;align-items:flex-start}
-.ai-dot{width:22px;height:22px;border-radius:6px;background:rgba(57,135,229,.18);color:#8db9f2;display:grid;place-items:center;flex:none;margin-top:1px}
-.back{transform:rotate(180deg)}
-.reason a{white-space:nowrap}
 .foot-cta{margin-top:18px;display:flex;gap:10px;flex-direction:column}
 
-/* power pick, lock */
 .pick-list{display:grid;gap:10px;margin-top:18px}
-.pick{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:var(--radius);border:1px solid var(--line-strong);background:var(--surface);text-align:left;min-height:64px;transition:border-color .15s,background .15s}
+.pick{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:var(--radius);border:1px solid var(--line-strong);background:var(--surface);min-height:64px;transition:border-color .15s,background .15s}
 .pick[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-dim)}
 .pick .k{font-size:12px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
-.pick .v{font-family:var(--font-display);font-size:22px;font-weight:700;line-height:1.05}
+.pick .v{display:block;font-family:var(--font-display);font-size:22px;font-weight:700;line-height:1.05}
 .pick .x2{margin-left:auto;font-family:var(--font-display);font-weight:800;font-size:20px;color:var(--ink-3)}
 .pick[aria-pressed="true"] .x2{color:var(--accent)}
 .slip{margin-top:18px;border:1px solid var(--line-strong);border-radius:var(--radius);background:var(--surface);overflow:hidden;box-shadow:var(--shadow)}
@@ -200,7 +259,7 @@ svg.i{width:1em;height:1em;flex:none;fill:none;stroke:currentColor;stroke-width:
 .slip .leg{display:flex;align-items:center;gap:12px;padding:14px 16px;border-top:1px solid var(--line)}
 .slip .leg .n{width:22px;height:22px;border-radius:50%;background:var(--surface-3);display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--ink-2);flex:none}
 .slip .leg .t{font-family:var(--font-display);font-size:22px;font-weight:700;line-height:1}
-.slip .leg .s{font-size:12px;color:var(--ink-3)}
+.slip .leg .s{display:block;font-size:12px;color:var(--ink-3)}
 .slip .leg.pp{background:var(--accent-dim)}
 .slip .leg.pp .n{background:var(--accent);color:var(--accent-ink)}
 .slip .leg .pp-tag{margin-left:auto;font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--accent);display:flex;align-items:center;gap:4px}
@@ -210,26 +269,27 @@ svg.i{width:1em;height:1em;flex:none;fill:none;stroke:currentColor;stroke-width:
 
 /* odds */
 .tabs{display:flex;gap:4px;padding:4px;background:var(--surface-2);border-radius:10px;margin-top:16px}
-.tab{flex:1;min-height:40px;border-radius:8px;font-weight:600;font-size:14px;color:var(--ink-2);transition:background .15s,color .15s}
-.tab[aria-selected="true"]{background:var(--surface-3);color:var(--ink);box-shadow:0 1px 0 rgba(255,255,255,.04) inset}
+.tab{flex:1;min-height:40px;border-radius:8px;font-weight:600;font-size:14px;color:var(--ink-2);text-align:center;transition:background .15s,color .15s}
+.tab[aria-selected="true"]{background:var(--surface-3);color:var(--ink)}
 .odds-table{margin-top:14px;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
 .odds-row{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;padding:14px 16px;border-top:1px solid var(--line);background:var(--surface)}
 .odds-row:first-child{border-top:0}
 .odds-row.best{background:linear-gradient(90deg,var(--accent-dim),transparent 60%)}
-.odds-row .bk{font-weight:600}
+.odds-row .bk{font-weight:600;min-width:0}
 .odds-row .bk small{display:block;font-size:12px;color:var(--ink-3);font-weight:400}
+.odds-row .bk .offer{display:inline-flex;align-items:center;gap:4px;margin-top:6px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--accent)}
 .odds-row .o{font-family:var(--font-display);font-size:26px;font-weight:800;text-align:right;line-height:1}
 .odds-row .o small{display:block;font-family:var(--font-body);font-size:12px;color:var(--ink-3);font-weight:500;margin-top:2px}
-.odds-row .go{min-height:40px;padding:0 14px;font-size:14px}
 .call{margin-top:14px;padding:14px 16px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--line)}
-.call .hd{font-size:12px;text-transform:uppercase;letter-spacing:.08em;font-weight:600;color:var(--ink-3)}
 .call .big{font-family:var(--font-display);font-size:26px;font-weight:700;margin-top:4px;line-height:1.05}
 .call .cmp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
 .call .cmp div{background:var(--surface-2);border-radius:var(--radius-sm);padding:10px;text-align:center}
 .call .cmp span{display:block;font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
 .call .cmp b{font-family:var(--font-display);font-size:24px;font-weight:800}
 .call .note{font-size:13px;color:var(--ink-2);margin-top:10px}
-.rg{display:flex;gap:10px;align-items:flex-start;font-size:12px;color:var(--ink-3);margin-top:14px;line-height:1.45}
+.offer-card{margin-top:14px;padding:16px;border-radius:var(--radius);background:linear-gradient(135deg,#1c2116,#171915 70%);border:1px solid var(--line-strong);display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
+.offer-card .t{font-family:var(--font-display);font-size:24px;font-weight:700;line-height:1.05;margin-top:4px}
+.offer-card .terms{font-size:12px;color:var(--ink-3);margin-top:6px}
 
 /* waiting */
 .wait{margin-top:18px;text-align:center;padding:28px 18px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--line)}
@@ -248,12 +308,12 @@ svg.i{width:1em;height:1em;flex:none;fill:none;stroke:currentColor;stroke-width:
 .callrow .ic{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;flex:none}
 .callrow .ic.ok{background:var(--accent);color:var(--accent-ink)}
 .callrow .ic.no{background:rgba(230,103,103,.18);color:var(--danger)}
+.callrow .ic.bonus{background:rgba(215,255,61,.18);color:var(--accent)}
 .callrow .t{font-weight:600}
 .callrow .t small{display:block;font-size:12px;color:var(--ink-3);font-weight:400}
 .callrow .pts{margin-left:auto;font-family:var(--font-display);font-size:20px;font-weight:800;color:var(--ink-2)}
 .callrow .pts.ok{color:var(--accent)}
 .iq-hero{margin-top:16px;padding:20px;border-radius:var(--radius);background:linear-gradient(135deg,#1c2116,#171915 70%);border:1px solid var(--line-strong);display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px}
-.iq-hero .lbl{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);font-weight:600}
 .iq-hero .n{font-family:var(--font-display);font-size:56px;font-weight:800;line-height:1;color:var(--accent)}
 .iq-hero .n small{font-size:20px;color:var(--ink-2);font-weight:700;margin-left:4px}
 .duel{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
@@ -278,28 +338,65 @@ svg.i{width:1em;height:1em;flex:none;fill:none;stroke:currentColor;stroke-width:
 .profile .stats .row{gap:6px}
 .profile .stats b{color:var(--ink)}
 .flame{color:#ff9b3d}
+
 .lb{margin-top:14px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--line);overflow:hidden}
 .lb .tabs{margin:12px 12px 0}
-.lb .hd{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 6px;font-size:13px;color:var(--ink-2)}
+.lb .hd{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 16px 8px;font-size:13px;color:var(--ink-2);flex-wrap:wrap}
 .lb .hd b{font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--ink)}
-.lb table{width:100%;border-collapse:collapse;font-size:14px}
-.lb td{padding:10px 16px;border-top:1px solid var(--line)}
-.lb td:first-child{width:36px;color:var(--ink-3);font-weight:600}
-.lb td:last-child{text-align:right;font-family:var(--font-display);font-size:18px;font-weight:700}
+.lb .hd .sub{width:100%;font-size:12px;color:var(--ink-3)}
+.lb table{width:100%;font-size:14px}
+.lb th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);font-weight:600;padding:6px 8px;text-align:right;border-top:1px solid var(--line)}
+.lb th:nth-child(2){text-align:left}
+.lb td{padding:9px 8px;border-top:1px solid var(--line);text-align:right;white-space:nowrap}
+.lb td:first-child,.lb th:first-child{padding-left:16px;width:56px;text-align:left}
+.lb td:last-child,.lb th:last-child{padding-right:16px}
+.lb td:nth-child(2){text-align:left;width:100%;white-space:normal}
+.lb td.iq{font-family:var(--font-display);font-size:19px;font-weight:700}
 .lb tr.me td{background:var(--accent-dim)}
-.lb tr.ai td .name{color:#8db9f2}
-.lb table .name{display:flex;align-items:center;gap:8px;font-weight:500}
-.lb table .name .av{width:22px;height:22px;border-radius:50%;background:var(--surface-3);display:grid;place-items:center;font-size:10px;font-weight:700;color:var(--ink-2);flex:none}
+.lb tr.ai td .pname{color:var(--ai-text)}
+.lb .rank{display:inline-flex;align-items:center;gap:4px;font-weight:600;color:var(--ink-3)}
+.lb .mv{font-size:11px;font-weight:700}
+.lb .mv.up{color:var(--market)}
+.lb .mv.down{color:var(--danger)}
+.lb .mv.new{color:var(--accent)}
+.lb .pname{display:flex;align-items:center;gap:8px;font-weight:500;min-width:0}
+.lb .pname .av{width:24px;height:24px;border-radius:50%;background:var(--surface-3);display:grid;place-items:center;font-size:10px;font-weight:700;color:var(--ink-2);flex:none}
+.lb .pname .club{width:8px;height:8px;border-radius:50%;flex:none}
+.lb .pname .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lb .gap{padding:6px 16px;font-size:12px;color:var(--ink-3);text-align:center;border-top:1px dashed var(--line)}
+.lb .foot{padding:10px 16px 14px;font-size:12px;color:var(--ink-3);border-top:1px solid var(--line)}
 .fan{padding:6px 16px 16px}
-.fan .grp{grid-template-columns:110px 1fr}
+.fan .grp{grid-template-columns:120px 1fr}
 .fan .bar{height:16px}
-.fan .fill{height:14px}
-.fan .track{height:14px}
+.fan .fill,.fan .track{height:14px}
 .prize{margin-top:12px;font-size:13px;color:var(--ink-2);display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:var(--radius-sm);border:1px solid var(--line);background:var(--surface)}
 .next{margin-top:18px;padding:18px;border-radius:var(--radius);background:linear-gradient(135deg,#1c2116,#171915 70%);border:1px solid var(--line-strong)}
-.next .lbl{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);font-weight:600}
 .next h3{font-size:30px;margin:6px 0 4px}
 .next p{color:var(--ink-2);font-size:14px}
+
+/* handoff sheet */
+.sheet-wrap{position:fixed;inset:0;z-index:40;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.6);animation:fade .2s both}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.sheet{width:100%;max-width:560px;background:var(--surface);border:1px solid var(--line-strong);border-bottom:0;border-radius:18px 18px 0 0;padding:16px 20px 28px;box-shadow:0 -12px 40px rgba(0,0,0,.5);animation:up .35s var(--ease) both;max-height:92vh;overflow:auto}
+@keyframes up{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+.sheet .grab{width:40px;height:4px;border-radius:2px;background:var(--line-strong);margin:0 auto 14px}
+.sheet h2{font-size:28px}
+.sheet .partner{display:flex;align-items:center;gap:12px;margin-top:14px;padding:12px 14px;border-radius:var(--radius-sm);background:var(--surface-2);border:1px solid var(--line)}
+.sheet .partner .logo{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:18px;color:#fff;flex:none}
+.sheet .partner b{display:block}
+.sheet .partner small{font-size:12px;color:var(--ink-3)}
+.sheet .mini-slip{margin-top:12px;border:1px solid var(--line);border-radius:var(--radius-sm);overflow:hidden}
+.sheet .mini-slip div{display:flex;justify-content:space-between;gap:10px;padding:10px 14px;border-top:1px solid var(--line);font-size:14px}
+.sheet .mini-slip div:first-child{border-top:0;background:var(--surface-2);font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);font-weight:600}
+.sheet .mini-slip .tot{font-family:var(--font-display);font-size:18px;font-weight:700}
+.sheet .offer{margin-top:12px;padding:14px;border-radius:var(--radius-sm);background:var(--accent-dim);border:1px solid rgba(215,255,61,.3)}
+.sheet .offer .t{font-family:var(--font-display);font-size:22px;font-weight:700;line-height:1.05}
+.sheet .offer .terms{font-size:12px;color:var(--ink-2);margin-top:6px}
+.sheet .foot-cta{margin-top:16px}
+.sheet .age{display:flex;gap:12px;align-items:flex-start;margin-top:14px;font-size:13px;color:var(--ink-2);cursor:pointer;line-height:1.45}
+.sheet .age input{width:20px;height:20px;margin:1px 0 0;accent-color:var(--accent);flex:none;cursor:pointer}
+.fixture.missed{opacity:.6}
+.fixture.live{border-color:#5a3a3a}
 
 /* metrics panel */
 .metrics{max-width:560px;margin:8px auto 0;padding:0 20px}
@@ -316,6 +413,7 @@ svg.i{width:1em;height:1em;flex:none;fill:none;stroke:currentColor;stroke-width:
 .funnel .f b{text-align:right;color:var(--ink)}
 .evlog{margin-top:12px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;color:var(--ink-3);line-height:1.6;max-height:120px;overflow:auto}
 .metrics .def{font-size:12px;color:var(--ink-3);margin-top:10px;line-height:1.5}
+.metrics .reset{margin-top:10px}
 
 /* toast */
 .toast-wrap{position:fixed;left:0;right:0;bottom:20px;display:flex;justify-content:center;pointer-events:none;z-index:50;padding:0 16px}
@@ -327,7 +425,9 @@ svg.i{width:1em;height:1em;flex:none;fill:none;stroke:currentColor;stroke-width:
   .q-title{font-size:34px}
   .widget h2{font-size:30px}
   .grp{grid-template-columns:84px 1fr}
-  .site-nav{gap:10px;font-size:12px}
+  .site-nav button{font-size:12px;padding:0 6px}
+  .fixture .names{font-size:18px}
+  .lb td,.lb th{padding-left:6px;padding-right:6px}
 }
 @media (prefers-reduced-motion:reduce){
   *{animation:none!important;transition:none!important}
@@ -351,19 +451,19 @@ svg.i{width:1em;height:1em;flex:none;fill:none;stroke:currentColor;stroke-width:
   <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10m6 10V4m6 16v-7m4 7H2"/></symbol>
   <symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
   <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
-  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 2 4 5v6c0 5 3.5 9 8 11 4.5-2 8-6 8-11V5l-8-3z"/></symbol>
+  <symbol id="i-gift" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="5" rx="1"/><path d="M5 13v8h14v-8M12 8v13M12 8c-2-4-6-4-6-1s4 1 6 1zm0 0c2-4 6-4 6-1s-4 1-6 1z"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M14 4h6v6m0-6L10 14M20 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h5"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></symbol>
 </svg>
 
 <header class="site-head">
   <div class="row">
-    <div class="wordmark"><i></i>Tribuna</div>
-    <nav class="site-nav" aria-label="Site sections (mock)">
-      <span>Football</span><span class="on">Matches</span><span>Betting</span><span>Tables</span>
-    </nav>
+    <button class="wordmark" data-action="nav" data-to="landing" data-label="Home" aria-label="Tribuna home (mock)"><i></i>Tribuna</button>
+    <nav class="site-nav" aria-label="Site sections (mock)" id="nav"></nav>
   </div>
 </header>
 
-<main id="app" class="page" aria-live="polite"></main>
+<main id="app" class="page"></main>
 
 <div class="metrics" id="metrics"></div>
 
@@ -374,19 +474,24 @@ svg.i{width:1em;height:1em;flex:none;fill:none;stroke:currentColor;stroke-width:
   </div>
 </footer>
 
+<div id="sheet"></div>
 <div class="toast-wrap" id="toasts" role="status" aria-live="polite"></div>
 
 <script>
 /* ==================================================================== data */
-const STORAGE_KEY = 'tribuna-match-iq-v1';
+const STORAGE_KEY = 'tribuna-match-iq-v2';
 const POINTS_PER_CALL = 10;
 const POWER_PICK_MULTIPLIER = 2;
-const KICKOFF_OFFSET_MS = (3 * 60 + 12) * 60 * 1000;
+const PERFECT_BONUS = 10;
+const WEEK_LABEL = 'Week 4';
+const MIN = 60 * 1000;
+const HOUR = 60 * MIN;
 const FUNNEL = [
   ['challenge_start', 'Started challenge'],
   ['challenge_complete', 'Made 3 calls'],
   ['prediction_locked', 'Locked prediction'],
   ['odds_viewed', 'Viewed odds'],
+  ['handoff_opened', 'Opened partner handoff'],
   ['bookmaker_click', 'Clicked to bookmaker'],
   ['result_viewed', 'Returned for result'],
 ];
@@ -397,109 +502,148 @@ const LEAGUES = [
   { name: 'Expert', min: 160 },
   { name: 'Captain', min: 300 },
 ];
-const PARTNERS = ['Partner A', 'Partner B', 'Partner C'];
-const PLAYERS = [
-  { name: 'dmytro_k', iq: 138 },
-  { name: 'gunner_88', iq: 112 },
-  { name: 'kop_forever', iq: 96 },
-  { name: 'xg_nerd', iq: 88 },
-  { name: 'olena.f', iq: 74 },
-  { name: 'tactix', iq: 61 },
-  { name: 'red_wall', iq: 52 },
+const PARTNERS = [
+  { id: 'a', name: 'Partner A', color: '#1f6feb', offer: { title: 'Bet 10, get 30 in free bets', short: 'Welcome offer', terms: 'New customers only. Min first bet 10 at odds 1.50+. Free bets expire in 7 days. 18+. T&Cs apply.' } },
+  { id: 'b', name: 'Partner B', color: '#b3261e', offer: null },
+  { id: 'c', name: 'Partner C', color: '#0f9d58', offer: { title: '100% first deposit match up to 50', short: 'Welcome offer', terms: 'New customers only. Min deposit 10. 5x wagering on bonus. 18+. T&Cs apply.' } },
 ];
-const AI_WEEKLY_IQ = 120;
+const CLUBS = {
+  Arsenal: '#e0324a', Liverpool: '#8a2030', Chelsea: '#034694', 'Man City': '#6cabdd',
+  'Man United': '#da291c', Tottenham: '#5b6b8a', Newcastle: '#41B6E6', 'Aston Villa': '#7a003c',
+  'Real Madrid': '#d4af37', Barcelona: '#a50044', Bayern: '#dc052d', Dortmund: '#fde100',
+};
+const PLAYERS = [
+  { name: 'dmytro_k', club: 'Arsenal', played: 5, correct: 11, iq: 138, prev: 2 },
+  { name: 'gunner_88', club: 'Arsenal', played: 5, correct: 9, iq: 112, prev: 1 },
+  { name: 'kop_forever', club: 'Liverpool', played: 4, correct: 8, iq: 96, prev: 3 },
+  { name: 'xg_nerd', club: 'Man City', played: 5, correct: 8, iq: 88, prev: 5 },
+  { name: 'olena.f', club: 'Chelsea', played: 3, correct: 6, iq: 74, prev: 4 },
+  { name: 'tactix', club: 'Real Madrid', played: 4, correct: 6, iq: 61, prev: 8 },
+  { name: 'red_wall', club: 'Liverpool', played: 3, correct: 5, iq: 52, prev: 6 },
+  { name: 'blue_moon', club: 'Man City', played: 2, correct: 4, iq: 44, prev: 7 },
+  { name: 'bvb_ultra', club: 'Dortmund', played: 2, correct: 3, iq: 31, prev: 9 },
+];
+const CAPTAIN = { name: 'CaptainAI', played: 6, correct: 12, iq: 120, prev: 4, ai: true };
+const FANBASES = [
+  { club: 'Arsenal', hit: 61, n: 6900 }, { club: 'Liverpool', hit: 54, n: 5500 },
+  { club: 'Man City', hit: 57, n: 5700 }, { club: 'Chelsea', hit: 49, n: 4100 },
+  { club: 'Real Madrid', hit: 58, n: 7200 }, { club: 'Barcelona', hit: 55, n: 6800 },
+  { club: 'Bayern', hit: 63, n: 3900 }, { club: 'Dortmund', hit: 47, n: 2600 },
+  { club: 'Man United', hit: 44, n: 5100 }, { club: 'Tottenham', hit: 50, n: 3300 },
+  { club: 'Newcastle', hit: 56, n: 2400 }, { club: 'Aston Villa', hit: 52, n: 1900 },
+];
+
+const Q = (title, sub, exclusive, options, reason) => ({ title, sub, exclusive, options, reason });
+const O = (id, label, sub, ai, fans, odds) => ({ id, label, sub, ai, fans, odds });
 
 const MATCHES = [
   {
-    id: 'ars-liv',
-    competition: 'Premier League · Matchweek 4',
-    venue: 'Emirates Stadium, London',
-    home: { name: 'Arsenal', short: 'ARS', color: '#c8102e' },
-    away: { name: 'Liverpool', short: 'LIV', color: '#7a1020' },
-    fansCount: '12.4k',
-    preview: {
-      title: 'Arsenal vs Liverpool: the title race starts here',
-      paras: [
-        'Two unbeaten sides, one point between them, and a fixture that has produced 3.1 goals per game over the last six meetings. Arteta has the stronger home xG this season; Slot has the better front three by every underlying number.',
-        'The key battle is Saka against Robertson down Arsenal\'s right. Liverpool have conceded 41% of their shots from that flank, and Saka has been directly involved in a goal in five of the last six home games.',
-      ],
+    id: 'ars-liv', day: 'Saturday', kickoffLabel: 'Sat 17:30', offsetMin: 3 * 60 + 12,
+    competition: 'Premier League', venue: 'Emirates Stadium, London',
+    home: { name: 'Arsenal', short: 'ARS' }, away: { name: 'Liverpool', short: 'LIV' }, fansCount: '12.4k',
+    preview: { title: 'Arsenal vs Liverpool: the title race starts here', paras: [
+      'Two unbeaten sides, one point between them, and a fixture that has produced 3.1 goals per game over the last six meetings. Arteta has the stronger home xG this season; Slot has the better front three by every underlying number.',
+      'The key battle is Saka against Robertson down Arsenal\'s right. Liverpool have conceded 41% of their shots from that flank, and Saka has been directly involved in a goal in five of the last six home games.' ] },
+    questions: {
+      winner: Q('Who wins?', 'Full-time result, 90 minutes', true, [ O('home', 'Arsenal', 'Home win', 54, 63, [2.10, 2.05, 2.15]), O('draw', 'Draw', 'Level after 90', 24, 17, [3.50, 3.60, 3.45]), O('away', 'Liverpool', 'Away win', 22, 20, [3.40, 3.50, 3.30]) ], 'Arsenal average 2.1 xG at home this season against Liverpool\'s 1.3 away. Saliba back from suspension moves the model 6 points to the hosts.'),
+      goals: Q('Over or Under 2.5 goals?', 'Total goals in the match', true, [ O('over', 'Over 2.5', 'Three goals or more', 61, 70, [1.72, 1.75, 1.70]), O('under', 'Under 2.5', 'Two goals or fewer', 39, 30, [2.10, 2.05, 2.12]) ], 'Last six meetings: 3.1 goals per game. Both teams rank top-4 for shots on target this season.'),
+      scorer: Q('Who scores?', 'Anytime goalscorer. Pick one player.', false, [ O('saka', 'Bukayo Saka', 'Arsenal · RW', 44, 35, [2.30, 2.25, 2.40]), O('havertz', 'Kai Havertz', 'Arsenal · ST', 36, 15, [2.60, 2.70, 2.55]), O('salah', 'Mohamed Salah', 'Liverpool · RW', 47, 38, [2.10, 2.15, 2.05]), O('diaz', 'Luis Díaz', 'Liverpool · LW', 30, 12, [3.10, 3.00, 3.20]) ], 'Salah leads the league in shots per 90 but faces Timber, who allows the fewest crosses in the division. Saka has 5 goal involvements in his last 6 at home.'),
     },
-    questions: [
-      { id: 'winner', title: 'Who wins?', sub: 'Full-time result, 90 minutes', exclusive: true, options: [
-        { id: 'home', label: 'Arsenal', sub: 'Home win', ai: 54, fans: 63, odds: [2.10, 2.05, 2.15] },
-        { id: 'draw', label: 'Draw', sub: 'Level after 90', ai: 24, fans: 17, odds: [3.50, 3.60, 3.45] },
-        { id: 'away', label: 'Liverpool', sub: 'Away win', ai: 22, fans: 20, odds: [3.40, 3.50, 3.30] },
-      ], reason: 'Arsenal average 2.1 xG at home this season against Liverpool\'s 1.3 away. Saliba back from suspension moves the model 6 points to the hosts.' },
-      { id: 'goals', title: 'Over or Under 2.5 goals?', sub: 'Total goals in the match', exclusive: true, options: [
-        { id: 'over', label: 'Over 2.5', sub: 'Three goals or more', ai: 61, fans: 70, odds: [1.72, 1.75, 1.70] },
-        { id: 'under', label: 'Under 2.5', sub: 'Two goals or fewer', ai: 39, fans: 30, odds: [2.10, 2.05, 2.12] },
-      ], reason: 'Last six meetings: 3.1 goals per game. Both teams rank top-4 for shots on target this season.' },
-      { id: 'scorer', title: 'Who scores?', sub: 'Anytime goalscorer. Pick one player.', exclusive: false, options: [
-        { id: 'saka', label: 'Bukayo Saka', sub: 'Arsenal · RW', ai: 44, fans: 35, odds: [2.30, 2.25, 2.40] },
-        { id: 'havertz', label: 'Kai Havertz', sub: 'Arsenal · ST', ai: 36, fans: 15, odds: [2.60, 2.70, 2.55] },
-        { id: 'salah', label: 'Mohamed Salah', sub: 'Liverpool · RW', ai: 47, fans: 38, odds: [2.10, 2.15, 2.05] },
-        { id: 'diaz', label: 'Luis Díaz', sub: 'Liverpool · LW', ai: 30, fans: 12, odds: [3.10, 3.00, 3.20] },
-      ], reason: 'Salah leads the league in shots per 90 but faces Timber, who allows the fewest crosses in the division. Saka has 5 goal involvements in his last 6 at home.' },
-    ],
-    result: {
-      homeGoals: 2, awayGoals: 1,
-      scorers: ['saka', 'havertz'],
-      story: 'Saka 23\', Havertz 58\' · Gakpo 71\'',
-      insight: 'CaptainAI nailed Over 2.5: 2.1 home xG turned into 2.4 on the day. Fans over-rated Salah, who had one shot from open play.',
-    },
+    result: { homeGoals: 2, awayGoals: 1, scorers: ['saka', 'havertz'], story: 'Saka 23\', Havertz 58\' · Gakpo 71\'', insight: 'CaptainAI nailed Over 2.5: 2.1 home xG turned into 2.4 on the day. Fans over-rated Salah, who had one shot from open play.' },
   },
   {
-    id: 'che-mci',
-    competition: 'Premier League · Matchweek 5',
-    venue: 'Stamford Bridge, London',
-    home: { name: 'Chelsea', short: 'CHE', color: '#034694' },
-    away: { name: 'Man City', short: 'MCI', color: '#6cabdd' },
-    fansCount: '9.8k',
-    preview: {
-      title: 'Chelsea vs Man City: Palmer against his old club, again',
-      paras: [
-        'City arrive with the best away record in the league but without Rodri, and every number says that matters: 1.9 goals conceded per game without him against 0.7 with him.',
-        'Chelsea have scored in 14 consecutive home league games. Palmer has 4 goals in 3 games against City since leaving, and Maresca has won both of his meetings with his former mentor.',
-      ],
+    id: 'bay-bvb', day: 'Saturday', kickoffLabel: 'Sat 18:30', offsetMin: 4 * 60 + 12,
+    competition: 'Bundesliga', venue: 'Allianz Arena, Munich',
+    home: { name: 'Bayern', short: 'FCB' }, away: { name: 'Dortmund', short: 'BVB' }, fansCount: '6.5k',
+    preview: { title: 'Der Klassiker: Bayern chase a ninth straight home win', paras: [
+      'Bayern have scored 19 in six at home. Dortmund arrive with the league\'s worst away xG against and a back line missing Schlotterbeck.',
+      'Kane has scored in every Klassiker he has played. Guirassy is Dortmund\'s only consistent outlet, with 61% of their shots on target coming through him.' ] },
+    questions: {
+      winner: Q('Who wins?', 'Full-time result, 90 minutes', true, [ O('home', 'Bayern', 'Home win', 62, 70, [1.55, 1.57, 1.53]), O('draw', 'Draw', 'Level after 90', 20, 14, [4.20, 4.10, 4.30]), O('away', 'Dortmund', 'Away win', 18, 16, [5.50, 5.40, 5.60]) ], 'Bayern\'s home xG of 3.2 per game is the highest in Europe\'s top five leagues. Dortmund concede 1.9 away.'),
+      goals: Q('Over or Under 2.5 goals?', 'Total goals in the match', true, [ O('over', 'Over 2.5', 'Three goals or more', 71, 75, [1.50, 1.52, 1.48]), O('under', 'Under 2.5', 'Two goals or fewer', 29, 25, [2.60, 2.55, 2.65]) ], 'The last eight Klassikers averaged 4.1 goals. Neither side has kept a clean sheet in this fixture since 2022.'),
+      scorer: Q('Who scores?', 'Anytime goalscorer. Pick one player.', false, [ O('kane', 'Harry Kane', 'Bayern · ST', 58, 60, [1.70, 1.72, 1.68]), O('musiala', 'Jamal Musiala', 'Bayern · AM', 40, 18, [2.40, 2.45, 2.35]), O('guirassy', 'Serhou Guirassy', 'Dortmund · ST', 35, 14, [2.80, 2.75, 2.90]), O('adeyemi', 'Karim Adeyemi', 'Dortmund · LW', 28, 8, [3.30, 3.20, 3.40]) ], 'Kane averages 0.9 xG per 90 at home. Musiala has scored in three of the last four Klassikers.'),
     },
-    questions: [
-      { id: 'winner', title: 'Who wins?', sub: 'Full-time result, 90 minutes', exclusive: true, options: [
-        { id: 'home', label: 'Chelsea', sub: 'Home win', ai: 31, fans: 38, odds: [3.10, 3.00, 3.20] },
-        { id: 'draw', label: 'Draw', sub: 'Level after 90', ai: 26, fans: 20, odds: [3.40, 3.50, 3.45] },
-        { id: 'away', label: 'Man City', sub: 'Away win', ai: 43, fans: 42, odds: [2.25, 2.30, 2.20] },
-      ], reason: 'City without Rodri drop from 68% to 43% in the model. Chelsea\'s home xG (1.8) is fourth in the league.' },
-      { id: 'goals', title: 'Over or Under 2.5 goals?', sub: 'Total goals in the match', exclusive: true, options: [
-        { id: 'over', label: 'Over 2.5', sub: 'Three goals or more', ai: 58, fans: 66, odds: [1.80, 1.78, 1.83] },
-        { id: 'under', label: 'Under 2.5', sub: 'Two goals or fewer', ai: 42, fans: 34, odds: [2.00, 2.02, 1.98] },
-      ], reason: 'Both sides sit top-5 for xG; four of the last five meetings went over 2.5.' },
-      { id: 'scorer', title: 'Who scores?', sub: 'Anytime goalscorer. Pick one player.', exclusive: false, options: [
-        { id: 'palmer', label: 'Cole Palmer', sub: 'Chelsea · AM', ai: 39, fans: 37, odds: [2.60, 2.55, 2.70] },
-        { id: 'jackson', label: 'Nicolas Jackson', sub: 'Chelsea · ST', ai: 33, fans: 15, odds: [2.90, 2.85, 3.00] },
-        { id: 'haaland', label: 'Erling Haaland', sub: 'Man City · ST', ai: 55, fans: 40, odds: [1.75, 1.80, 1.72] },
-        { id: 'foden', label: 'Phil Foden', sub: 'Man City · AM', ai: 31, fans: 8, odds: [3.20, 3.10, 3.30] },
-      ], reason: 'Haaland has scored in 6 of 7 away games. Palmer takes every Chelsea penalty and has 4 in 3 against City.' },
-    ],
-    result: {
-      homeGoals: 1, awayGoals: 1,
-      scorers: ['palmer', 'haaland'],
-      story: 'Palmer 34\' (pen) · Haaland 79\'',
-      insight: 'A cagey one: 1.6 combined xG, the lowest in this fixture for three seasons. CaptainAI and 66% of fans both went Over and both were wrong.',
+    result: { homeGoals: 3, awayGoals: 1, scorers: ['kane', 'musiala'], story: 'Kane 12\', 66\', Musiala 41\' · Guirassy 80\'', insight: 'Chalk held: the favourite, the over and the top scorer all landed. The value was in the fans\' 18% on Musiala, who scored again.' },
+  },
+  {
+    id: 'mun-tot', day: 'Saturday', kickoffLabel: 'Sat 20:00', offsetMin: 5 * 60 + 42,
+    competition: 'Premier League', venue: 'Old Trafford, Manchester',
+    home: { name: 'Man United', short: 'MUN' }, away: { name: 'Tottenham', short: 'TOT' }, fansCount: '8.1k',
+    preview: { title: 'Man United vs Tottenham: two teams that cannot defend', paras: [
+      'United have the league\'s fourth-worst xG against and Spurs the fifth-worst. Both managers press high and leave space behind, which is why this fixture has gone over 2.5 in seven of the last eight.',
+      'Fernandes has created 14 chances in his last three games. Son has scored in four consecutive visits to Old Trafford.' ] },
+    questions: {
+      winner: Q('Who wins?', 'Full-time result, 90 minutes', true, [ O('home', 'Man United', 'Home win', 38, 45, [2.50, 2.55, 2.45]), O('draw', 'Draw', 'Level after 90', 26, 20, [3.40, 3.30, 3.50]), O('away', 'Tottenham', 'Away win', 36, 35, [2.75, 2.80, 2.70]) ], 'Genuinely even on the numbers: 1.6 xG each per game this season. Home advantage is worth 4 points in the model.'),
+      goals: Q('Over or Under 2.5 goals?', 'Total goals in the match', true, [ O('over', 'Over 2.5', 'Three goals or more', 57, 64, [1.85, 1.83, 1.88]), O('under', 'Under 2.5', 'Two goals or fewer', 43, 36, [1.95, 1.97, 1.92]) ], 'Seven of the last eight meetings went over. Both sides allow 13+ shots per game.'),
+      scorer: Q('Who scores?', 'Anytime goalscorer. Pick one player.', false, [ O('hojlund', 'Rasmus Højlund', 'Man United · ST', 34, 30, [2.80, 2.75, 2.90]), O('fernandes', 'Bruno Fernandes', 'Man United · AM', 31, 22, [3.00, 3.10, 2.95]), O('son', 'Son Heung-min', 'Tottenham · LW', 41, 33, [2.30, 2.35, 2.25]), O('solanke', 'Dominic Solanke', 'Tottenham · ST', 35, 15, [2.60, 2.65, 2.55]) ], 'Son has scored in four straight at Old Trafford. Solanke gets the most touches in the box of any Spurs player.'),
     },
+    result: { homeGoals: 2, awayGoals: 2, scorers: ['fernandes', 'hojlund', 'son', 'solanke'], story: 'Fernandes 19\' (pen), Højlund 74\' · Son 33\', Solanke 88\'', insight: 'Four goals, four different scorers: every scorer pick landed. The winner call was the trap, and CaptainAI\'s 26% on the draw was the highest number in the market.' },
+  },
+  {
+    id: 'new-avl', day: 'Sunday', kickoffLabel: 'Sun 14:00', offsetMin: 23 * 60 + 42,
+    competition: 'Premier League', venue: 'St James\' Park, Newcastle',
+    home: { name: 'Newcastle', short: 'NEW' }, away: { name: 'Aston Villa', short: 'AVL' }, fansCount: '4.3k',
+    preview: { title: 'Newcastle vs Aston Villa: a Champions League six-pointer in September', paras: [
+      'Newcastle have won five of six at home and Isak is the form striker in the league. Villa have lost only once but have drawn four, and Emery\'s side have scored just 0.9 per game on the road.',
+      'Expect a low-event game: both teams rank bottom-six for shots conceded.' ] },
+    questions: {
+      winner: Q('Who wins?', 'Full-time result, 90 minutes', true, [ O('home', 'Newcastle', 'Home win', 46, 55, [2.05, 2.10, 2.00]), O('draw', 'Draw', 'Level after 90', 25, 18, [3.40, 3.45, 3.35]), O('away', 'Aston Villa', 'Away win', 29, 27, [3.60, 3.50, 3.70]) ], 'Newcastle\'s home record and Isak\'s form carry the model. Villa\'s away xG of 1.0 is the lowest in the top half.'),
+      goals: Q('Over or Under 2.5 goals?', 'Total goals in the match', true, [ O('over', 'Over 2.5', 'Three goals or more', 55, 60, [1.80, 1.82, 1.78]), O('under', 'Under 2.5', 'Two goals or fewer', 45, 40, [2.00, 1.98, 2.05]) ], 'Both defences are top-six for shots conceded. The last three meetings averaged 2.3 goals.'),
+      scorer: Q('Who scores?', 'Anytime goalscorer. Pick one player.', false, [ O('isak', 'Alexander Isak', 'Newcastle · ST', 45, 48, [2.10, 2.05, 2.15]), O('gordon', 'Anthony Gordon', 'Newcastle · LW', 30, 17, [3.00, 3.10, 2.95]), O('watkins', 'Ollie Watkins', 'Aston Villa · ST', 38, 25, [2.50, 2.45, 2.60]), O('rogers', 'Morgan Rogers', 'Aston Villa · AM', 24, 10, [3.60, 3.50, 3.70]) ], 'Isak has 7 in 6 at home. Watkins takes 4.1 shots per 90 against bottom-half defences but 2.2 against top-half ones.'),
+    },
+    result: { homeGoals: 1, awayGoals: 0, scorers: ['isak'], story: 'Isak 52\'', insight: 'The under landed against 60% of fans. CaptainAI had it at 45%, the market at 45%: nobody saw a one-goal game, but the shot data did.' },
+  },
+  {
+    id: 'che-mci', day: 'Sunday', kickoffLabel: 'Sun 16:30', offsetMin: 26 * 60 + 12,
+    competition: 'Premier League', venue: 'Stamford Bridge, London',
+    home: { name: 'Chelsea', short: 'CHE' }, away: { name: 'Man City', short: 'MCI' }, fansCount: '9.8k',
+    preview: { title: 'Chelsea vs Man City: Palmer against his old club, again', paras: [
+      'City arrive with the best away record in the league but without Rodri, and every number says that matters: 1.9 goals conceded per game without him against 0.7 with him.',
+      'Chelsea have scored in 14 consecutive home league games. Palmer has 4 goals in 3 games against City since leaving.' ] },
+    questions: {
+      winner: Q('Who wins?', 'Full-time result, 90 minutes', true, [ O('home', 'Chelsea', 'Home win', 31, 38, [3.10, 3.00, 3.20]), O('draw', 'Draw', 'Level after 90', 26, 20, [3.40, 3.50, 3.45]), O('away', 'Man City', 'Away win', 43, 42, [2.25, 2.30, 2.20]) ], 'City without Rodri drop from 68% to 43% in the model. Chelsea\'s home xG (1.8) is fourth in the league.'),
+      goals: Q('Over or Under 2.5 goals?', 'Total goals in the match', true, [ O('over', 'Over 2.5', 'Three goals or more', 58, 66, [1.80, 1.78, 1.83]), O('under', 'Under 2.5', 'Two goals or fewer', 42, 34, [2.00, 2.02, 1.98]) ], 'Both sides sit top-5 for xG; four of the last five meetings went over 2.5.'),
+      scorer: Q('Who scores?', 'Anytime goalscorer. Pick one player.', false, [ O('palmer', 'Cole Palmer', 'Chelsea · AM', 39, 37, [2.60, 2.55, 2.70]), O('jackson', 'Nicolas Jackson', 'Chelsea · ST', 33, 15, [2.90, 2.85, 3.00]), O('haaland', 'Erling Haaland', 'Man City · ST', 55, 40, [1.75, 1.80, 1.72]), O('foden', 'Phil Foden', 'Man City · AM', 31, 8, [3.20, 3.10, 3.30]) ], 'Haaland has scored in 6 of 7 away games. Palmer takes every Chelsea penalty and has 4 in 3 against City.'),
+    },
+    result: { homeGoals: 1, awayGoals: 1, scorers: ['palmer', 'haaland'], story: 'Palmer 34\' (pen) · Haaland 79\'', insight: 'A cagey one: 1.6 combined xG, the lowest in this fixture for three seasons. CaptainAI and 66% of fans both went Over and both were wrong.' },
+  },
+  {
+    id: 'rma-bar', day: 'Sunday', kickoffLabel: 'Sun 21:00', offsetMin: 30 * 60 + 42,
+    competition: 'LaLiga', venue: 'Santiago Bernabéu, Madrid',
+    home: { name: 'Real Madrid', short: 'RMA' }, away: { name: 'Barcelona', short: 'BAR' }, fansCount: '15.2k',
+    preview: { title: 'El Clásico: Mbappé against the highest line in Europe', paras: [
+      'Barcelona defend 12 metres higher than any side in LaLiga and have been caught offside-trap-beaten nine times already. Mbappé is the fastest player in the league over 30 metres.',
+      'Yet Barça score 2.8 per game and Lewandowski has 9 in 8. The last four Clásicos produced 17 goals.' ] },
+    questions: {
+      winner: Q('Who wins?', 'Full-time result, 90 minutes', true, [ O('home', 'Real Madrid', 'Home win', 44, 50, [2.20, 2.25, 2.15]), O('draw', 'Draw', 'Level after 90', 24, 16, [3.60, 3.55, 3.70]), O('away', 'Barcelona', 'Away win', 32, 34, [3.10, 3.05, 3.20]) ], 'Madrid\'s home edge is 6 points in the model; Barça\'s attack closes most of it. Flick\'s high line is the swing factor either way.'),
+      goals: Q('Over or Under 2.5 goals?', 'Total goals in the match', true, [ O('over', 'Over 2.5', 'Three goals or more', 66, 72, [1.60, 1.62, 1.58]), O('under', 'Under 2.5', 'Two goals or fewer', 34, 28, [2.30, 2.28, 2.35]) ], 'Four Clásicos, 17 goals. Both attacks top the league for shots inside the box.'),
+      scorer: Q('Who scores?', 'Anytime goalscorer. Pick one player.', false, [ O('mbappe', 'Kylian Mbappé', 'Real Madrid · ST', 52, 55, [1.90, 1.85, 1.95]), O('vinicius', 'Vinícius Jr', 'Real Madrid · LW', 42, 20, [2.30, 2.35, 2.25]), O('lewandowski', 'Robert Lewandowski', 'Barcelona · ST', 45, 15, [2.10, 2.15, 2.05]), O('yamal', 'Lamine Yamal', 'Barcelona · RW', 33, 10, [2.90, 2.85, 3.00]) ], 'Mbappé has 6 goals from through-balls this season, the most in Europe. Lewandowski averages 0.8 xG per 90 away.'),
+    },
+    result: { homeGoals: 2, awayGoals: 3, scorers: ['mbappe', 'vinicius', 'lewandowski', 'yamal'], story: 'Mbappé 8\', Vinícius 55\' · Lewandowski 30\', 71\', Yamal 84\'', insight: 'Barça won it against 50% of fans on Madrid. The 15% on Lewandowski was the crowd\'s biggest miss of the weekend.' },
   },
 ];
-
-const FANBASES = {
-  'ars-liv': [ { name: 'Arsenal fans', hit: 61, n: '6.9k', color: '#e0324a' }, { name: 'Liverpool fans', hit: 54, n: '5.5k', color: '#8a2030' } ],
-  'che-mci': [ { name: 'Chelsea fans', hit: 49, n: '4.1k', color: '#034694' }, { name: 'Man City fans', hit: 57, n: '5.7k', color: '#6cabdd' } ],
-};
+const QUESTION_ORDER = ['winner', 'goals', 'scorer'];
+const T0 = Date.now();
 
 /* ================================================================= helpers */
 const icon = (name, cls = '') => `<svg class="i ${cls}" aria-hidden="true"><use href="#${name}"/></svg>`;
 const avg = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
 const round2 = (n) => Math.round(n * 100) / 100;
 const fmtOdds = (n) => n.toFixed(2);
-const pts = (n) => `${n} ${n === 1 ? 'point' : 'points'}`;
+const fmtK = (n) => (n >= 1000 ? (n / 1000).toFixed(1) + 'k' : String(n));
+const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+const pad = (n) => String(n).padStart(2, '0');
+const matchById = (id) => MATCHES.find((m) => m.id === id);
+const questionsOf = (m) => QUESTION_ORDER.map((k) => ({ id: k, ...m.questions[k] }));
+const kickoffOf = (m) => T0 + m.offsetMin * MIN;
+const clubColor = (name) => CLUBS[name] || '#555';
 
+function formatCountdown(ms) {
+  const s = Math.max(0, Math.floor(ms / 1000));
+  const d = Math.floor(s / 86400);
+  const rest = `${pad(Math.floor((s % 86400) / 3600))}:${pad(Math.floor((s % 3600) / 60))}:${pad(s % 60)}`;
+  return d > 0 ? `${d}d ${rest}` : rest;
+}
 function impliedProbs(question) {
   const raw = question.options.map((o) => 1 / avg(o.odds));
   if (!question.exclusive) return raw.map((r) => Math.round(r * 100));
@@ -507,119 +651,316 @@ function impliedProbs(question) {
   return raw.map((r) => Math.round((r / overround) * 100));
 }
 function marketFor(question, optionId) {
-  const probs = impliedProbs(question);
-  const idx = question.options.findIndex((o) => o.id === optionId);
-  return probs[idx];
+  return impliedProbs(question)[question.options.findIndex((o) => o.id === optionId)];
 }
 function pickBy(question, key) {
   return question.options.reduce((best, o) => (o[key] > best[key] ? o : best), question.options[0]);
 }
 function marketPick(question) {
   const probs = impliedProbs(question);
-  const idx = probs.indexOf(Math.max(...probs));
-  return question.options[idx];
+  return question.options[probs.indexOf(Math.max(...probs))];
 }
-function leagueFor(iq) {
-  return LEAGUES.reduce((cur, l) => (iq >= l.min ? l : cur), LEAGUES[0]);
-}
-function nextLeague(iq) {
-  return LEAGUES.find((l) => l.min > iq) || null;
-}
-function hitRate(correct, total) {
-  return total ? Math.round((correct / total) * 100) : 0;
-}
-function isCorrect(match, question, optionId) {
+const optionOf = (question, id) => question.options.find((o) => o.id === id);
+const leagueFor = (iq) => LEAGUES.reduce((cur, l) => (iq >= l.min ? l : cur), LEAGUES[0]);
+const nextLeague = (iq) => LEAGUES.find((l) => l.min > iq) || null;
+const hitRate = (correct, total) => (total ? Math.round((correct / total) * 100) : 0);
+function isCorrect(match, qid, optionId) {
   const r = match.result;
-  if (question.id === 'winner') {
-    const outcome = r.homeGoals > r.awayGoals ? 'home' : r.homeGoals < r.awayGoals ? 'away' : 'draw';
-    return optionId === outcome;
-  }
-  if (question.id === 'goals') return (r.homeGoals + r.awayGoals > 2.5) === (optionId === 'over');
-  if (question.id === 'scorer') return r.scorers.includes(optionId);
-  return false;
-}
-function optionOf(question, id) {
-  return question.options.find((o) => o.id === id);
-}
-function pad(n) { return String(n).padStart(2, '0'); }
-function formatCountdown(ms) {
-  const s = Math.max(0, Math.floor(ms / 1000));
-  return `${pad(Math.floor(s / 3600))}:${pad(Math.floor((s % 3600) / 60))}:${pad(s % 60)}`;
+  if (qid === 'winner') return optionId === (r.homeGoals > r.awayGoals ? 'home' : r.homeGoals < r.awayGoals ? 'away' : 'draw');
+  if (qid === 'goals') return (r.homeGoals + r.awayGoals > 2.5) === (optionId === 'over');
+  return r.scorers.includes(optionId);
 }
 
 /* ============================================================= persistence */
-const DEFAULT_PROFILE = Object.freeze({
-  iq: 0, streak: 0, played: 0,
-  correct: 0, total: 0, aiCorrect: 0, marketCorrect: 0,
-  humans: 3, ai: 2, club: null,
+/* CONFIG is what a production build would read from the CMS or a remote-config service. */
+const CONFIG = Object.freeze({
+  features: { offers: true, aiSlip: true, quickBet: true, fanbases: true },
+  geo: 'UA',
+  analytics: { endpoint: null },
 });
+/* The profile is what a production backend would return from GET /match-iq/me:
+   aggregate stats plus one entry per match. Nothing else is persisted client-side. */
+const DEFAULT_PROFILE = Object.freeze({
+  uid: null, iq: 0, streak: 0, correct: 0, total: 0, aiCorrect: 0, marketCorrect: 0,
+  humans: 2, ai: 3, club: null, prevRank: null, ageConfirmed: false, matches: {},
+});
+const newId = () => (crypto.randomUUID ? crypto.randomUUID() : 'u-' + Math.random().toString(36).slice(2, 10));
 function loadProfile() {
+  let profile;
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { ...DEFAULT_PROFILE };
-    const parsed = JSON.parse(raw);
-    return { ...DEFAULT_PROFILE, ...parsed };
-  } catch (e) {
-    return { ...DEFAULT_PROFILE };
-  }
+    profile = raw ? { ...DEFAULT_PROFILE, ...JSON.parse(raw) } : { ...DEFAULT_PROFILE };
+  } catch (e) { profile = { ...DEFAULT_PROFILE }; }
+  return reconcile(profile.uid ? profile : { ...profile, uid: newId() });
 }
 function saveProfile(profile) {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(profile)); } catch (e) { /* private mode: keep in memory */ }
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(profile)); } catch (e) { /* private mode: memory only */ }
 }
+const entryOf = (profile, id) => profile.matches[id] || { status: 'open' };
+
+/* ============================================================== lifecycle */
+/* For a player a match is open -> locked -> live -> settled, or open -> missed if kick-off
+   passes without a lock. Only the server may move a match to settled in production. */
+function statusOf(m, profile, now = Date.now()) {
+  const e = entryOf(profile, m.id);
+  const started = now >= kickoffOf(m);
+  if (e.status === 'settled') return 'settled';
+  if (e.status === 'locked') return started ? 'live' : 'locked';
+  return started ? 'missed' : 'open';
+}
+/* A missed match breaks the streak. Runs on load so a returning user sees the truth, not a stale counter. */
+function reconcile(profile) {
+  const missed = MATCHES.some((m) => statusOf(m, profile) === 'missed');
+  return missed && profile.streak > 0 ? { ...profile, streak: 0 } : profile;
+}
+const SESSION_ID = newId();
 
 /* =================================================================== state */
 const initialState = () => ({
-  screen: 'match',
-  matchIndex: 0,
-  qIndex: 0,
-  answers: {},
-  powerPick: null,
-  oddsTab: 'builder',
-  lbTab: 'players',
-  kickoff: Date.now() + KICKOFF_OFFSET_MS,
-  outcome: null,
-  profile: loadProfile(),
-  events: [],
+  screen: 'landing', matchId: MATCHES[0].id, qIndex: 0,
+  answers: {}, powerPick: null, oddsTab: 'builder', lbTab: 'players',
+  outcome: null, sheet: null, profile: loadProfile(), events: [],
 });
 let state = initialState();
-
-function setState(patch) {
-  state = { ...state, ...patch };
-  render();
-}
+function setState(patch) { state = { ...state, ...patch }; render(); }
+/* Analytics contract: one flat event with a stable envelope. In production this is the
+   dataLayer push (GTM / Amplitude); the buffer below only feeds the prototype's Metrics panel. */
 function track(event, props = {}) {
-  const entry = { event, props, ts: Date.now() };
+  const payload = { event, props, ts: Date.now(), sessionId: SESSION_ID, userId: state.profile.uid, screen: state.screen, week: WEEK_LABEL };
   console.log('[MatchIQ]', event, props);
-  state = { ...state, events: [...state.events, entry] };
+  (window.dataLayer = window.dataLayer || []).push(payload);
+  state = { ...state, events: [...state.events, payload] };
   renderMetrics();
 }
 function updateProfile(patch) {
   const profile = { ...state.profile, ...patch };
   saveProfile(profile);
+  state = { ...state, profile };
   return profile;
+}
+function updateEntry(id, patch) {
+  const matches = { ...state.profile.matches, [id]: { ...entryOf(state.profile, id), ...patch } };
+  return updateProfile({ matches });
 }
 
 /* ================================================================== views */
-const currentMatch = () => MATCHES[state.matchIndex];
+const currentMatch = () => matchById(state.matchId);
+const crest = (team, sm = false) => `<span class="crest ${sm ? 'sm' : ''}" style="background:${clubColor(team.name)}" aria-hidden="true">${team.short}</span>`;
+const countdownChip = (m) => `<span class="chip">${icon('i-clock')} <span class="countdown num" data-countdown="${m.id}">${formatCountdown(kickoffOf(m) - Date.now())}</span></span>`;
 
-function crest(team) {
-  return `<span class="crest" style="background:${team.color}" aria-hidden="true">${team.short}</span>`;
+function weekSummary() {
+  const p = state.profile;
+  const entries = Object.values(p.matches);
+  const locked = entries.filter((e) => e.status !== 'open').length;
+  return { locked, settled: entries.filter((e) => e.status === 'settled').length, total: MATCHES.length, rank: rankOf(p) };
+}
+function rankOf(p) {
+  return leaderboard(p).findIndex((r) => r.me) + 1;
+}
+function leaderboard(p) {
+  const me = { name: 'You', club: p.club, played: Object.values(p.matches).filter((e) => e.status === 'settled').length, correct: p.correct, iq: p.iq, prev: p.prevRank, me: true };
+  return [...PLAYERS, CAPTAIN, me].sort((a, b) => b.iq - a.iq || hitRate(b.correct, b.played * 3) - hitRate(a.correct, a.played * 3));
+}
+
+const AI_SLIP = { matchId: 'bay-bvb', type: 'builder', legs: [{ qid: 'winner', oid: 'home' }, { qid: 'goals', oid: 'over' }, { qid: 'scorer', oid: 'kane' }] };
+function aiSlipCard() {
+  const m = matchById(AI_SLIP.matchId);
+  const legs = slipLegs(AI_SLIP);
+  const best = bestPartnerFor(AI_SLIP);
+  const conf = Math.round(legs.reduce((a, l) => a * (l.o.ai / 100), 1) * 100);
+  return `
+  <section class="aislip" aria-labelledby="aislip-title">
+    <div class="row between wrap" style="gap:8px">
+      <span class="chip chip-ai">${icon('i-cpu')} CaptainAI slip of the week</span>
+      <span class="tiny dim">${m.home.name} v ${m.away.name} · ${m.kickoffLabel}</span>
+    </div>
+    <h2 id="aislip-title">${legs.map((l) => l.o.label).join(' + ')}</h2>
+    <p>Three legs the model likes most this weekend. Combined model probability ${conf}%, the market pays ${fmtOdds(best.odds)}.</p>
+    <div class="legs">${legs.map((l) => `<span class="chip">${l.o.label} <span class="dim num">${fmtOdds(l.o.odds[best.idx])}</span></span>`).join('')}</div>
+    <div class="foot-cta">
+      ${betCta(AI_SLIP, 'Bet this slip', 'ai_slip')}
+      <button class="btn btn-ghost" data-action="open-match" data-match="${m.id}">Make my own calls on this match ${icon('i-arrow')}</button>
+    </div>
+    <p class="tiny dim" style="margin-top:8px">18+ · Partner offer · Model output is information, not advice.</p>
+  </section>`;
+}
+
+/* ---------------------------------------------------------------- landing */
+const TERMS = [
+  ['Who can play', 'Tribuna Match IQ is free to play for registered Tribuna users aged 18 or over. One entry per match. Calls lock at the scheduled kick-off time; late entries are not accepted.'],
+  ['Scoring', `+${POINTS_PER_CALL} Match IQ for each correct call. Your Power Pick counts double. A perfect match (all three correct) earns a +${PERFECT_BONUS} bonus. Anytime scorer calls settle on official competition data; abandoned matches are void.`],
+  ['Weekly table', 'The table covers fixtures from Monday 00:00 to Sunday 23:59 site time and resets every Monday. Ties are broken by hit rate, then by earliest lock. Your all-time Match IQ and league tier never reset.'],
+  ['Prizes', `Each week the top 10 players receive a free bet from ${PARTNERS[0].name}. Prizes are funded by the partner and subject to its terms: 18+, verified account, licensed territory. Tribuna staff and partner employees are not eligible. No purchase or bet is required to play or win.`],
+  ['Fair play', 'One account per person. Automated or duplicate accounts are removed from the table without notice. Tribuna\'s decision on settlement is final.'],
+  ['CaptainAI and market data', 'CaptainAI is a statistical model. Fans % aggregates locked calls from Tribuna users. Market % is derived from partner odds with the bookmaker margin removed. None of this is betting advice.'],
+  ['Responsible play', 'Match IQ is a prediction game, not a betting product. Partner offers are clearly labelled and always optional. If gambling stops being fun, take a break: support is available at begambleaware.org.'],
+];
+
+function topTable(p, limit) {
+  const board = leaderboard(p).slice(0, limit);
+  return `
+    <table aria-label="Weekly leaderboard, top ${limit}">
+      <thead><tr><th>#</th><th>Player</th><th title="Matches played">P</th><th>Hit</th><th>IQ</th></tr></thead>
+      <tbody>${board.map((r, i) => `
+        <tr class="${r.me ? 'me' : ''} ${r.ai ? 'ai' : ''}">
+          <td><span class="rank num">${i + 1} ${movement(r, i + 1)}</span></td>
+          <td><span class="pname"><span class="av">${r.ai ? icon('i-cpu') : r.name.slice(0, 2).toUpperCase()}</span>${r.club ? `<span class="club" style="background:${clubColor(r.club)}" title="${r.club}"></span>` : ''}<span class="nm">${r.name}</span></span></td>
+          <td class="num">${r.played}</td>
+          <td class="num">${r.played ? hitRate(r.correct, r.played * 3) + '%' : '–'}</td>
+          <td class="iq num">${r.iq}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+function viewLanding() {
+  const p = state.profile;
+  const w = weekSummary();
+  const totalPredictions = FANBASES.reduce((a, f) => a + f.n, 0);
+  const humansHit = hitRate(PLAYERS.reduce((a, x) => a + x.correct, 0), PLAYERS.reduce((a, x) => a + x.played, 0) * 3);
+  const aiHit = hitRate(CAPTAIN.correct, CAPTAIN.played * 3);
+  return `
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="row wrap" style="gap:8px"><span class="chip chip-accent">${icon('i-bolt')} Match IQ</span><span class="chip">${WEEK_LABEL} · ${MATCHES.length} matches</span></div>
+    <h1 id="hero-title">Call the match. <em>Beat CaptainAI.</em> Climb the table.</h1>
+    <p>Three calls per match, locked before kick-off. Compare yours with the model, ${fmtK(totalPredictions)} fans and the betting market, then watch the points land at full-time.</p>
+    <div class="foot-cta">
+      <button class="btn btn-primary btn-block" data-action="nav" data-to="hub" data-label="Play">${w.locked > 0 ? `Continue · ${w.locked} of ${w.total} called` : 'Play this week\'s challenges'} ${icon('i-arrow')}</button>
+      ${p.iq > 0 ? `<button class="btn btn-ghost" data-action="nav" data-to="retention" data-label="My Match IQ">My Match IQ · ${p.iq} · ${leagueFor(p.iq).name}</button>` : ''}
+    </div>
+    <div class="hero-stats">
+      <div><b class="num">${fmtK(totalPredictions)}</b><span>calls locked this week</span></div>
+      <div><b class="num">${humansHit}% <small>v</small> ${aiHit}%</b><span>humans v CaptainAI hit rate</span></div>
+      <div><b>Top 10</b><span>win a free bet weekly</span></div>
+    </div>
+  </section>
+
+  <section class="steps3" aria-label="How it works">
+    <div><span class="n">1</span><b>Make 3 blind calls</b><p>Winner, goals, scorer. Nothing revealed until you commit.</p></div>
+    <div><span class="n">2</span><b>Compare and lock</b><p>See CaptainAI, fans and the market. Pick a Power Pick for double points.</p></div>
+    <div><span class="n">3</span><b>Score at full-time</b><p>+${POINTS_PER_CALL} per correct call. Streaks, leagues and a weekly table.</p></div>
+  </section>
+
+  <section class="lb" aria-labelledby="lb-title">
+    <div class="hd">
+      <span id="lb-title" style="font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--ink)">Weekly leaderboard</span>
+      <b>Humans <span class="num">${p.humans} : ${p.ai}</span> CaptainAI</b>
+      <span class="sub">${WEEK_LABEL} · top 10 win a free bet from ${PARTNERS[0].name} · resets Monday</span>
+    </div>
+    ${topTable(p, 10)}
+    <div class="foot row between wrap" style="gap:8px">
+      <span>${p.iq > 0 ? `You are #${w.rank}.` : 'Lock a prediction to enter the table.'}</span>
+      <button class="btn btn-ghost btn-sm" data-action="nav" data-to="board" data-label="Full table">See full table ${icon('i-arrow')}</button>
+    </div>
+  </section>
+
+  ${CONFIG.features.aiSlip ? aiSlipCard() : ''}
+
+  <section class="terms" aria-labelledby="terms-title">
+    <h2 id="terms-title">Game rules and terms</h2>
+    ${TERMS.map(([t, body]) => `<details><summary>${t} ${icon('i-chev', 'chev')}</summary><p>${body}</p></details>`).join('')}
+    <p class="tiny dim" style="margin-top:12px">Version 1.0 · ${WEEK_LABEL} · Prototype copy, not legal text.</p>
+  </section>`;
+}
+
+function viewBoard() {
+  const p = state.profile;
+  const isPlayers = state.lbTab === 'players';
+  return `
+  <div class="shell-head"><span class="chip chip-accent">${icon('i-trophy')} Leaderboard</span><span class="chip">${WEEK_LABEL}</span></div>
+  <h1 class="q-title">Weekly table</h1>
+  <p class="q-sub">Every player who locked a call this week. Top 10 win a free bet from ${PARTNERS[0].name}.</p>
+  <div class="lb">
+    <div class="tabs" role="tablist" aria-label="Leaderboard">
+      <button class="tab" role="tab" aria-selected="${isPlayers}" data-action="lb-tab" data-tab="players">Players</button>
+      <button class="tab" role="tab" aria-selected="${!isPlayers}" data-action="lb-tab" data-tab="fanbases">Fanbases</button>
+    </div>
+    ${isPlayers ? playersTable(p, { full: true }) : fanbasesPanel(p)}
+  </div>
+  <div class="foot-cta">
+    <button class="btn btn-primary btn-block" data-action="nav" data-to="hub" data-label="Play">${p.iq > 0 ? 'Keep climbing' : 'Enter the table'} · this week's challenges ${icon('i-arrow')}</button>
+    <button class="btn btn-ghost" data-action="nav" data-to="landing" data-label="Match IQ">Back to Match IQ</button>
+  </div>`;
+}
+
+function viewHub() {
+  const p = state.profile;
+  const w = weekSummary();
+  const days = [...new Set(MATCHES.map((m) => m.day))];
+  return `
+  <div class="hub-head">
+    <div class="row wrap" style="gap:8px"><span class="chip chip-accent">${icon('i-bolt')} Match IQ</span><span class="chip">${WEEK_LABEL}</span></div>
+    <h1 style="margin-top:12px">This week's challenges</h1>
+    <p>Three calls per match, locked before kick-off. Beat CaptainAI, climb the weekly table.</p>
+  </div>
+  <div class="week" aria-label="Your week">
+    <div><span>Called</span><b class="num">${w.locked}<small>/ ${w.total}</small></b></div>
+    <div><span>Match IQ</span><b class="num">${p.iq}</b></div>
+    <div><span>Rank</span><b class="num">${p.iq > 0 || w.settled > 0 ? '#' + w.rank : '–'}</b></div>
+  </div>
+  ${days.map((day) => `
+    <div class="day"><h2>${day}</h2><span>${plural(MATCHES.filter((m) => m.day === day).length, 'match', 'matches')}</span></div>
+    ${MATCHES.filter((m) => m.day === day).map((m) => {
+      const e = entryOf(p, m.id);
+      const st = statusOf(m, p);
+      const status = {
+        settled: `<span class="pts num">+${e.points}</span><span>${e.correct}/3 correct</span>`,
+        locked: `<span class="chip">${icon('i-lock')} Locked</span><span>Result at full-time</span>`,
+        live: `<span class="chip chip-warn">${icon('i-clock')} Live</span><span>Locked · settling at FT</span>`,
+        missed: `<span class="chip">${icon('i-x')} Closed</span><span>Kick-off passed</span>`,
+        open: `<span class="chip chip-accent">${icon('i-bolt')} Open</span><span class="num" data-countdown="${m.id}">${formatCountdown(kickoffOf(m) - Date.now())}</span>`,
+      }[st];
+      return `
+      <button class="fixture ${st}" data-action="open-match" data-match="${m.id}" aria-label="${m.home.name} v ${m.away.name}, ${st}">
+        <span class="teams-sm">${crest(m.home, true)}${crest(m.away, true)}<span class="names">${m.home.name} v ${m.away.name}<small>${m.competition} · ${m.kickoffLabel}</small></span></span>
+        <span class="status">${status}</span>
+      </button>`;
+    }).join('')}`).join('')}
+  <div class="how">
+    <b style="color:var(--ink)">How it works</b>
+    <ol>
+      <li>Make three blind calls before kick-off. Then see what CaptainAI, fans and the market think.</li>
+      <li>Pick one Power Pick: it counts double. +${POINTS_PER_CALL} per correct call, +${PERFECT_BONUS} for a perfect match.</li>
+      <li>Results settle at full-time. Weekly table resets every Monday.</li>
+    </ol>
+  </div>`;
 }
 
 function viewMatch() {
   const m = currentMatch();
   const p = state.profile;
-  const clubPicked = p.club;
+  const e = entryOf(p, m.id);
+  const qs = questionsOf(m);
+  const st = statusOf(m, p);
+  const widgetBody = st === 'missed' ? `
+      <div class="state-box">${icon('i-x')}<span class="t">Calls closed at kick-off<small>You can still follow the match and back it with a partner below.</small></span></div>
+      <div class="foot-cta"><button class="btn btn-secondary btn-block" data-action="nav" data-to="hub" data-label="Challenges">Other challenges this week ${icon('i-arrow')}</button></div>`
+    : st === 'live' ? `
+      <div class="state-box">${icon('i-clock')}<span class="t">Live · your prediction is locked<small>${qs.map((q) => optionOf(q, e.answers[q.id]).label).join(' · ')}</small></span></div>
+      <div class="foot-cta"><button class="btn btn-secondary btn-block" data-action="resume">View my prediction ${icon('i-arrow')}</button></div>`
+    : st === 'open' ? `
+      <button class="btn btn-primary btn-block" data-action="start">Take the Match IQ Challenge ${icon('i-arrow')}</button>
+      ${p.club ? '' : `
+      <div class="club-pick">
+        <span class="small muted">Which side are you on? Your calls count for your fanbase.</span>
+        <div class="row">
+          <button class="club-btn" data-action="club" data-club="${m.home.name}"><span class="dot" style="background:${clubColor(m.home.name)}"></span>${m.home.name}</button>
+          <button class="club-btn" data-action="club" data-club="${m.away.name}"><span class="dot" style="background:${clubColor(m.away.name)}"></span>${m.away.name}</button>
+        </div>
+      </div>`}`
+    : e.status === 'locked' ? `
+      <div class="state-box">${icon('i-lock')}<span class="t">Your prediction is locked<small>${qs.map((q) => optionOf(q, e.answers[q.id]).label).join(' · ')}</small></span></div>
+      <div class="foot-cta"><button class="btn btn-secondary btn-block" data-action="resume">View my prediction ${icon('i-arrow')}</button></div>`
+    : `
+      <div class="state-box">${icon('i-check')}<span class="t">Settled: +${e.points} Match IQ<small>${e.correct} of 3 correct</small></span></div>
+      <div class="foot-cta"><button class="btn btn-secondary btn-block" data-action="resume">See my result ${icon('i-arrow')}</button></div>`;
   return `
   <article>
     <section class="match-card" aria-label="Match">
-      <div class="row between">
-        <span class="comp">${m.competition}</span>
-        <span class="chip">${icon('i-clock')} Kick-off in <span class="countdown num" data-countdown>${formatCountdown(state.kickoff - Date.now())}</span></span>
-      </div>
+      <div class="row between"><span class="eyebrow">${m.competition}</span>${countdownChip(m)}</div>
       <div class="teams">
         <div class="team">${crest(m.home)}<b>${m.home.name}</b></div>
-        <div class="kick">v<small>Sat 17:30</small></div>
+        <div class="kick">v<small>${m.kickoffLabel}</small></div>
         <div class="team">${crest(m.away)}<b>${m.away.name}</b></div>
       </div>
       <p class="venue">${m.venue}</p>
@@ -630,22 +971,15 @@ function viewMatch() {
         <span class="chip chip-accent">${icon('i-bolt')} Match IQ</span>
         ${p.streak > 0 ? `<span class="chip">${icon('i-flame', 'flame')} Streak ${p.streak}</span>` : ''}
       </div>
-      <h2 id="widget-title" style="margin-top:12px">Make your <em>3 calls</em> before the whistle</h2>
+      <h2 id="widget-title">Make your <em>3 calls</em> before the whistle</h2>
       <p>Then see what CaptainAI, ${m.fansCount} fans and the market think. Only after you've made yours.</p>
       <div class="facts">
         <span class="row">${icon('i-clock')} 45 seconds</span>
         <span class="row">${icon('i-cpu')} CaptainAI</span>
         <span class="row">${icon('i-users')} ${m.fansCount} fans</span>
       </div>
-      <button class="btn btn-primary btn-block" data-action="start">Take the Match IQ Challenge ${icon('i-arrow')}</button>
-      ${clubPicked ? '' : `
-      <div class="club-pick">
-        <span class="small muted">Which side are you on? Your calls count for your fanbase.</span>
-        <div class="row">
-          <button class="club-btn" data-action="club" data-club="${m.home.name}" aria-pressed="false"><span class="dot" style="background:${m.home.color}"></span>${m.home.name}</button>
-          <button class="club-btn" data-action="club" data-club="${m.away.name}" aria-pressed="false"><span class="dot" style="background:${m.away.color}"></span>${m.away.name}</button>
-        </div>
-      </div>`}
+      ${widgetBody}
+      <p class="more"><a href="#hub" data-action="nav" data-to="hub">All ${MATCHES.length} challenges this week</a></p>
     </section>
 
     <section class="preview">
@@ -655,23 +989,29 @@ function viewMatch() {
     </section>
 
     <div class="divider"></div>
-    <section class="odds-plain" aria-label="Partner odds (existing block)">
-      <div class="head"><span>Partner odds · 1X2</span><span class="dim" style="letter-spacing:0;text-transform:none;font-weight:500">18+ · Partner offer</span></div>
+    <section class="odds-plain" aria-label="Bet on this match">
+      <div class="head"><span class="eyebrow">Bet on this match · 1X2</span><span class="tiny dim">Best price of ${PARTNERS.length} partners · 18+</span></div>
       <div class="grid">
-        ${m.questions[0].options.map((o) => `<div class="cell"><span>${o.label}</span><b class="num">${fmtOdds(o.odds[0])}</b></div>`).join('')}
+        ${m.questions.winner.options.map((o) => {
+          const slip = { matchId: m.id, type: 'single', legs: [{ qid: 'winner', oid: o.id }] };
+          const best = bestPartnerFor(slip);
+          return `<button class="cell" data-action="handoff" data-partner="${best.partner.id}" data-slip='${JSON.stringify(slip)}' data-source="match_page_1x2" aria-label="Bet on ${o.label} at ${fmtOdds(best.odds)}"><span>${o.label}</span><b class="num">${fmtOdds(best.odds)}</b><span class="bk">${best.partner.name}</span></button>`;
+        }).join('')}
       </div>
+      ${PARTNERS[0].offer ? `<p class="tiny dim" style="margin-top:10px">${icon('i-gift')} New to ${PARTNERS[0].name}? ${PARTNERS[0].offer.title}. T&amp;Cs apply.</p>` : ''}
     </section>
   </article>`;
 }
 
 function shellHead(step) {
+  const m = currentMatch();
   return `
   <div class="shell-head">
-    <button class="btn btn-ghost" data-action="back-to-match" aria-label="Back to match page">${icon('i-arrow', 'back')}</button>
+    <button class="btn btn-ghost" data-action="open-match" data-match="${m.id}" aria-label="Back to match page">${icon('i-arrow', 'back')}</button>
     <div class="steps" aria-label="Progress: step ${step} of 4">
       ${[1, 2, 3, 4].map((i) => `<i class="${i < step ? 'done' : i === step ? 'now' : ''}"></i>`).join('')}
     </div>
-    <span class="chip">${icon('i-clock')} <span class="countdown num" data-countdown>${formatCountdown(state.kickoff - Date.now())}</span></span>
+    ${countdownChip(m)}
   </div>`;
 }
 
@@ -706,18 +1046,19 @@ function revealChart(question, chosenId) {
 
 function viewQuestion() {
   const m = currentMatch();
-  const q = m.questions[state.qIndex];
+  const qs = questionsOf(m);
+  const q = qs[state.qIndex];
   const chosen = state.answers[q.id];
-  const isLast = state.qIndex === m.questions.length - 1;
+  const isLast = state.qIndex === qs.length - 1;
   return `
   ${shellHead(1)}
-  <p class="q-sub">Call ${state.qIndex + 1} of ${m.questions.length} · ${m.home.name} v ${m.away.name}</p>
+  <p class="q-sub">Call ${state.qIndex + 1} of ${qs.length} · ${m.home.name} v ${m.away.name}</p>
   <h1 class="q-title">${q.title}</h1>
   <p class="q-sub">${q.sub}</p>
   <div class="options" role="group" aria-label="${q.title}">
     ${q.options.map((o) => `
     <button class="opt" data-action="answer" data-q="${q.id}" data-opt="${o.id}" aria-pressed="${chosen === o.id}" ${chosen ? 'disabled' : ''}>
-      <span><span class="lbl">${o.label}</span><span class="sub" style="display:block">${o.sub}</span></span>
+      <span><span class="lbl">${o.label}</span><span class="sub">${o.sub}</span></span>
       ${chosen === o.id ? `<span class="tag">Your call</span>` : ''}
     </button>`).join('')}
   </div>
@@ -726,20 +1067,28 @@ function viewQuestion() {
 }
 
 function viewPowerPick() {
-  const m = currentMatch();
+  const qs = questionsOf(currentMatch());
   return `
   ${shellHead(2)}
   <h1 class="q-title">Your Power Pick</h1>
   <p class="q-sub">Which call are you most sure about? It scores double after the whistle.</p>
   <div class="pick-list" role="group" aria-label="Choose your Power Pick">
-    ${m.questions.map((q) => {
+    ${qs.map((q) => {
       const o = optionOf(q, state.answers[q.id]);
+      const mk = marketFor(q, o.id);
+      const aiPick = pickBy(q, 'ai');
       return `
       <button class="pick" data-action="power" data-q="${q.id}" aria-pressed="${state.powerPick === q.id}">
-        <span><span class="k">${q.title}</span><span class="v" style="display:block">${o.label}</span></span>
+        <span style="min-width:0"><span class="k">${q.title}</span><span class="v">${o.label}</span>
+          <span class="meta"><span class="row"><i class="swatch" style="background:var(--ai)"></i>${o.ai}%</span><span class="row"><i class="swatch" style="background:var(--fans)"></i>${o.fans}%</span><span class="row"><i class="swatch" style="background:var(--market)"></i>${mk}%</span>${aiPick.id === o.id ? `<span class="agree">${icon('i-cpu')} CaptainAI agrees</span>` : ''}</span>
+        </span>
         <span class="x2">x${POWER_PICK_MULTIPLIER}</span>
       </button>`;
     }).join('')}
+  </div>
+  <div class="hint">
+    <span class="ai-dot">${icon('i-cpu')}</span>
+    <span>Highest model confidence in your slip: <b style="color:var(--ink)">${(() => { const best = qs.map((q) => ({ q, o: optionOf(q, state.answers[q.id]) })).sort((a, b) => b.o.ai - a.o.ai)[0]; return `${best.o.label} at ${best.o.ai}%`; })()}</b>. Your Power Pick doesn't have to agree.</span>
   </div>
   <div class="foot-cta">
     <button class="btn btn-primary btn-block" data-action="to-lock" ${state.powerPick ? '' : 'disabled'}>Review my prediction ${icon('i-arrow')}</button>
@@ -751,10 +1100,9 @@ function slip(locked) {
   return `
   <div class="slip ${locked ? 'locked-anim' : ''}">
     <div class="hd"><span>Your prediction</span><span>${m.home.short} v ${m.away.short}</span></div>
-    ${m.questions.map((q, i) => {
-      const o = optionOf(q, state.answers[q.id]);
+    ${questionsOf(m).map((q, i) => {
       const pp = state.powerPick === q.id;
-      return `<div class="leg ${pp ? 'pp' : ''}"><span class="n">${i + 1}</span><span><span class="t">${o.label}</span><span class="s" style="display:block">${q.title}</span></span>${pp ? `<span class="pp-tag">${icon('i-bolt')} Power Pick</span>` : ''}</div>`;
+      return `<div class="leg ${pp ? 'pp' : ''}"><span class="n">${i + 1}</span><span><span class="t">${optionOf(q, state.answers[q.id]).label}</span><span class="s">${q.title}</span></span>${pp ? `<span class="pp-tag">${icon('i-bolt')} Power Pick</span>` : ''}</div>`;
     }).join('')}
     ${locked ? `<div class="lockstamp">${icon('i-lock')} Locked until full-time</div>` : ''}
   </div>`;
@@ -764,33 +1112,52 @@ function viewLock() {
   return `
   ${shellHead(3)}
   <h1 class="q-title">Lock it in</h1>
-  <p class="q-sub">Your scenario, scored after the final whistle. +${POINTS_PER_CALL} Match IQ per correct call, Power Pick counts double.</p>
+  <p class="q-sub">Your scenario, scored after the final whistle. +${POINTS_PER_CALL} Match IQ per correct call, Power Pick counts double, +${PERFECT_BONUS} for a perfect match.</p>
   ${slip(false)}
+  ${(() => {
+    const p = state.profile;
+    const best = bestPartnerFor({ matchId: state.matchId, type: 'builder', legs: QUESTION_ORDER.map((qid) => ({ qid, oid: state.answers[qid] })) });
+    const maxPts = POINTS_PER_CALL * (QUESTION_ORDER.length + 1) + PERFECT_BONUS;
+    return `
+  <div class="stakes" aria-label="What you are playing for">
+    <div><span>Worth up to</span><b class="num">+${maxPts}</b><small>Match IQ</small></div>
+    <div><span>Your streak</span><b class="num">${p.streak}</b><small>${p.streak > 0 ? 'keeps going' : 'starts now'}</small></div>
+    <div><span>This scenario pays</span><b class="num">${fmtOdds(best.odds)}</b><small>at ${best.partner.name}</small></div>
+  </div>`;
+  })()}
   <div class="foot-cta">
     <button class="btn btn-primary btn-block" data-action="lock">${icon('i-lock')} Lock my prediction</button>
     <button class="btn btn-ghost" data-action="back-to-power">Change Power Pick</button>
-  </div>`;
+  </div>
+  <p class="tiny dim" style="margin-top:10px">After locking you can compare prices at ${PARTNERS.length} partners. Locking is free and never places a bet.</p>`;
 }
 
+function legsOf() {
+  return questionsOf(currentMatch()).map((q) => ({ q, o: optionOf(q, state.answers[q.id]) }));
+}
 function builderOdds() {
-  const m = currentMatch();
-  return PARTNERS.map((_, i) => round2(m.questions.reduce((acc, q) => acc * optionOf(q, state.answers[q.id]).odds[i], 1)));
+  return PARTNERS.map((_, i) => round2(legsOf().reduce((acc, l) => acc * l.o.odds[i], 1)));
 }
 function singleOdds() {
-  const m = currentMatch();
-  const q = m.questions.find((x) => x.id === state.powerPick);
-  return optionOf(q, state.answers[q.id]).odds.map(round2);
+  const leg = legsOf().find((l) => l.q.id === state.powerPick);
+  return leg.o.odds.map(round2);
+}
+function currentOdds() {
+  return state.oddsTab === 'builder' ? builderOdds() : singleOdds();
 }
 
 function viewOdds() {
-  const m = currentMatch();
   const isBuilder = state.oddsTab === 'builder';
-  const odds = isBuilder ? builderOdds() : singleOdds();
+  const odds = currentOdds();
   const best = Math.max(...odds);
-  const ppQ = m.questions.find((q) => q.id === state.powerPick);
-  const ppO = optionOf(ppQ, state.answers[ppQ.id]);
-  const market = marketFor(ppQ, ppO.id);
-  const legs = m.questions.map((q) => optionOf(q, state.answers[q.id]).label);
+  const pp = legsOf().find((l) => l.q.id === state.powerPick);
+  const market = marketFor(pp.q, pp.o.id);
+  const offerPartner = PARTNERS.find((p) => p.offer);
+  const note = pp.o.ai > market
+    ? `CaptainAI rates your Power Pick ${plural(pp.o.ai - market, 'point', 'points')} above the market's implied ${market}%. That's information, not a guarantee.`
+    : pp.o.ai === market
+      ? `CaptainAI and the market agree on ${market}% for your Power Pick. The price reflects the consensus.`
+      : `The market prices your Power Pick at ${market}%, ${plural(market - pp.o.ai, 'point', 'points')} above CaptainAI's estimate. You are with the crowd on this one.`;
   return `
   ${shellHead(4)}
   <h1 class="q-title">Your prediction, priced</h1>
@@ -799,32 +1166,38 @@ function viewOdds() {
     <button class="tab" role="tab" aria-selected="${isBuilder}" data-action="odds-tab" data-tab="builder">Bet Builder · 3 legs</button>
     <button class="tab" role="tab" aria-selected="${!isBuilder}" data-action="odds-tab" data-tab="single">Power Pick · single</button>
   </div>
-  <p class="small muted" style="margin-top:12px">${isBuilder ? legs.join(' + ') : `${ppO.label} · ${ppQ.title}`}</p>
+  <p class="small muted" style="margin-top:12px">${isBuilder ? legsOf().map((l) => l.o.label).join(' + ') : `${pp.o.label} · ${pp.q.title}`}</p>
   <div class="odds-table" role="tabpanel">
     ${PARTNERS.map((p, i) => `
     <div class="odds-row ${odds[i] === best ? 'best' : ''}">
-      <span class="bk">${p}${odds[i] === best ? '<small>Best price</small>' : '<small>Partner offer</small>'}</span>
+      <span class="bk">${p.name}<small>${odds[i] === best ? 'Best price' : 'Partner offer'}</small>${p.offer ? `<span class="offer">${icon('i-gift')} ${p.offer.short}</span>` : ''}</span>
       <span class="o num">${fmtOdds(odds[i])}<small>10 returns ${(odds[i] * 10).toFixed(2)}</small></span>
-      <button class="btn ${odds[i] === best ? 'btn-primary' : 'btn-secondary'} go" data-action="bookmaker" data-partner="${p}" data-odds="${odds[i]}">View</button>
+      <button class="btn btn-sm ${odds[i] === best ? 'btn-primary' : 'btn-secondary'}" data-action="handoff" data-partner="${p.id}">View</button>
     </div>`).join('')}
   </div>
 
+  ${offerPartner ? `
+  <div class="offer-card">
+    <div>
+      <span class="eyebrow">${icon('i-gift')} New to ${offerPartner.name}?</span>
+      <div class="t">${offerPartner.offer.title}</div>
+      <p class="terms">Your slip is pre-filled when you continue. ${offerPartner.offer.terms}</p>
+    </div>
+    <button class="btn btn-sm btn-secondary" data-action="handoff" data-partner="${offerPartner.id}">Claim</button>
+  </div>` : ''}
+
   <div class="call">
-    <div class="hd">Your call vs market</div>
-    <div class="big">${ppO.label} · ${ppQ.title}</div>
+    <span class="eyebrow">Your call vs market</span>
+    <div class="big">${pp.o.label} · ${pp.q.title}</div>
     <div class="cmp">
-      <div><span>CaptainAI</span><b class="num">${ppO.ai}%</b></div>
-      <div><span>Fans</span><b class="num">${ppO.fans}%</b></div>
+      <div><span>CaptainAI</span><b class="num">${pp.o.ai}%</b></div>
+      <div><span>Fans</span><b class="num">${pp.o.fans}%</b></div>
       <div><span>Market</span><b class="num">${market}%</b></div>
     </div>
-    <p class="note">${ppO.ai > market
-      ? `CaptainAI rates your Power Pick ${pts(ppO.ai - market)} above the market's implied ${market}%. That's information, not a guarantee.`
-      : ppO.ai === market
-        ? `CaptainAI and the market agree on ${market}% for your Power Pick. The price reflects the consensus.`
-        : `The market prices your Power Pick at ${market}%, ${pts(market - ppO.ai)} above CaptainAI's estimate. You are with the crowd on this one.`}</p>
+    <p class="note">${note}</p>
   </div>
 
-  <div class="rg"><span class="badge18">18+</span><span>Odds are illustrative. Partners pay Tribuna for referrals. Bet only what you can afford to lose.</span></div>
+  <div class="rg" style="margin-top:14px"><span class="badge18">18+</span><span>Odds are illustrative. Partners pay Tribuna for referrals. Bet only what you can afford to lose.</span></div>
 
   <div class="foot-cta">
     <button class="btn btn-secondary btn-block" data-action="to-wait">Continue, remind me at full-time</button>
@@ -839,11 +1212,25 @@ function viewWait() {
   <p class="q-sub">We'll notify you at full-time with your Match IQ result and how you did against CaptainAI.</p>
   ${slip(true)}
   <div class="wait">
-    <div class="big countdown num" data-countdown>${formatCountdown(state.kickoff - Date.now())}</div>
+    <div class="big countdown num" data-countdown="${m.id}">${formatCountdown(kickoffOf(m) - Date.now())}</div>
     <div class="lbl">Until kick-off · ${m.home.name} v ${m.away.name}</div>
   </div>
+  ${(() => {
+    const slip = { matchId: m.id, type: 'builder', legs: QUESTION_ORDER.map((qid) => ({ qid, oid: state.answers[qid] })) };
+    const best = bestPartnerFor(slip);
+    return `
+  <div class="back-it">
+    <div class="row between wrap" style="gap:8px"><span class="eyebrow">Back this prediction</span>${best.partner.offer ? `<span class="chip chip-accent">${icon('i-gift')} ${best.partner.offer.short}</span>` : ''}</div>
+    <p class="small muted" style="margin-top:6px">Your three calls as a Bet Builder. Stake 10 returns <b style="color:var(--ink)" class="num">${(best.odds * 10).toFixed(2)}</b> at the best price.</p>
+    <div class="foot-cta" style="margin-top:12px">
+      ${betCta(slip, 'Back it', 'wait_screen')}
+      <button class="btn btn-ghost" data-action="to-odds">Compare all ${PARTNERS.length} partners</button>
+    </div>
+  </div>`;
+  })()}
   <div class="foot-cta">
     <button class="btn btn-secondary btn-block" data-action="share">${icon('i-share')} Share my call</button>
+    <button class="btn btn-ghost" data-action="nav" data-to="hub">${icon('i-grid')} More challenges this week</button>
   </div>
   <div class="proto">
     Prototype control. In production the result arrives after the real match.
@@ -851,28 +1238,25 @@ function viewWait() {
   </div>`;
 }
 
-function computeOutcome() {
-  const m = currentMatch();
-  const calls = m.questions.map((q) => {
-    const o = optionOf(q, state.answers[q.id]);
-    const ok = isCorrect(m, q, o.id);
-    const pp = state.powerPick === q.id;
-    const points = ok ? POINTS_PER_CALL * (pp ? POWER_PICK_MULTIPLIER : 1) : 0;
-    const aiOk = isCorrect(m, q, pickBy(q, 'ai').id);
-    const fansOk = isCorrect(m, q, pickBy(q, 'fans').id);
-    const marketOk = isCorrect(m, q, marketPick(q).id);
-    return { q, o, ok, pp, points, aiOk, fansOk, marketOk };
+function computeOutcome(m, answers, powerPick) {
+  const calls = questionsOf(m).map((q) => {
+    const o = optionOf(q, answers[q.id]);
+    const ok = isCorrect(m, q.id, o.id);
+    const pp = powerPick === q.id;
+    return { q, o, ok, pp, points: ok ? POINTS_PER_CALL * (pp ? POWER_PICK_MULTIPLIER : 1) : 0,
+      aiOk: isCorrect(m, q.id, pickBy(q, 'ai').id), fansOk: isCorrect(m, q.id, pickBy(q, 'fans').id), marketOk: isCorrect(m, q.id, marketPick(q).id) };
   });
   const you = calls.filter((c) => c.ok).length;
   const ai = calls.filter((c) => c.aiOk).length;
   const fans = calls.filter((c) => c.fansOk).length;
   const market = calls.filter((c) => c.marketOk).length;
-  const points = calls.reduce((a, c) => a + c.points, 0);
+  const perfect = you === calls.length;
+  const points = calls.reduce((a, c) => a + c.points, 0) + (perfect ? PERFECT_BONUS : 0);
   const badges = [];
-  if (you === calls.length) badges.push({ id: 'perfect', label: 'Perfect Match: 3 of 3' });
-  if (you > ai) badges.push({ id: 'beat-ai', label: 'Beat the AI' });
-  if (calls.some((c) => c.ok && c.o.fans <= 30)) badges.push({ id: 'crowd', label: 'Against the Crowd' });
-  return { calls, you, ai, fans, market, points, badges };
+  if (perfect) badges.push('Perfect Match: 3 of 3');
+  if (you > ai) badges.push('Beat the AI');
+  if (calls.some((c) => c.ok && c.o.fans <= 30)) badges.push('Against the Crowd');
+  return { calls, you, ai, fans, market, perfect, points, badges };
 }
 
 function viewResult() {
@@ -881,7 +1265,7 @@ function viewResult() {
   const out = state.outcome;
   const top = Math.max(out.you, out.ai, out.fans);
   return `
-  <div class="shell-head"><span class="chip chip-accent">${icon('i-check')} Full-time</span><span class="chip">${m.competition.split(' · ')[0]}</span></div>
+  <div class="shell-head"><span class="chip chip-accent">${icon('i-check')} Full-time</span><span class="chip">${m.competition}</span></div>
   <h1 class="q-title">Your result</h1>
   <div class="score">
     <span class="t">${m.home.name}</span>
@@ -896,10 +1280,11 @@ function viewResult() {
       <span class="t">${c.o.label}<small>${c.q.title}${c.pp ? ' · Power Pick x2' : ''}</small></span>
       <span class="pts num ${c.ok ? 'ok' : ''}">${c.ok ? '+' + c.points : '0'}</span>
     </div>`).join('')}
+    ${out.perfect ? `<div class="callrow"><span class="ic bonus">${icon('i-trophy')}</span><span class="t">Perfect match bonus<small>All three calls correct</small></span><span class="pts num ok">+${PERFECT_BONUS}</span></div>` : ''}
   </div>
   <div class="iq-hero">
-    <div><div class="lbl">Match IQ earned</div><div class="n num" data-countup="${out.points}">0<small>pts</small></div></div>
-    ${icon('i-bolt', '')}
+    <div><span class="eyebrow">Match IQ earned</span><div class="n num" data-countup="${out.points}">0<small>pts</small></div></div>
+    ${icon('i-bolt')}
   </div>
   <div class="duel" aria-label="Correct calls: you versus CaptainAI versus fans">
     <div class="${out.you === top ? 'win' : ''}"><span>You</span><b class="num">${out.you}/3</b></div>
@@ -909,23 +1294,97 @@ function viewResult() {
   <div class="insight"><span class="ai-dot">${icon('i-cpu')}</span><span>${r.insight} <a href="#report" data-action="read-more">Read match report</a></span></div>
   <div class="foot-cta">
     <button class="btn btn-primary btn-block" data-action="to-retention">See my Match IQ ${icon('i-arrow')}</button>
-  </div>`;
+  </div>
+  ${CONFIG.features.quickBet ? quickBet() : ''}`;
+}
+
+function quickBet() {
+  const nextOpen = MATCHES.find((x) => statusOf(x, state.profile) === 'open');
+  if (!nextOpen) return '';
+  return `
+  <section class="quick" aria-label="Bet on the next match">
+    <div class="row between wrap" style="gap:8px"><span class="eyebrow">${icon('i-bolt')} Next up · ${nextOpen.kickoffLabel}</span><span class="tiny dim">Best of ${PARTNERS.length} partners · 18+</span></div>
+    <h3>${nextOpen.home.name} v ${nextOpen.away.name}</h3>
+    <div class="grid">
+      ${nextOpen.questions.winner.options.map((o) => {
+        const slip = { matchId: nextOpen.id, type: 'single', legs: [{ qid: 'winner', oid: o.id }] };
+        const best = bestPartnerFor(slip);
+        return `<button class="cell" data-action="handoff" data-partner="${best.partner.id}" data-slip='${JSON.stringify(slip)}' data-source="result_quick_bet" aria-label="Bet on ${o.label} at ${fmtOdds(best.odds)}"><span>${o.label}</span><b class="num">${fmtOdds(best.odds)}</b><span class="bk">${best.partner.name}</span></button>`;
+      }).join('')}
+    </div>
+    <button class="btn btn-ghost" data-action="open-match" data-match="${nextOpen.id}" style="margin-top:8px">Or make your 3 calls first ${icon('i-arrow')}</button>
+  </section>`;
+}
+
+function movement(row, rank) {
+  if (row.prev == null) return `<span class="mv new">new</span>`;
+  const d = row.prev - rank;
+  if (d === 0) return `<span class="mv">–</span>`;
+  return d > 0 ? `<span class="mv up">▲${d}</span>` : `<span class="mv down">▼${-d}</span>`;
+}
+
+function playersTable(p, opts = {}) {
+  const board = leaderboard(p);
+  const meIdx = board.findIndex((r) => r.me);
+  const TOP = opts.full ? board.length : 8;
+  const visible = board.slice(0, TOP);
+  const showMeBelow = meIdx >= TOP;
+  const row = (r, i) => `
+    <tr class="${r.me ? 'me' : ''} ${r.ai ? 'ai' : ''}">
+      <td><span class="rank num">${i + 1} ${movement(r, i + 1)}</span></td>
+      <td><span class="pname"><span class="av">${r.ai ? icon('i-cpu') : r.name.slice(0, 2).toUpperCase()}</span>${r.club ? `<span class="club" style="background:${clubColor(r.club)}" title="${r.club}"></span>` : ''}<span class="nm">${r.name}</span></span></td>
+      <td class="num">${r.played}</td>
+      <td class="num">${r.played ? hitRate(r.correct, r.played * 3) + '%' : '–'}</td>
+      <td class="iq num">${r.iq}</td>
+    </tr>`;
+  const humansHit = hitRate(PLAYERS.reduce((a, x) => a + x.correct, 0) + p.correct, (PLAYERS.reduce((a, x) => a + x.played, 0) + Object.values(p.matches).filter((e) => e.status === 'settled').length) * 3);
+  const aiHit = hitRate(CAPTAIN.correct, CAPTAIN.played * 3);
+  return `
+    <div class="hd">
+      <span>${WEEK_LABEL} · resets Monday 00:00</span>
+      <b>Humans <span class="num">${p.humans} : ${p.ai}</span> CaptainAI</b>
+      <span class="sub">Matches won this week. Hit rate: humans ${humansHit}% · CaptainAI ${aiHit}%.</span>
+    </div>
+    <table role="tabpanel" aria-label="Weekly leaderboard">
+      <thead><tr><th>#</th><th>Player</th><th title="Matches played">P</th><th>Hit</th><th>IQ</th></tr></thead>
+      <tbody>
+        ${visible.map(row).join('')}
+        ${showMeBelow ? `<tr><td colspan="5" class="gap">${meIdx - TOP} more players</td></tr>${row(board[meIdx], meIdx)}` : ''}
+      </tbody>
+    </table>
+    <div class="foot">${p.iq === 0 ? 'Lock a prediction to enter the table. ' : ''}Ties break on hit rate. Movement is versus yesterday.</div>`;
+}
+
+function fanbasesPanel(p) {
+  const m = currentMatch();
+  const order = [...FANBASES].sort((a, b) => b.hit - a.hit);
+  const top = order.slice(0, 6);
+  const inMatch = [m.home.name, m.away.name];
+  const mine = p.club && !top.some((f) => f.club === p.club) ? FANBASES.find((f) => f.club === p.club) : null;
+  const rows = [...top, ...(mine ? [mine] : [])];
+  const rowHtml = (f) => `
+      <div class="grp ${p.club === f.club ? 'you' : ''}">
+        <div class="name">${f.club}${p.club === f.club ? '<span class="you">Your side</span>' : ''}<span class="tiny dim" style="display:block">${fmtK(f.n)} predictions${inMatch.includes(f.club) ? ' · playing' : ''}</span></div>
+        <div class="bar" role="img" aria-label="${f.club} fans hit rate ${f.hit}%"><div class="track"><div class="fill" style="background:${clubColor(f.club)}" data-w="${f.hit}"></div></div><span class="val num">${f.hit}%</span></div>
+      </div>`;
+  return `
+    <div class="hd"><span>Which fanbase knows football best?</span><span class="sub">Hit rate across all locked calls this week, clubs with 1,000+ predictions.</span></div>
+    <div class="fan" role="tabpanel" aria-label="Fanbase leaderboard">
+      ${rows.map(rowHtml).join('')}
+      ${mine ? `<p class="tiny dim" style="margin-top:8px">${p.club} fans sit ${order.findIndex((f) => f.club === p.club) + 1}th of ${FANBASES.length}.</p>` : ''}
+    </div>`;
 }
 
 function viewRetention() {
-  const m = currentMatch();
   const p = state.profile;
   const league = leagueFor(p.iq);
   const next = nextLeague(p.iq);
   const pct = next ? Math.round(((p.iq - league.min) / (next.min - league.min)) * 100) : 100;
-  const nextMatch = MATCHES[(state.matchIndex + 1) % MATCHES.length];
-  const board = [...PLAYERS, { name: 'CaptainAI', iq: AI_WEEKLY_IQ, ai: true }, { name: 'You', iq: p.iq, me: true }]
-    .sort((a, b) => b.iq - a.iq);
-  const fans = FANBASES[m.id];
-  const fanMax = Math.max(...fans.map((f) => f.hit));
+  const nextOpen = MATCHES.find((m) => entryOf(p, m.id).status === 'open');
   const isPlayers = state.lbTab === 'players';
+  const w = weekSummary();
   return `
-  <div class="shell-head"><span class="chip chip-accent">${icon('i-bolt')} Match IQ</span><span class="chip">Week 4</span></div>
+  <div class="shell-head"><span class="chip chip-accent">${icon('i-bolt')} Match IQ</span><span class="chip">${WEEK_LABEL}</span></div>
   <h1 class="q-title">Your Match IQ</h1>
   <div class="profile">
     <div class="top">
@@ -935,9 +1394,10 @@ function viewRetention() {
     <div class="progress" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="Progress to ${next ? next.name : 'max'}"><i style="width:${pct}%"></i></div>
     <div class="stats">
       <span class="row">${icon('i-flame', 'flame')} <b class="num">${p.streak}</b> match streak</span>
+      <span class="row">Rank <b class="num">#${w.rank}</b></span>
       <span class="row">Hit rate <b class="num">${hitRate(p.correct, p.total)}%</b> <span class="dim">· CaptainAI ${hitRate(p.aiCorrect, p.total)}% · Market ${hitRate(p.marketCorrect, p.total)}%</span></span>
     </div>
-    ${p.streak > 0 ? `<div style="margin-top:12px"><span class="chip chip-warn">${icon('i-flame')} Streak at risk · next match Sunday</span></div>` : ''}
+    ${p.streak > 0 && nextOpen ? `<div style="margin-top:12px"><span class="chip chip-warn">${icon('i-flame')} Streak at risk · ${nextOpen.home.name} v ${nextOpen.away.name} kicks off in <span class="num" data-countdown="${nextOpen.id}">${formatCountdown(kickoffOf(nextOpen) - Date.now())}</span></span></div>` : ''}
   </div>
 
   <div class="lb">
@@ -945,46 +1405,106 @@ function viewRetention() {
       <button class="tab" role="tab" aria-selected="${isPlayers}" data-action="lb-tab" data-tab="players">Players</button>
       <button class="tab" role="tab" aria-selected="${!isPlayers}" data-action="lb-tab" data-tab="fanbases">Fanbases</button>
     </div>
-    ${isPlayers ? `
-    <div class="hd"><span>This week</span><b>Humans <span class="num">${p.humans} : ${p.ai}</span> CaptainAI</b></div>
-    <table role="tabpanel" aria-label="Weekly leaderboard">
-      <tbody>
-      ${board.map((row, i) => `
-        <tr class="${row.me ? 'me' : ''} ${row.ai ? 'ai' : ''}">
-          <td class="num">${i + 1}</td>
-          <td><span class="name"><span class="av">${row.ai ? icon('i-cpu') : row.name.slice(0, 2).toUpperCase()}</span>${row.name}</span></td>
-          <td class="num">${row.iq}</td>
-        </tr>`).join('')}
-      </tbody>
-    </table>` : `
-    <div class="hd"><span>Which fanbase knows football better?</span></div>
-    <div class="fan" role="tabpanel" aria-label="Fanbase leaderboard">
-      ${fans.map((f) => `
-      <div class="grp ${p.club === f.name.replace(' fans', '') ? 'you' : ''}">
-        <div class="name">${f.name}${p.club === f.name.replace(' fans', '') ? '<span class="you">Your side</span>' : ''}<span class="tiny dim" style="display:block">${f.n} predictions</span></div>
-        <div class="bar" role="img" aria-label="${f.name} hit rate ${f.hit}%"><div class="track"><div class="fill" style="background:${f.color}" data-w="${f.hit}"></div></div><span class="val num">${f.hit}%</span></div>
-      </div>`).join('')}
-      <p class="tiny dim" style="margin-top:10px">Hit rate across all locked calls this week. ${fans.find((f) => f.hit === fanMax).name} lead.</p>
-    </div>`}
+    ${isPlayers ? playersTable(p) : fanbasesPanel(p)}
   </div>
 
-  <div class="prize">${icon('i-trophy')}<span>Top-10 this week win a free bet from Partner A. Partner-funded, 18+, T&amp;Cs apply.</span></div>
+  <div class="prize">${icon('i-trophy')}<span>Top-10 this week win a free bet from ${PARTNERS[0].name}. Partner-funded, 18+, T&amp;Cs apply.</span></div>
 
+  ${nextOpen ? `
   <div class="next">
-    <div class="lbl">Next Match Challenge</div>
-    <h3>${nextMatch.home.name} v ${nextMatch.away.name}</h3>
-    <p>${nextMatch.competition} · Sunday 16:30. Keep the streak alive.</p>
-    <div class="foot-cta"><button class="btn btn-primary btn-block" data-action="next-match">Make my 3 calls ${icon('i-arrow')}</button></div>
+    <span class="eyebrow">Next Match Challenge</span>
+    <h3>${nextOpen.home.name} v ${nextOpen.away.name}</h3>
+    <p>${nextOpen.competition} · ${nextOpen.kickoffLabel}. ${w.locked} of ${w.total} called this week.</p>
+    <div class="foot-cta">
+      <button class="btn btn-primary btn-block" data-action="open-match" data-match="${nextOpen.id}">Make my 3 calls ${icon('i-arrow')}</button>
+      <button class="btn btn-ghost" data-action="nav" data-to="hub">${icon('i-grid')} All challenges</button>
+    </div>
+  </div>` : `
+  <div class="next">
+    <span class="eyebrow">Week complete</span>
+    <h3>All ${w.total} challenges called</h3>
+    <p>New fixtures drop Monday. Your table position is final at Sunday 23:59.</p>
+    <div class="foot-cta"><button class="btn btn-secondary btn-block" data-action="nav" data-to="hub">${icon('i-grid')} Review this week</button></div>
+  </div>`}`;
+}
+
+/* --------------------------------------------------------------- handoff */
+/* A slip is {matchId, legs:[{qid, oid}], type:'builder'|'single'}; odds come from the match data. */
+function slipLegs(slip) {
+  const m = matchById(slip.matchId);
+  return slip.legs.map((l) => { const q = { id: l.qid, ...m.questions[l.qid] }; return { q, o: optionOf(q, l.oid) }; });
+}
+function slipOdds(slip, partnerIdx) {
+  return round2(slipLegs(slip).reduce((acc, l) => acc * l.o.odds[partnerIdx], 1));
+}
+function bestPartnerFor(slip) {
+  const odds = PARTNERS.map((_, i) => slipOdds(slip, i));
+  const idx = odds.indexOf(Math.max(...odds));
+  return { partner: PARTNERS[idx], idx, odds: odds[idx] };
+}
+function currentSlip() {
+  const legs = state.oddsTab === 'builder' ? QUESTION_ORDER : [state.powerPick];
+  return { matchId: state.matchId, type: state.oddsTab, legs: legs.map((qid) => ({ qid, oid: state.answers[qid] })) };
+}
+function betCta(slip, label, source) {
+  const best = bestPartnerFor(slip);
+  return `<button class="btn btn-primary btn-block" data-action="handoff" data-partner="${best.partner.id}" data-slip='${JSON.stringify(slip)}' data-source="${source}">${label} · ${fmtOdds(best.odds)} at ${best.partner.name} ${icon('i-ext')}</button>`;
+}
+
+function viewSheet() {
+  if (!state.sheet) return '';
+  const { partnerId, slip } = state.sheet;
+  const partner = PARTNERS.find((p) => p.id === partnerId);
+  const idx = PARTNERS.indexOf(partner);
+  const odds = slipOdds(slip, idx);
+  const isBuilder = slip.legs.length > 1;
+  const legs = slipLegs(slip);
+  return `
+  <div class="sheet-wrap" data-action="close-sheet">
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" data-stop>
+      <div class="grab" aria-hidden="true"></div>
+      <span class="eyebrow">${icon('i-ext')} You're leaving Tribuna</span>
+      <h2 id="sheet-title" style="margin-top:6px">Continue to ${partner.name}</h2>
+      <div class="partner">
+        <span class="logo" style="background:${partner.color}">${partner.name.slice(-1)}</span>
+        <span><b>${partner.name}</b><small>Licensed operator · pays Tribuna for referrals</small></span>
+      </div>
+      <div class="mini-slip">
+        <div><span>Your slip · ${isBuilder ? 'Bet Builder' : 'Single'}</span><span>${legs.length} ${legs.length === 1 ? 'selection' : 'selections'}</span></div>
+        ${legs.map((l) => `<div><span>${l.o.label} <span class="dim">· ${l.q.title}</span></span><span class="num">${fmtOdds(l.o.odds[idx])}</span></div>`).join('')}
+        <div><span>Stake 10 at ${fmtOdds(odds)}</span><span class="tot num">Returns ${(odds * 10).toFixed(2)}</span></div>
+      </div>
+      ${partner.offer ? `
+      <div class="offer">
+        <span class="eyebrow" style="color:var(--accent)">${icon('i-gift')} Welcome offer applied</span>
+        <div class="t">${partner.offer.title}</div>
+        <p class="terms">${partner.offer.terms}</p>
+      </div>` : ''}
+      ${state.profile.ageConfirmed
+        ? `<div class="rg" style="margin-top:12px"><span class="badge18">18+</span><span>Age confirmed on this device. Only bet what you can afford to lose.</span></div>`
+        : `<label class="age"><input type="checkbox" data-action="age-confirm"><span>I confirm I am 18 or over, in a licensed territory, and I accept ${partner.name}'s terms.</span></label>`}
+      <div class="foot-cta">
+        <button class="btn btn-primary btn-block" data-action="bookmaker" data-partner="${partner.id}" ${state.profile.ageConfirmed ? '' : 'disabled'}>Continue to ${partner.name} ${icon('i-ext')}</button>
+        <button class="btn btn-ghost" data-action="close-sheet">Stay on Tribuna</button>
+      </div>
+    </div>
   </div>`;
 }
 
 /* ============================================================== rendering */
-const VIEWS = { match: viewMatch, question: viewQuestion, power: viewPowerPick, lock: viewLock, odds: viewOdds, wait: viewWait, result: viewResult, retention: viewRetention };
+const VIEWS = { landing: viewLanding, board: viewBoard, hub: viewHub, match: viewMatch, question: viewQuestion, power: viewPowerPick, lock: viewLock, odds: viewOdds, wait: viewWait, result: viewResult, retention: viewRetention };
+const NAV = [['Football', null], ['Matches', 'hub'], ['Match IQ', 'landing'], ['Betting', null]];
+const NAV_ACTIVE = { landing: 'Match IQ', board: 'Match IQ', retention: 'Match IQ', hub: 'Matches', match: 'Matches', question: 'Matches', power: 'Matches', lock: 'Matches', odds: 'Matches', wait: 'Matches', result: 'Matches' };
+let lastScreen = null;
 
 function render() {
   const app = document.getElementById('app');
   app.innerHTML = VIEWS[state.screen]();
-  window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+  document.getElementById('nav').innerHTML = NAV.map(([label, to]) => `<button class="${NAV_ACTIVE[state.screen] === label ? 'on' : ''}" data-action="nav" data-to="${to || ''}" data-label="${label}">${label}</button>`).join('');
+  document.getElementById('sheet').innerHTML = viewSheet();
+  document.body.classList.toggle('sheet-open', !!state.sheet);
+  if (state.sheet) { const first = document.querySelector('.sheet input, .sheet .btn-primary:not([disabled])'); if (first && !document.querySelector('.sheet').contains(document.activeElement)) first.focus(); }
+  if (state.screen !== lastScreen) { window.scrollTo(0, 0); lastScreen = state.screen; }
   requestAnimationFrame(() => {
     app.querySelectorAll('.fill[data-w]').forEach((el) => { el.style.width = el.dataset.w + '%'; el.classList.add('in'); });
     app.querySelectorAll('.progress i').forEach((el) => el.classList.add('in'));
@@ -997,11 +1517,9 @@ function countUp(el) {
   const target = Number(el.dataset.countup);
   const suffix = el.querySelector('small') ? el.querySelector('small').outerHTML : '';
   const start = performance.now();
-  const dur = 900;
   const step = (t) => {
-    const k = Math.min(1, (t - start) / dur);
-    const eased = 1 - Math.pow(1 - k, 3);
-    el.innerHTML = Math.round(target * eased) + suffix;
+    const k = Math.min(1, (t - start) / 900);
+    el.innerHTML = Math.round(target * (1 - Math.pow(1 - k, 3))) + suffix;
     if (k < 1) requestAnimationFrame(step);
   };
   requestAnimationFrame(step);
@@ -1020,8 +1538,9 @@ function renderMetrics() {
       <div class="funnel">
         ${FUNNEL.map(([ev, label], i) => `<div class="f"><span>${label}</span><div class="track"><div class="fill" style="width:${(counts[i] / max) * 100}%"></div></div><b class="num">${counts[i]}</b></div>`).join('')}
       </div>
-      <p class="def">North Star: Weekly Betting-Intent Predictors = users with <b>prediction_locked</b> and <b>bookmaker_click</b> in the same week. Completion rate = locked / started. Return-to-result = result_viewed within 48h of lock.</p>
+      <p class="def">North Star: Weekly Betting-Intent Predictors = users with <b>prediction_locked</b> and <b>bookmaker_click</b> in the same week. Completion rate = locked / started. Return-to-result = result_viewed within 48h of lock. Handoff conversion = bookmaker_click / handoff_opened.</p>
       <div class="evlog">${last.length ? last.map((e) => `${new Date(e.ts).toLocaleTimeString()} · ${e.event}${Object.keys(e.props).length ? ' ' + JSON.stringify(e.props) : ''}`).join('<br>') : 'No events yet.'}</div>
+      <button class="btn btn-ghost btn-sm reset" data-action="reset">Reset prototype data</button>
     </div>
   </details>`;
 }
@@ -1037,17 +1556,79 @@ function toastQueue(items) {
   items.forEach((t, i) => setTimeout(() => toast(t.text, t.kind), i * 2800 + 400));
 }
 
+/* ================================================================ routing */
+/* Hash routes so every screen is deep-linkable and the browser back button works.
+   In production these map 1:1 to real paths under /match-iq/. */
+const ROUTES = {
+  landing: '/', hub: '/challenges', board: '/board', retention: '/me',
+  match: '/match/:id', question: '/match/:id/play', power: '/match/:id/pick', lock: '/match/:id/lock',
+  odds: '/match/:id/odds', wait: '/match/:id/locked', result: '/match/:id/result',
+};
+const SUBROUTES = { play: 'question', pick: 'power', lock: 'lock', odds: 'odds', locked: 'wait', result: 'result' };
+const pathFor = (screen, matchId) => '#' + ROUTES[screen].replace(':id', matchId || '');
+
+function parseHash(hash) {
+  const parts = ((hash || '#/').slice(1) || '/').split('/').filter(Boolean);
+  if (!parts.length) return { screen: 'landing' };
+  if (parts[0] === 'challenges') return { screen: 'hub' };
+  if (parts[0] === 'board') return { screen: 'board' };
+  if (parts[0] === 'me') return { screen: 'retention' };
+  if (parts[0] === 'match' && matchById(parts[1])) return { screen: SUBROUTES[parts[2]] || 'match', matchId: parts[1] };
+  return { screen: 'landing' };
+}
+
+/* A route is only valid if the state it needs exists: in-progress calls live in memory,
+   locked and settled entries live in the profile. Anything else falls back to the match page. */
+function resolveRoute(r) {
+  if (!r.matchId) return r;
+  const m = matchById(r.matchId);
+  const status = statusOf(m, state.profile);
+  const inProgress = state.matchId === r.matchId && Object.keys(state.answers).length > 0 && status === 'open';
+  const toMatch = { screen: 'match', matchId: r.matchId };
+  switch (r.screen) {
+    case 'question': case 'power': case 'lock': return inProgress ? r : toMatch;
+    case 'odds': return ['locked', 'live'].includes(status) ? r : toMatch;
+    case 'wait': return ['locked', 'live'].includes(status) ? r : status === 'settled' ? { screen: 'result', matchId: r.matchId } : toMatch;
+    case 'result': return status === 'settled' ? r : toMatch;
+    default: return r;
+  }
+}
+
+function applyRoute(r) {
+  const res = resolveRoute(r);
+  const patch = { screen: res.screen, sheet: null };
+  if (res.matchId) {
+    const e = entryOf(state.profile, res.matchId);
+    patch.matchId = res.matchId;
+    if (['wait', 'odds'].includes(res.screen)) Object.assign(patch, { answers: e.answers, powerPick: e.powerPick });
+    if (res.screen === 'result') Object.assign(patch, { answers: e.answers, powerPick: e.powerPick, outcome: computeOutcome(matchById(res.matchId), e.answers, e.powerPick) });
+    if (res.screen === 'match' && state.matchId !== res.matchId) Object.assign(patch, { answers: {}, powerPick: null, qIndex: 0, outcome: null });
+  }
+  state = { ...state, ...patch };
+  const hash = pathFor(res.screen, res.matchId);
+  if (location.hash !== hash) history.replaceState(null, '', hash);
+  render();
+}
+
+function go(screen, patch = {}) {
+  state = { ...state, ...patch, screen };
+  const hash = pathFor(screen, state.matchId);
+  if (location.hash !== hash) history.pushState(null, '', hash);
+  render();
+}
+window.addEventListener('popstate', () => {
+  if (location.hash === pathFor(state.screen, state.matchId)) return;
+  applyRoute(parseHash(location.hash));
+});
+
 /* ================================================================ actions */
 function shareText() {
   const m = currentMatch();
-  const legs = m.questions.map((q) => optionOf(q, state.answers[q.id]).label);
-  return `My Match IQ call for ${m.home.name} v ${m.away.name}: ${legs.join(', ')}. Power Pick: ${legs[m.questions.findIndex((q) => q.id === state.powerPick)]}. Beat me on Tribuna.`;
+  const legs = legsOf();
+  return `My Match IQ call for ${m.home.name} v ${m.away.name}: ${legs.map((l) => l.o.label).join(', ')}. Power Pick: ${legs.find((l) => l.q.id === state.powerPick).o.label}. Beat me on Tribuna.`;
 }
 async function copyText(text) {
-  try {
-    await navigator.clipboard.writeText(text);
-    return true;
-  } catch (e) {
+  try { await navigator.clipboard.writeText(text); return true; } catch (e) {
     const ta = document.createElement('textarea');
     ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
     document.body.appendChild(ta); ta.select();
@@ -1057,67 +1638,116 @@ async function copyText(text) {
     return ok;
   }
 }
+/* The sheet trigger is re-created by every render, so focus is returned by selector,
+   not by node reference. */
+let lastFocus = null;
+function focusKey(el) {
+  const d = el && el.dataset;
+  if (!d || !d.action) return null;
+  return `[data-action="${d.action}"]` + (d.partner ? `[data-partner="${d.partner}"]` : '') + (d.source ? `[data-source="${d.source}"]` : '');
+}
+function openSheet(sheet, trigger) {
+  lastFocus = focusKey(trigger);
+  setState({ sheet });
+}
+function closeSheet() {
+  const key = lastFocus;
+  lastFocus = null;
+  setState({ sheet: null });
+  const el = key && document.querySelector(key);
+  if (el) el.focus();
+}
 
 const ACTIONS = {
+  nav(btn) {
+    if (!btn.dataset.to) { toast(`${btn.dataset.label} section (mock)`); return; }
+    track('nav_click', { to: btn.dataset.to, label: btn.dataset.label || 'link' });
+    if (['board', 'retention', 'landing'].includes(btn.dataset.to)) updateProfile({ prevRank: rankOf(state.profile) });
+    go(btn.dataset.to, { sheet: null });
+  },
+  'open-match'(btn) {
+    const id = btn.dataset.match;
+    track('match_page_view', { match: id });
+    const same = state.matchId === id;
+    go('match', { matchId: id, sheet: null, ...(same ? {} : { answers: {}, powerPick: null, qIndex: 0, outcome: null }) });
+  },
+  resume() {
+    const m = currentMatch();
+    const e = entryOf(state.profile, m.id);
+    const status = statusOf(m, state.profile);
+    if (status === 'settled') go('result', { answers: e.answers, powerPick: e.powerPick, outcome: computeOutcome(m, e.answers, e.powerPick) });
+    else if (status === 'locked' || status === 'live') go('wait', { answers: e.answers, powerPick: e.powerPick });
+  },
   start() {
-    track('challenge_start', { match: currentMatch().id });
-    setState({ screen: 'question', qIndex: 0, answers: {}, powerPick: null, oddsTab: 'builder' });
+    const m = currentMatch();
+    if (statusOf(m, state.profile) !== 'open') { toast('Calls are closed for this match'); return; }
+    track('challenge_start', { match: m.id });
+    go('question', { qIndex: 0, answers: {}, powerPick: null, oddsTab: 'builder' });
   },
   club(btn) {
-    const club = btn.dataset.club;
-    const profile = updateProfile({ club });
-    track('club_selected', { club });
-    setState({ profile });
+    updateProfile({ club: btn.dataset.club });
+    track('club_selected', { club: btn.dataset.club });
+    render();
   },
   answer(btn) {
-    const q = btn.dataset.q;
-    const opt = btn.dataset.opt;
-    track('answer_selected', { q, opt });
-    setState({ answers: { ...state.answers, [q]: opt } });
-    track('reveal_viewed', { q });
+    track('answer_selected', { q: btn.dataset.q, opt: btn.dataset.opt, match: state.matchId });
+    setState({ answers: { ...state.answers, [btn.dataset.q]: btn.dataset.opt } });
+    track('reveal_viewed', { q: btn.dataset.q });
   },
   'next-q'() {
-    const m = currentMatch();
-    if (state.qIndex < m.questions.length - 1) {
-      setState({ qIndex: state.qIndex + 1 });
-    } else {
-      track('challenge_complete', { match: m.id });
-      setState({ screen: 'power' });
-    }
+    if (state.qIndex < QUESTION_ORDER.length - 1) { setState({ qIndex: state.qIndex + 1 }); return; }
+    track('challenge_complete', { match: state.matchId });
+    go('power');
   },
-  power(btn) {
-    setState({ powerPick: btn.dataset.q });
-  },
-  'to-lock'() {
-    track('power_pick_set', { q: state.powerPick });
-    setState({ screen: 'lock' });
-  },
-  'back-to-power'() { setState({ screen: 'power' }); },
-  'back-to-match'() { setState({ screen: 'match' }); },
+  power(btn) { setState({ powerPick: btn.dataset.q }); },
+  'to-lock'() { track('power_pick_set', { q: state.powerPick }); go('lock'); },
+  'back-to-power'() { go('power'); },
   lock() {
-    const profile = updateProfile({ streak: state.profile.streak + 1, played: state.profile.played + 1 });
-    track('prediction_locked', { match: currentMatch().id, powerPick: state.powerPick });
-    setState({ profile, screen: 'odds' });
-    track('odds_viewed', { tab: 'builder' });
+    const m = currentMatch();
+    if (statusOf(m, state.profile) !== 'open') { toast('Calls closed at kick-off'); go('match'); return; }
+    updateProfile({ streak: state.profile.streak + 1 });
+    updateEntry(m.id, { status: 'locked', answers: state.answers, powerPick: state.powerPick, lockedAt: Date.now() });
+    track('prediction_locked', { match: m.id, powerPick: state.powerPick, streak: state.profile.streak });
+    go('odds');
+    track('odds_viewed', { tab: 'builder', source: 'lock' });
   },
-  'odds-tab'(btn) {
-    track('odds_viewed', { tab: btn.dataset.tab });
-    setState({ oddsTab: btn.dataset.tab });
+  'odds-tab'(btn) { track('odds_viewed', { tab: btn.dataset.tab, source: 'tab' }); setState({ oddsTab: btn.dataset.tab }); },
+  handoff(btn) {
+    const partner = PARTNERS.find((p) => p.id === btn.dataset.partner);
+    const slip = btn.dataset.slip ? JSON.parse(btn.dataset.slip) : currentSlip();
+    const source = btn.dataset.source || 'odds_screen';
+    track('handoff_opened', { partner: partner.name, type: slip.type, legs: slip.legs.length, offer: !!partner.offer, source, match: slip.matchId });
+    openSheet({ partnerId: partner.id, slip, source }, btn);
+  },
+  'close-sheet'() { track('handoff_dismissed', { partner: state.sheet && state.sheet.partnerId }); closeSheet(); },
+  'age-confirm'(input) {
+    updateProfile({ ageConfirmed: input.checked });
+    track('age_confirmed', { value: input.checked });
+    render();
   },
   bookmaker(btn) {
-    track('bookmaker_click', { partner: btn.dataset.partner, odds: Number(btn.dataset.odds), type: state.oddsTab });
-    toast(`${btn.dataset.partner} opens in a new tab with your slip pre-filled (mock)`);
+    if (!state.profile.ageConfirmed) { toast('Confirm you are 18 or over to continue'); return; }
+    const partner = PARTNERS.find((p) => p.id === btn.dataset.partner);
+    const { slip, source } = state.sheet;
+    const odds = slipOdds(slip, PARTNERS.indexOf(partner));
+    track('bookmaker_click', { partner: partner.name, odds, type: slip.type, offer: !!partner.offer, source, match: slip.matchId });
+    closeSheet();
+    toast(`${partner.name} opens in a new tab with your slip pre-filled (mock)`);
   },
-  'to-wait'() { setState({ screen: 'wait' }); },
+  'to-wait'() { go('wait', { sheet: null }); },
+  'to-odds'() { track('odds_viewed', { tab: state.oddsTab, source: 'wait_screen' }); go('odds', { sheet: null }); },
   async share() {
-    track('share_click', { match: currentMatch().id });
+    track('share_click', { match: state.matchId });
     const ok = await copyText(shareText());
     toast(ok ? 'Copied. Paste it anywhere.' : 'Could not copy on this browser');
   },
   simulate() {
-    const outcome = computeOutcome();
+    const m = currentMatch();
+    if (entryOf(state.profile, m.id).status === 'settled') { ACTIONS.resume(); return; }
+    const outcome = computeOutcome(m, state.answers, state.powerPick);
     const p = state.profile;
-    const profile = updateProfile({
+    updateEntry(m.id, { status: 'settled', points: outcome.points, correct: outcome.you, settledAt: Date.now() });
+    updateProfile({
       iq: p.iq + outcome.points,
       correct: p.correct + outcome.you,
       total: p.total + outcome.calls.length,
@@ -1126,37 +1756,56 @@ const ACTIONS = {
       humans: p.humans + (outcome.you > outcome.ai ? 1 : 0),
       ai: p.ai + (outcome.ai > outcome.you ? 1 : 0),
     });
-    track('result_viewed', { match: currentMatch().id, correct: outcome.you, points: outcome.points });
-    setState({ outcome, profile, screen: 'result' });
-    toastQueue(outcome.badges.map((b) => ({ text: `Badge unlocked: ${b.label}`, kind: 'badge' })));
+    track('result_viewed', { match: m.id, correct: outcome.you, points: outcome.points, badges: outcome.badges });
+    go('result', { outcome });
+    toastQueue(outcome.badges.map((b) => ({ text: `Badge unlocked: ${b}`, kind: 'badge' })));
   },
-  'to-retention'() { setState({ screen: 'retention' }); },
+  'to-retention'() {
+    const rank = rankOf(state.profile);
+    track('leaderboard_view', { rank });
+    go('retention');
+    updateProfile({ prevRank: rank });
+  },
   'lb-tab'(btn) { setState({ lbTab: btn.dataset.tab }); },
-  'next-match'() {
-    track('next_match_click', { from: currentMatch().id });
-    setState({ matchIndex: (state.matchIndex + 1) % MATCHES.length, screen: 'match', answers: {}, powerPick: null, qIndex: 0, outcome: null, kickoff: Date.now() + KICKOFF_OFFSET_MS });
-  },
-  'read-more'() {
-    track('content_click', { screen: state.screen });
-    toast('Opens the full article on Tribuna (mock)');
+  'read-more'() { track('content_click', { screen: state.screen }); toast('Opens the full article on Tribuna (mock)'); },
+  reset() {
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) { /* ignore */ }
+    state = initialState();
+    go('landing');
+    toast('Prototype data reset');
   },
 };
 
 document.addEventListener('click', (e) => {
   const el = e.target.closest('[data-action]');
   if (!el || el.disabled) return;
+  if (el.dataset.action === 'close-sheet' && e.target.closest('[data-stop]') && !e.target.closest('button[data-action="close-sheet"]')) return;
   const handler = ACTIONS[el.dataset.action];
   if (!handler) return;
   if (el.tagName === 'A') e.preventDefault();
   handler(el);
 });
+document.addEventListener('keydown', (e) => {
+  if (!state.sheet) return;
+  if (e.key === 'Escape') { closeSheet(); return; }
+  if (e.key === 'Tab') {
+    const focusable = [...document.querySelectorAll('.sheet button, .sheet input, .sheet a')].filter((el) => !el.disabled);
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
+});
 
 setInterval(() => {
-  const text = formatCountdown(state.kickoff - Date.now());
-  document.querySelectorAll('[data-countdown]').forEach((el) => { el.textContent = text; });
+  document.querySelectorAll('[data-countdown]').forEach((el) => {
+    const m = matchById(el.dataset.countdown);
+    if (m) el.textContent = formatCountdown(kickoffOf(m) - Date.now());
+  });
 }, 1000);
 
-render();
+applyRoute(parseHash(location.hash));
 </script>
 </body>
 </html>
