@@ -5,8 +5,9 @@ Prototype for the Tribuna.com iGaming Product/Project Manager test task.
 - Live prototype: https://youngerfornday.github.io/tribuna-match-iq/
 - Local: open `index.html` in any browser. One file, no build step, works offline.
 - Every screen has its own URL (`#/challenges`, `#/match/bay-bvb/play`, `#/board`, `#/me`), so deep links and the browser back button work. In production these map 1:1 to paths under `/match-iq/`.
+- Navigation: a Match IQ sub-nav (Overview / Challenges / Table / You) sits under the site header on every browse screen; the play flow replaces it with one labelled back link. Browse screens use a 1120px two-column layout from 1024px up, the play flow stays a single 620px column.
 
-Flow: match page → 3 blind calls (winner, over/under, scorer) → reveal CaptainAI / fans / market → Power Pick → lock → odds at three partners (bet builder or single) → wait for full-time → result → Match IQ, streak, league, leaderboards → next match.
+Flow: match page → 3 blind calls (winner, over/under, scorer) → reveal CaptainAI / fans / market after each call → review the three calls and tap one as the Power Pick, then lock → odds at three partners (bet builder or single) → wait for full-time → result → Match IQ, streak, league, leaderboards → next match.
 
 The "Simulate full-time" button on the waiting screen is a prototype control. In production the result arrives after the real match.
 

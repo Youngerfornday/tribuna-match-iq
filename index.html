@@ -57,15 +57,43 @@ svg.i{width:1em;height:1em;flex:none;fill:none;stroke:currentColor;stroke-width:
 
 /* --------------------------------------------------------------- site mock */
 .site-head{position:sticky;top:0;z-index:20;background:rgba(14,15,12,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.site-head .row{max-width:560px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:18px}
+.site-head .row{max-width:var(--shell);margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:18px}
 .wordmark{font-family:var(--font-display);font-weight:800;font-size:22px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);display:flex;align-items:center;gap:8px;min-height:44px}
 .wordmark i{width:10px;height:10px;background:var(--accent);border-radius:2px;transform:rotate(45deg)}
 .site-nav{display:flex;gap:4px;margin-left:auto}
 .site-nav button{font-size:13px;color:var(--ink-2);font-weight:500;min-height:44px;padding:0 8px;border-bottom:2px solid transparent}
 .site-nav button.on{color:var(--ink);border-bottom-color:var(--accent)}
-.page{max-width:560px;margin:0 auto;padding:20px 20px 40px;min-height:70vh}
-.site-foot{max-width:560px;margin:0 auto;padding:16px 20px 40px;color:var(--ink-3);font-size:12px;line-height:1.5;border-top:1px solid var(--line)}
+
+/* The play flow stays a single focused column; browse and scan screens open up. */
+body{--head-h:65px;--subnav-h:49px;--shell:620px}
+body[data-layout="wide"]{--shell:1120px}
+.sub-nav{position:sticky;top:var(--head-h);z-index:15;background:rgba(14,15,12,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.sub-nav .row{max-width:var(--shell);margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:2px;min-height:48px;overflow-x:auto;scrollbar-width:none}
+.sub-nav .row::-webkit-scrollbar{display:none}
+.sub-nav .t{font-size:14px;font-weight:600;color:var(--ink-3);padding:0 12px;min-height:48px;display:inline-flex;align-items:center;gap:7px;white-space:nowrap;border-bottom:2px solid transparent;transition:color .15s,border-color .15s}
+.sub-nav .t:hover{color:var(--ink-2)}
+.sub-nav .t[aria-current="page"]{color:var(--ink);border-bottom-color:var(--accent)}
+.sub-nav .t .n{font-size:11px;font-weight:700;color:var(--ink-3);background:var(--surface-2);border-radius:20px;padding:2px 7px;line-height:1.4}
+.sub-nav .t[aria-current="page"] .n{color:var(--accent-ink);background:var(--accent)}
+.sub-nav .bk{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding-right:12px;font-size:14px;font-weight:600;color:var(--ink-2);transition:color .15s}
+.sub-nav .bk:hover{color:var(--ink)}
+.sub-nav .bk svg{transform:rotate(180deg);color:var(--ink-3)}
+.sub-nav .ctx{margin-left:auto;padding-left:12px;font-size:12px;color:var(--ink-3);white-space:nowrap}
+.cols{display:grid;gap:16px;align-items:start}
+.span-all{grid-column:1/-1}
+@media (min-width:1024px){
+  .cols{grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:24px}
+  .rail{position:sticky;top:calc(var(--head-h) + var(--subnav-h) + 16px)}
+  .hero{padding:34px 32px}
+  .hero .foot-cta{max-width:440px}
+  .hero h1{font-size:58px;max-width:17ch}
+  .hero p{font-size:17px;max-width:52ch}
+  .page{padding:28px 24px 64px}
+}
+.page{max-width:var(--shell);margin:0 auto;padding:22px 20px 48px;min-height:70vh}
+.site-foot{max-width:var(--shell);margin:0 auto;padding:16px 20px 40px;color:var(--ink-3);font-size:12px;line-height:1.5;border-top:1px solid var(--line)}
 .rg{display:flex;gap:10px;align-items:flex-start;font-size:12px;color:var(--ink-3);line-height:1.45}
+.rg p{max-width:88ch}
 .badge18{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border:1.5px solid var(--ink-3);border-radius:50%;font-weight:700;font-size:11px;flex:none;color:var(--ink-2)}
 
 /* -------------------------------------------------------------- primitives */
@@ -79,7 +107,9 @@ svg.i{width:1em;height:1em;flex:none;fill:none;stroke:currentColor;stroke-width:
 .btn-ghost:hover{color:var(--ink)}
 .btn-block{width:100%}
 .btn-sm{min-height:40px;padding:0 14px;font-size:14px}
-.btn[disabled]{opacity:.45;cursor:not-allowed;transform:none}
+.btn[disabled]{cursor:not-allowed;transform:none}
+.btn-primary[disabled],.btn-primary[disabled]:hover{background:var(--surface-2);color:var(--ink-2);box-shadow:none;border:1px dashed var(--line-strong)}
+.btn-secondary[disabled],.btn-ghost[disabled]{opacity:.45}
 .chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600;letter-spacing:.02em;border:1px solid var(--line-strong);color:var(--ink-2);white-space:nowrap}
 .chip-accent{background:var(--accent-dim);border-color:transparent;color:var(--accent)}
 .chip-warn{background:rgba(230,103,103,.14);border-color:transparent;color:#ff9b9b}
@@ -121,6 +151,7 @@ svg.i{width:1em;height:1em;flex:none;fill:none;stroke:currentColor;stroke-width:
 .steps3 b{display:block;font-family:var(--font-display);font-size:19px;font-weight:700;margin-top:10px;line-height:1.05}
 .steps3 p{font-size:13px;color:var(--ink-2);margin-top:6px;line-height:1.4}
 .terms{margin-top:26px;padding-top:18px;border-top:1px solid var(--line)}
+.cols+.terms{margin-top:8px}
 .terms h2{font-size:26px;margin-bottom:8px}
 .terms details{border-bottom:1px solid var(--line)}
 .terms summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;padding:12px 0;font-weight:600;font-size:15px;min-height:44px}
@@ -252,8 +283,8 @@ svg.i{width:1em;height:1em;flex:none;fill:none;stroke:currentColor;stroke-width:
 .pick[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-dim)}
 .pick .k{font-size:12px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
 .pick .v{display:block;font-family:var(--font-display);font-size:22px;font-weight:700;line-height:1.05}
-.pick .x2{margin-left:auto;font-family:var(--font-display);font-weight:800;font-size:20px;color:var(--ink-3)}
-.pick[aria-pressed="true"] .x2{color:var(--accent)}
+.pick .x2{margin-left:auto;display:inline-flex;align-items:center;gap:6px;flex:none;padding:6px 10px;border-radius:20px;border:1px solid var(--line-strong);font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap}
+.pick[aria-pressed="true"] .x2{color:var(--accent-ink);background:var(--accent);border-color:var(--accent)}
 .slip{margin-top:18px;border:1px solid var(--line-strong);border-radius:var(--radius);background:var(--surface);overflow:hidden;box-shadow:var(--shadow)}
 .slip .hd{padding:12px 16px;background:var(--surface-2);font-size:12px;text-transform:uppercase;letter-spacing:.08em;font-weight:600;color:var(--ink-2);display:flex;justify-content:space-between}
 .slip .leg{display:flex;align-items:center;gap:12px;padding:14px 16px;border-top:1px solid var(--line)}
@@ -335,6 +366,15 @@ svg.i{width:1em;height:1em;flex:none;fill:none;stroke:currentColor;stroke-width:
 .progress i{display:block;height:100%;background:var(--accent);border-radius:3px;transform:scaleX(0);transform-origin:left;transition:transform .8s var(--ease)}
 .progress i.in{transform:scaleX(1)}
 .profile .stats{display:flex;gap:16px;margin-top:14px;flex-wrap:wrap;font-size:14px;color:var(--ink-2)}
+.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
+.statgrid div{background:var(--surface-2);border-radius:var(--radius-sm);padding:10px 12px}
+.statgrid span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);font-weight:600}
+.statgrid b{font-family:var(--font-display);font-size:26px;font-weight:800;line-height:1.15;display:block;margin-top:2px}
+.statgrid b small{font-family:var(--font-body);font-size:13px;color:var(--ink-3);font-weight:600}
+.vs{margin-top:18px}
+.vs .grp{grid-template-columns:78px 1fr;padding:6px 0;border-top:0}
+.vs .name{color:var(--ink-2);font-weight:500}
+.warn-row{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:13px;color:var(--ink-2)}
 .profile .stats .row{gap:6px}
 .profile .stats b{color:var(--ink)}
 .flame{color:#ff9b3d}
@@ -399,7 +439,7 @@ svg.i{width:1em;height:1em;flex:none;fill:none;stroke:currentColor;stroke-width:
 .fixture.live{border-color:#5a3a3a}
 
 /* metrics panel */
-.metrics{max-width:560px;margin:8px auto 0;padding:0 20px}
+.metrics{max-width:var(--shell);margin:8px auto 0;padding:0 20px}
 .metrics details{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)}
 .metrics summary{cursor:pointer;padding:12px 16px;font-size:13px;font-weight:600;color:var(--ink-2);display:flex;align-items:center;gap:8px;list-style:none}
 .metrics summary::-webkit-details-marker{display:none}
@@ -412,7 +452,7 @@ svg.i{width:1em;height:1em;flex:none;fill:none;stroke:currentColor;stroke-width:
 .funnel .f .fill{height:10px;background:var(--ai);border-radius:0 4px 4px 0}
 .funnel .f b{text-align:right;color:var(--ink)}
 .evlog{margin-top:12px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;color:var(--ink-3);line-height:1.6;max-height:120px;overflow:auto}
-.metrics .def{font-size:12px;color:var(--ink-3);margin-top:10px;line-height:1.5}
+.metrics .def{font-size:12px;color:var(--ink-3);margin-top:10px;line-height:1.5;max-width:100ch}
 .metrics .reset{margin-top:10px}
 
 /* toast */
@@ -462,6 +502,8 @@ svg.i{width:1em;height:1em;flex:none;fill:none;stroke:currentColor;stroke-width:
     <nav class="site-nav" aria-label="Site sections (mock)" id="nav"></nav>
   </div>
 </header>
+
+<div class="sub-nav" id="subnav"></div>
 
 <main id="app" class="page"></main>
 
@@ -820,13 +862,13 @@ function viewLanding() {
   const humansHit = hitRate(PLAYERS.reduce((a, x) => a + x.correct, 0), PLAYERS.reduce((a, x) => a + x.played, 0) * 3);
   const aiHit = hitRate(CAPTAIN.correct, CAPTAIN.played * 3);
   return `
-  <section class="hero" aria-labelledby="hero-title">
-    <div class="row wrap" style="gap:8px"><span class="chip chip-accent">${icon('i-bolt')} Match IQ</span><span class="chip">${WEEK_LABEL} · ${MATCHES.length} matches</span></div>
+  <section class="hero span-all" aria-labelledby="hero-title">
+    <div class="row wrap" style="gap:8px"><span class="chip">${WEEK_LABEL} · ${MATCHES.length} matches</span><span class="chip">${fmtK(totalPredictions)} calls locked</span></div>
     <h1 id="hero-title">Call the match. <em>Beat CaptainAI.</em> Climb the table.</h1>
     <p>Three calls per match, locked before kick-off. Compare yours with the model, ${fmtK(totalPredictions)} fans and the betting market, then watch the points land at full-time.</p>
     <div class="foot-cta">
-      <button class="btn btn-primary btn-block" data-action="nav" data-to="hub" data-label="Play">${w.locked > 0 ? `Continue · ${w.locked} of ${w.total} called` : 'Play this week\'s challenges'} ${icon('i-arrow')}</button>
-      ${p.iq > 0 ? `<button class="btn btn-ghost" data-action="nav" data-to="retention" data-label="My Match IQ">My Match IQ · ${p.iq} · ${leagueFor(p.iq).name}</button>` : ''}
+      <button class="btn btn-primary btn-block" data-action="nav" data-to="hub" data-label="Challenges">${w.locked > 0 ? `Continue · ${w.locked} of ${w.total} called` : 'Play this week\'s challenges'} ${icon('i-arrow')}</button>
+      ${p.iq > 0 ? `<button class="btn btn-ghost" data-action="nav" data-to="retention" data-label="You">My Match IQ · ${p.iq} · ${leagueFor(p.iq).name}</button>` : ''}
     </div>
     <div class="hero-stats">
       <div><b class="num">${fmtK(totalPredictions)}</b><span>calls locked this week</span></div>
@@ -835,28 +877,34 @@ function viewLanding() {
     </div>
   </section>
 
+  <div class="cols">
+  <div>
   <section class="steps3" aria-label="How it works">
     <div><span class="n">1</span><b>Make 3 blind calls</b><p>Winner, goals, scorer. Nothing revealed until you commit.</p></div>
-    <div><span class="n">2</span><b>Compare and lock</b><p>See CaptainAI, fans and the market. Pick a Power Pick for double points.</p></div>
+    <div><span class="n">2</span><b>Compare and lock</b><p>See CaptainAI, fans and the market, then tap your Power Pick for double points.</p></div>
     <div><span class="n">3</span><b>Score at full-time</b><p>+${POINTS_PER_CALL} per correct call. Streaks, leagues and a weekly table.</p></div>
   </section>
 
-  <section class="lb" aria-labelledby="lb-title">
-    <div class="hd">
-      <span id="lb-title" style="font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--ink)">Weekly leaderboard</span>
-      <b>Humans <span class="num">${p.humans} : ${p.ai}</span> CaptainAI</b>
-      <span class="sub">${WEEK_LABEL} · top 10 win a free bet from ${PARTNERS[0].name} · resets Monday</span>
-    </div>
-    ${topTable(p, 10)}
-    <div class="foot row between wrap" style="gap:8px">
-      <span>${p.iq > 0 ? `You are #${w.rank}.` : 'Lock a prediction to enter the table.'}</span>
-      <button class="btn btn-ghost btn-sm" data-action="nav" data-to="board" data-label="Full table">See full table ${icon('i-arrow')}</button>
-    </div>
-  </section>
-
   ${CONFIG.features.aiSlip ? aiSlipCard() : ''}
+  </div>
 
-  <section class="terms" aria-labelledby="terms-title">
+  <div class="rail">
+    <section class="lb" aria-labelledby="lb-title">
+      <div class="hd">
+        <span id="lb-title" style="font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--ink)">Weekly leaderboard</span>
+        <b>Humans <span class="num">${p.humans} : ${p.ai}</span> CaptainAI</b>
+        <span class="sub">Top 10 win a free bet from ${PARTNERS[0].name} · resets Monday</span>
+      </div>
+      ${topTable(p, 10)}
+      <div class="foot row between wrap" style="gap:8px">
+        <span>${p.iq > 0 ? `You are #${w.rank}.` : 'Lock a prediction to enter the table.'}</span>
+        <button class="btn btn-ghost btn-sm" data-action="nav" data-to="board" data-label="Table">See full table ${icon('i-arrow')}</button>
+      </div>
+    </section>
+  </div>
+  </div>
+
+  <section class="terms span-all" aria-labelledby="terms-title">
     <h2 id="terms-title">Game rules and terms</h2>
     ${TERMS.map(([t, body]) => `<details><summary>${t} ${icon('i-chev', 'chev')}</summary><p>${body}</p></details>`).join('')}
     <p class="tiny dim" style="margin-top:12px">Version 1.0 · ${WEEK_LABEL} · Prototype copy, not legal text.</p>
@@ -865,21 +913,34 @@ function viewLanding() {
 
 function viewBoard() {
   const p = state.profile;
+  const w = weekSummary();
   const isPlayers = state.lbTab === 'players';
   return `
-  <div class="shell-head"><span class="chip chip-accent">${icon('i-trophy')} Leaderboard</span><span class="chip">${WEEK_LABEL}</span></div>
   <h1 class="q-title">Weekly table</h1>
-  <p class="q-sub">Every player who locked a call this week. Top 10 win a free bet from ${PARTNERS[0].name}.</p>
-  <div class="lb">
-    <div class="tabs" role="tablist" aria-label="Leaderboard">
-      <button class="tab" role="tab" aria-selected="${isPlayers}" data-action="lb-tab" data-tab="players">Players</button>
-      <button class="tab" role="tab" aria-selected="${!isPlayers}" data-action="lb-tab" data-tab="fanbases">Fanbases</button>
+  <p class="q-sub">Every player who locked a call this week. ${WEEK_LABEL} · resets Monday 00:00.</p>
+  <div class="cols">
+    <div>
+      <section class="lb" aria-label="Weekly table">
+        <div class="tabs" role="tablist" aria-label="Leaderboard">
+          <button class="tab" role="tab" aria-selected="${isPlayers}" data-action="lb-tab" data-tab="players">Players</button>
+          <button class="tab" role="tab" aria-selected="${!isPlayers}" data-action="lb-tab" data-tab="fanbases">Fanbases</button>
+        </div>
+        ${isPlayers ? playersTable(p, { full: true }) : fanbasesPanel(p)}
+      </section>
     </div>
-    ${isPlayers ? playersTable(p, { full: true }) : fanbasesPanel(p)}
-  </div>
-  <div class="foot-cta">
-    <button class="btn btn-primary btn-block" data-action="nav" data-to="hub" data-label="Play">${p.iq > 0 ? 'Keep climbing' : 'Enter the table'} · this week's challenges ${icon('i-arrow')}</button>
-    <button class="btn btn-ghost" data-action="nav" data-to="landing" data-label="Match IQ">Back to Match IQ</button>
+
+    <div class="rail">
+      <section class="next">
+        <h3>${p.iq > 0 ? `You are #${w.rank}` : 'Not in the table yet'}</h3>
+        <p>${p.iq > 0
+          ? `${p.iq} Match IQ · ${leagueFor(p.iq).name} · ${w.locked} of ${w.total} matches called this week.`
+          : `Lock one prediction and you enter this week's table straight away.`}</p>
+        <div class="foot-cta">
+          <button class="btn btn-primary btn-block" data-action="nav" data-to="hub" data-label="Challenges">${p.iq > 0 ? 'Keep climbing' : 'Enter the table'} ${icon('i-arrow')}</button>
+          ${p.iq > 0 ? `<button class="btn btn-ghost" data-action="nav" data-to="retention" data-label="You">${icon('i-chart')} Your Match IQ</button>` : ''}
+        </div>
+      </section>
+    </div>
   </div>`;
 }
 
@@ -888,41 +949,45 @@ function viewHub() {
   const w = weekSummary();
   const days = [...new Set(MATCHES.map((m) => m.day))];
   return `
-  <div class="hub-head">
-    <div class="row wrap" style="gap:8px"><span class="chip chip-accent">${icon('i-bolt')} Match IQ</span><span class="chip">${WEEK_LABEL}</span></div>
-    <h1 style="margin-top:12px">This week's challenges</h1>
-    <p>Three calls per match, locked before kick-off. Beat CaptainAI, climb the weekly table.</p>
-  </div>
-  <div class="week" aria-label="Your week">
-    <div><span>Called</span><b class="num">${w.locked}<small>/ ${w.total}</small></b></div>
-    <div><span>Match IQ</span><b class="num">${p.iq}</b></div>
-    <div><span>Rank</span><b class="num">${p.iq > 0 || w.settled > 0 ? '#' + w.rank : '–'}</b></div>
-  </div>
-  ${days.map((day) => `
-    <div class="day"><h2>${day}</h2><span>${plural(MATCHES.filter((m) => m.day === day).length, 'match', 'matches')}</span></div>
-    ${MATCHES.filter((m) => m.day === day).map((m) => {
-      const e = entryOf(p, m.id);
-      const st = statusOf(m, p);
-      const status = {
-        settled: `<span class="pts num">+${e.points}</span><span>${e.correct}/3 correct</span>`,
-        locked: `<span class="chip">${icon('i-lock')} Locked</span><span>Result at full-time</span>`,
-        live: `<span class="chip chip-warn">${icon('i-clock')} Live</span><span>Locked · settling at FT</span>`,
-        missed: `<span class="chip">${icon('i-x')} Closed</span><span>Kick-off passed</span>`,
-        open: `<span class="chip chip-accent">${icon('i-bolt')} Open</span><span class="num" data-countdown="${m.id}">${formatCountdown(kickoffOf(m) - Date.now())}</span>`,
-      }[st];
-      return `
-      <button class="fixture ${st}" data-action="open-match" data-match="${m.id}" aria-label="${m.home.name} v ${m.away.name}, ${st}">
-        <span class="teams-sm">${crest(m.home, true)}${crest(m.away, true)}<span class="names">${m.home.name} v ${m.away.name}<small>${m.competition} · ${m.kickoffLabel}</small></span></span>
-        <span class="status">${status}</span>
-      </button>`;
-    }).join('')}`).join('')}
-  <div class="how">
-    <b style="color:var(--ink)">How it works</b>
-    <ol>
-      <li>Make three blind calls before kick-off. Then see what CaptainAI, fans and the market think.</li>
-      <li>Pick one Power Pick: it counts double. +${POINTS_PER_CALL} per correct call, +${PERFECT_BONUS} for a perfect match.</li>
-      <li>Results settle at full-time. Weekly table resets every Monday.</li>
-    </ol>
+  <h1 class="q-title">This week's challenges</h1>
+  <p class="q-sub">${WEEK_LABEL} · three calls per match, locked before kick-off.</p>
+  <div class="cols">
+    <div>
+      ${days.map((day) => `
+      <div class="day"><h2>${day}</h2><span>${plural(MATCHES.filter((m) => m.day === day).length, 'match', 'matches')}</span></div>
+      ${MATCHES.filter((m) => m.day === day).map((m) => {
+        const e = entryOf(p, m.id);
+        const st = statusOf(m, p);
+        const status = {
+          settled: `<span class="pts num">+${e.points}</span><span>${e.correct}/3 correct</span>`,
+          locked: `<span class="chip">${icon('i-lock')} Locked</span><span>Result at full-time</span>`,
+          live: `<span class="chip chip-warn">${icon('i-clock')} Live</span><span>Locked · settling at FT</span>`,
+          missed: `<span class="chip">${icon('i-x')} Closed</span><span>Kick-off passed</span>`,
+          open: `<span class="chip chip-accent">${icon('i-bolt')} Open</span><span class="num" data-countdown="${m.id}">${formatCountdown(kickoffOf(m) - Date.now())}</span>`,
+        }[st];
+        return `
+        <button class="fixture ${st}" data-action="open-match" data-match="${m.id}" aria-label="${m.home.name} v ${m.away.name}, ${st}">
+          <span class="teams-sm">${crest(m.home, true)}${crest(m.away, true)}<span class="names">${m.home.name} v ${m.away.name}<small>${m.competition} · ${m.kickoffLabel}</small></span></span>
+          <span class="status">${status}</span>
+        </button>`;
+      }).join('')}`).join('')}
+    </div>
+
+    <div class="rail">
+      <div class="week" aria-label="Your week">
+        <div><span>Called</span><b class="num">${w.locked}<small>/ ${w.total}</small></b></div>
+        <div><span>Match IQ</span><b class="num">${p.iq}</b></div>
+        <div><span>Rank</span><b class="num">${p.iq > 0 || w.settled > 0 ? '#' + w.rank : '–'}</b></div>
+      </div>
+      <div class="how">
+        <b style="color:var(--ink)">How it works</b>
+        <ol>
+          <li>Make three blind calls before kick-off. Then see what CaptainAI, fans and the market think.</li>
+          <li>Tap the call you trust most: it is your Power Pick and counts double. +${POINTS_PER_CALL} per correct call, +${PERFECT_BONUS} for a perfect match.</li>
+          <li>Results settle at full-time. Weekly table resets every Monday.</li>
+        </ol>
+      </div>
+    </div>
   </div>`;
 }
 
@@ -932,6 +997,8 @@ function viewMatch() {
   const e = entryOf(p, m.id);
   const qs = questionsOf(m);
   const st = statusOf(m, p);
+  const answered = state.matchId === m.id ? Object.keys(state.answers).length : 0;
+  const inProgress = st === 'open' && answered > 0;
   const widgetBody = st === 'missed' ? `
       <div class="state-box">${icon('i-x')}<span class="t">Calls closed at kick-off<small>You can still follow the match and back it with a partner below.</small></span></div>
       <div class="foot-cta"><button class="btn btn-secondary btn-block" data-action="nav" data-to="hub" data-label="Challenges">Other challenges this week ${icon('i-arrow')}</button></div>`
@@ -939,7 +1006,7 @@ function viewMatch() {
       <div class="state-box">${icon('i-clock')}<span class="t">Live · your prediction is locked<small>${qs.map((q) => optionOf(q, e.answers[q.id]).label).join(' · ')}</small></span></div>
       <div class="foot-cta"><button class="btn btn-secondary btn-block" data-action="resume">View my prediction ${icon('i-arrow')}</button></div>`
     : st === 'open' ? `
-      <button class="btn btn-primary btn-block" data-action="start">Take the Match IQ Challenge ${icon('i-arrow')}</button>
+      <button class="btn btn-primary btn-block" data-action="start">${inProgress ? `Continue · ${answered} of ${qs.length} called` : 'Take the Match IQ Challenge'} ${icon('i-arrow')}</button>
       ${p.club ? '' : `
       <div class="club-pick">
         <span class="small muted">Which side are you on? Your calls count for your fanbase.</span>
@@ -1007,9 +1074,8 @@ function shellHead(step) {
   const m = currentMatch();
   return `
   <div class="shell-head">
-    <button class="btn btn-ghost" data-action="open-match" data-match="${m.id}" aria-label="Back to match page">${icon('i-arrow', 'back')}</button>
-    <div class="steps" aria-label="Progress: step ${step} of 4">
-      ${[1, 2, 3, 4].map((i) => `<i class="${i < step ? 'done' : i === step ? 'now' : ''}"></i>`).join('')}
+    <div class="steps" aria-label="Progress: step ${step} of 3">
+      ${[1, 2, 3].map((i) => `<i class="${i < step ? 'done' : i === step ? 'now' : ''}"></i>`).join('')}
     </div>
     ${countdownChip(m)}
   </div>`;
@@ -1063,36 +1129,7 @@ function viewQuestion() {
     </button>`).join('')}
   </div>
   ${chosen ? revealChart(q, chosen) : '<p class="tiny dim" style="margin-top:14px">Blind call: CaptainAI, fans and market reveal after you choose.</p>'}
-  ${chosen ? `<div class="foot-cta"><button class="btn btn-primary btn-block" data-action="next-q">${isLast ? 'Choose my Power Pick' : 'Next call'} ${icon('i-arrow')}</button></div>` : ''}`;
-}
-
-function viewPowerPick() {
-  const qs = questionsOf(currentMatch());
-  return `
-  ${shellHead(2)}
-  <h1 class="q-title">Your Power Pick</h1>
-  <p class="q-sub">Which call are you most sure about? It scores double after the whistle.</p>
-  <div class="pick-list" role="group" aria-label="Choose your Power Pick">
-    ${qs.map((q) => {
-      const o = optionOf(q, state.answers[q.id]);
-      const mk = marketFor(q, o.id);
-      const aiPick = pickBy(q, 'ai');
-      return `
-      <button class="pick" data-action="power" data-q="${q.id}" aria-pressed="${state.powerPick === q.id}">
-        <span style="min-width:0"><span class="k">${q.title}</span><span class="v">${o.label}</span>
-          <span class="meta"><span class="row"><i class="swatch" style="background:var(--ai)"></i>${o.ai}%</span><span class="row"><i class="swatch" style="background:var(--fans)"></i>${o.fans}%</span><span class="row"><i class="swatch" style="background:var(--market)"></i>${mk}%</span>${aiPick.id === o.id ? `<span class="agree">${icon('i-cpu')} CaptainAI agrees</span>` : ''}</span>
-        </span>
-        <span class="x2">x${POWER_PICK_MULTIPLIER}</span>
-      </button>`;
-    }).join('')}
-  </div>
-  <div class="hint">
-    <span class="ai-dot">${icon('i-cpu')}</span>
-    <span>Highest model confidence in your slip: <b style="color:var(--ink)">${(() => { const best = qs.map((q) => ({ q, o: optionOf(q, state.answers[q.id]) })).sort((a, b) => b.o.ai - a.o.ai)[0]; return `${best.o.label} at ${best.o.ai}%`; })()}</b>. Your Power Pick doesn't have to agree.</span>
-  </div>
-  <div class="foot-cta">
-    <button class="btn btn-primary btn-block" data-action="to-lock" ${state.powerPick ? '' : 'disabled'}>Review my prediction ${icon('i-arrow')}</button>
-  </div>`;
+  ${chosen ? `<div class="foot-cta"><button class="btn btn-primary btn-block" data-action="next-q">${isLast ? 'Review my calls' : 'Next call'} ${icon('i-arrow')}</button></div>` : ''}`;
 }
 
 function slip(locked) {
@@ -1109,27 +1146,38 @@ function slip(locked) {
 }
 
 function viewLock() {
+  const qs = questionsOf(currentMatch());
+  const p = state.profile;
+  const best = bestPartnerFor({ matchId: state.matchId, type: 'builder', legs: QUESTION_ORDER.map((qid) => ({ qid, oid: state.answers[qid] })) });
+  const maxPts = POINTS_PER_CALL * (QUESTION_ORDER.length + 1) + PERFECT_BONUS;
   return `
-  ${shellHead(3)}
-  <h1 class="q-title">Lock it in</h1>
-  <p class="q-sub">Your scenario, scored after the final whistle. +${POINTS_PER_CALL} Match IQ per correct call, Power Pick counts double, +${PERFECT_BONUS} for a perfect match.</p>
-  ${slip(false)}
-  ${(() => {
-    const p = state.profile;
-    const best = bestPartnerFor({ matchId: state.matchId, type: 'builder', legs: QUESTION_ORDER.map((qid) => ({ qid, oid: state.answers[qid] })) });
-    const maxPts = POINTS_PER_CALL * (QUESTION_ORDER.length + 1) + PERFECT_BONUS;
-    return `
+  ${shellHead(2)}
+  <h1 class="q-title">Review your calls</h1>
+  <p class="q-sub">Tap the call you are most sure about. It becomes your Power Pick and scores double after the whistle.</p>
+  <div class="pick-list" role="group" aria-label="Choose your Power Pick">
+    ${qs.map((q) => {
+      const o = optionOf(q, state.answers[q.id]);
+      const mk = marketFor(q, o.id);
+      const aiPick = pickBy(q, 'ai');
+      const on = state.powerPick === q.id;
+      return `
+      <button class="pick" data-action="power" data-q="${q.id}" aria-pressed="${on}">
+        <span style="min-width:0"><span class="k">${q.title}</span><span class="v">${o.label}</span>
+          <span class="meta"><span class="row"><i class="swatch" style="background:var(--ai)"></i>${o.ai}%</span><span class="row"><i class="swatch" style="background:var(--fans)"></i>${o.fans}%</span><span class="row"><i class="swatch" style="background:var(--market)"></i>${mk}%</span>${aiPick.id === o.id ? `<span class="agree">${icon('i-cpu')} CaptainAI agrees</span>` : ''}</span>
+        </span>
+        <span class="x2">${on ? `${icon('i-bolt')} Power Pick x${POWER_PICK_MULTIPLIER}` : `Power Pick x${POWER_PICK_MULTIPLIER}`}</span>
+      </button>`;
+    }).join('')}
+  </div>
   <div class="stakes" aria-label="What you are playing for">
     <div><span>Worth up to</span><b class="num">+${maxPts}</b><small>Match IQ</small></div>
     <div><span>Your streak</span><b class="num">${p.streak}</b><small>${p.streak > 0 ? 'keeps going' : 'starts now'}</small></div>
     <div><span>This scenario pays</span><b class="num">${fmtOdds(best.odds)}</b><small>at ${best.partner.name}</small></div>
-  </div>`;
-  })()}
-  <div class="foot-cta">
-    <button class="btn btn-primary btn-block" data-action="lock">${icon('i-lock')} Lock my prediction</button>
-    <button class="btn btn-ghost" data-action="back-to-power">Change Power Pick</button>
   </div>
-  <p class="tiny dim" style="margin-top:10px">After locking you can compare prices at ${PARTNERS.length} partners. Locking is free and never places a bet.</p>`;
+  <div class="foot-cta">
+    <button class="btn btn-primary btn-block" data-action="lock" ${state.powerPick ? '' : 'disabled'}>${icon('i-lock')} ${state.powerPick ? 'Lock my prediction' : 'Tap a call to set your Power Pick'}</button>
+  </div>
+  <p class="tiny dim" style="margin-top:10px">Locking is free and never places a bet. After locking you can compare prices at ${PARTNERS.length} partners.</p>`;
 }
 
 function legsOf() {
@@ -1159,7 +1207,7 @@ function viewOdds() {
       ? `CaptainAI and the market agree on ${market}% for your Power Pick. The price reflects the consensus.`
       : `The market prices your Power Pick at ${market}%, ${plural(market - pp.o.ai, 'point', 'points')} above CaptainAI's estimate. You are with the crowd on this one.`;
   return `
-  ${shellHead(4)}
+  ${shellHead(3)}
   <h1 class="q-title">Your prediction, priced</h1>
   <p class="q-sub">Same scenario at three partners. Pick the best price if you want to back it.</p>
   <div class="tabs" role="tablist" aria-label="Bet type">
@@ -1207,7 +1255,7 @@ function viewOdds() {
 function viewWait() {
   const m = currentMatch();
   return `
-  ${shellHead(4)}
+  ${shellHead(3)}
   <h1 class="q-title">Locked in</h1>
   <p class="q-sub">We'll notify you at full-time with your Match IQ result and how you did against CaptainAI.</p>
   ${slip(true)}
@@ -1341,9 +1389,8 @@ function playersTable(p, opts = {}) {
   const aiHit = hitRate(CAPTAIN.correct, CAPTAIN.played * 3);
   return `
     <div class="hd">
-      <span>${WEEK_LABEL} · resets Monday 00:00</span>
       <b>Humans <span class="num">${p.humans} : ${p.ai}</span> CaptainAI</b>
-      <span class="sub">Matches won this week. Hit rate: humans ${humansHit}% · CaptainAI ${aiHit}%.</span>
+      <span class="sub">Matches won this week · hit rate ${humansHit}% v ${aiHit}%</span>
     </div>
     <table role="tabpanel" aria-label="Weekly leaderboard">
       <thead><tr><th>#</th><th>Player</th><th title="Matches played">P</th><th>Hit</th><th>IQ</th></tr></thead>
@@ -1352,7 +1399,7 @@ function playersTable(p, opts = {}) {
         ${showMeBelow ? `<tr><td colspan="5" class="gap">${meIdx - TOP} more players</td></tr>${row(board[meIdx], meIdx)}` : ''}
       </tbody>
     </table>
-    <div class="foot">${p.iq === 0 ? 'Lock a prediction to enter the table. ' : ''}Ties break on hit rate. Movement is versus yesterday.</div>`;
+    <div class="foot">${p.iq === 0 ? 'Lock a prediction to enter the table. ' : ''}Ties break on hit rate, movement is versus yesterday. Top 10 win a free bet from ${PARTNERS[0].name} · partner-funded · 18+.</div>`;
 }
 
 function fanbasesPanel(p) {
@@ -1380,52 +1427,67 @@ function viewRetention() {
   const league = leagueFor(p.iq);
   const next = nextLeague(p.iq);
   const pct = next ? Math.round(((p.iq - league.min) / (next.min - league.min)) * 100) : 100;
-  const nextOpen = MATCHES.find((m) => entryOf(p, m.id).status === 'open');
+  const nextOpen = MATCHES.find((m) => statusOf(m, p) === 'open');
   const isPlayers = state.lbTab === 'players';
   const w = weekSummary();
+  const bar = (label, value, color) => `
+    <div class="grp"><div class="name">${label}</div><div class="bars"><div class="bar"><div class="track"><div class="fill" style="background:${color}" data-w="${value}"></div></div><span class="val num">${value}%</span></div></div></div>`;
   return `
-  <div class="shell-head"><span class="chip chip-accent">${icon('i-bolt')} Match IQ</span><span class="chip">${WEEK_LABEL}</span></div>
   <h1 class="q-title">Your Match IQ</h1>
-  <div class="profile">
-    <div class="top">
-      <div class="rating num">${p.iq}<small>IQ</small></div>
-      <div class="league"><b>${league.name}</b><span>${next ? `${next.min - p.iq} to ${next.name}` : 'Top league'}</span></div>
-    </div>
-    <div class="progress" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="Progress to ${next ? next.name : 'max'}"><i style="width:${pct}%"></i></div>
-    <div class="stats">
-      <span class="row">${icon('i-flame', 'flame')} <b class="num">${p.streak}</b> match streak</span>
-      <span class="row">Rank <b class="num">#${w.rank}</b></span>
-      <span class="row">Hit rate <b class="num">${hitRate(p.correct, p.total)}%</b> <span class="dim">· CaptainAI ${hitRate(p.aiCorrect, p.total)}% · Market ${hitRate(p.marketCorrect, p.total)}%</span></span>
-    </div>
-    ${p.streak > 0 && nextOpen ? `<div style="margin-top:12px"><span class="chip chip-warn">${icon('i-flame')} Streak at risk · ${nextOpen.home.name} v ${nextOpen.away.name} kicks off in <span class="num" data-countdown="${nextOpen.id}">${formatCountdown(kickoffOf(nextOpen) - Date.now())}</span></span></div>` : ''}
-  </div>
+  <p class="q-sub">${WEEK_LABEL} · ${w.locked} of ${w.total} matches called · table resets Monday 00:00</p>
+  <div class="cols">
+    <div>
+      <section class="profile" aria-label="Your rating">
+        <div class="top">
+          <div class="rating num">${p.iq}<small>IQ</small></div>
+          <div class="league"><b>${league.name}</b><span>${next ? `${next.min - p.iq} to ${next.name}` : 'Top league'}</span></div>
+        </div>
+        <div class="progress" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="Progress to ${next ? next.name : 'max'}"><i style="width:${pct}%"></i></div>
+        <div class="statgrid">
+          <div><span>Rank</span><b class="num">${p.iq > 0 ? '#' + w.rank : '–'}</b></div>
+          <div><span>Streak</span><b class="num">${p.streak}</b></div>
+          <div><span>Correct</span><b class="num">${p.correct}<small>/${p.total || 0}</small></b></div>
+        </div>
+        ${p.total > 0 ? `
+        <div class="vs">
+          <span class="eyebrow">Hit rate</span>
+          ${bar('You', hitRate(p.correct, p.total), 'var(--accent)')}
+          ${bar('CaptainAI', hitRate(p.aiCorrect, p.total), 'var(--ai)')}
+          ${bar('Market', hitRate(p.marketCorrect, p.total), 'var(--market)')}
+        </div>` : ''}
+      </section>
 
-  <div class="lb">
-    <div class="tabs" role="tablist" aria-label="Leaderboard">
-      <button class="tab" role="tab" aria-selected="${isPlayers}" data-action="lb-tab" data-tab="players">Players</button>
-      <button class="tab" role="tab" aria-selected="${!isPlayers}" data-action="lb-tab" data-tab="fanbases">Fanbases</button>
+      ${nextOpen ? `
+      <section class="next">
+        <h3>Next: ${nextOpen.home.name} v ${nextOpen.away.name}</h3>
+        <p>${nextOpen.competition} · ${nextOpen.kickoffLabel} · kicks off in <span class="num" data-countdown="${nextOpen.id}">${formatCountdown(kickoffOf(nextOpen) - Date.now())}</span></p>
+        ${p.streak > 0 ? `<p class="warn-row">${icon('i-flame', 'flame')} Call it before kick-off to keep your ${p.streak}-match streak.</p>` : ''}
+        <div class="foot-cta">
+          <button class="btn btn-primary btn-block" data-action="open-match" data-match="${nextOpen.id}">Make my 3 calls ${icon('i-arrow')}</button>
+          <button class="btn btn-ghost" data-action="nav" data-to="hub" data-label="Challenges">${icon('i-grid')} All ${w.total} challenges</button>
+        </div>
+      </section>` : `
+      <section class="next">
+        <h3>All ${w.total} challenges called</h3>
+        <p>New fixtures drop Monday. Your table position is final at Sunday 23:59.</p>
+        <div class="foot-cta"><button class="btn btn-secondary btn-block" data-action="nav" data-to="hub" data-label="Challenges">${icon('i-grid')} Review this week</button></div>
+      </section>`}
     </div>
-    ${isPlayers ? playersTable(p) : fanbasesPanel(p)}
-  </div>
 
-  <div class="prize">${icon('i-trophy')}<span>Top-10 this week win a free bet from ${PARTNERS[0].name}. Partner-funded, 18+, T&amp;Cs apply.</span></div>
-
-  ${nextOpen ? `
-  <div class="next">
-    <span class="eyebrow">Next Match Challenge</span>
-    <h3>${nextOpen.home.name} v ${nextOpen.away.name}</h3>
-    <p>${nextOpen.competition} · ${nextOpen.kickoffLabel}. ${w.locked} of ${w.total} called this week.</p>
-    <div class="foot-cta">
-      <button class="btn btn-primary btn-block" data-action="open-match" data-match="${nextOpen.id}">Make my 3 calls ${icon('i-arrow')}</button>
-      <button class="btn btn-ghost" data-action="nav" data-to="hub">${icon('i-grid')} All challenges</button>
+    <div class="rail">
+      <section class="lb" aria-label="Weekly leaderboard">
+        <div class="tabs" role="tablist" aria-label="Leaderboard">
+          <button class="tab" role="tab" aria-selected="${isPlayers}" data-action="lb-tab" data-tab="players">Players</button>
+          <button class="tab" role="tab" aria-selected="${!isPlayers}" data-action="lb-tab" data-tab="fanbases">Fanbases</button>
+        </div>
+        ${isPlayers ? playersTable(p) : fanbasesPanel(p)}
+        <div class="foot row between wrap" style="gap:8px">
+          <span>${p.iq > 0 ? `You are #${w.rank} of ${leaderboard(p).length}.` : 'Lock a prediction to enter.'}</span>
+          <button class="btn btn-ghost btn-sm" data-action="nav" data-to="board" data-label="Table">Full table ${icon('i-arrow')}</button>
+        </div>
+      </section>
     </div>
-  </div>` : `
-  <div class="next">
-    <span class="eyebrow">Week complete</span>
-    <h3>All ${w.total} challenges called</h3>
-    <p>New fixtures drop Monday. Your table position is final at Sunday 23:59.</p>
-    <div class="foot-cta"><button class="btn btn-secondary btn-block" data-action="nav" data-to="hub">${icon('i-grid')} Review this week</button></div>
-  </div>`}`;
+  </div>`;
 }
 
 /* --------------------------------------------------------------- handoff */
@@ -1492,14 +1554,41 @@ function viewSheet() {
 }
 
 /* ============================================================== rendering */
-const VIEWS = { landing: viewLanding, board: viewBoard, hub: viewHub, match: viewMatch, question: viewQuestion, power: viewPowerPick, lock: viewLock, odds: viewOdds, wait: viewWait, result: viewResult, retention: viewRetention };
+const VIEWS = { landing: viewLanding, board: viewBoard, hub: viewHub, match: viewMatch, question: viewQuestion, lock: viewLock, odds: viewOdds, wait: viewWait, result: viewResult, retention: viewRetention };
+/* Scan screens get the wide two-column shell; the play flow keeps one narrow column. */
+const WIDE_SCREENS = ['landing', 'hub', 'board', 'retention'];
+const SUBNAV = [['Overview', 'landing'], ['Challenges', 'hub'], ['Table', 'board'], ['You', 'retention']];
 const NAV = [['Football', null], ['Matches', 'hub'], ['Match IQ', 'landing'], ['Betting', null]];
-const NAV_ACTIVE = { landing: 'Match IQ', board: 'Match IQ', retention: 'Match IQ', hub: 'Matches', match: 'Matches', question: 'Matches', power: 'Matches', lock: 'Matches', odds: 'Matches', wait: 'Matches', result: 'Matches' };
+const NAV_ACTIVE = { landing: 'Match IQ', board: 'Match IQ', retention: 'Match IQ', hub: 'Matches', match: 'Matches', question: 'Matches', lock: 'Matches', odds: 'Matches', wait: 'Matches', result: 'Matches' };
+/* Every screen names one obvious way out: the product tabs, or a labelled back link. */
+const BACK_TO = { match: 'hub', question: 'match', lock: 'match', odds: 'hub', wait: 'hub', result: 'hub' };
+
+function renderSubnav() {
+  const el = document.getElementById('subnav');
+  if (WIDE_SCREENS.includes(state.screen)) {
+    const w = weekSummary();
+    const count = { hub: `${w.locked}/${w.total}`, board: state.profile.iq > 0 ? '#' + w.rank : '', retention: state.profile.iq > 0 ? String(state.profile.iq) : '' };
+    el.innerHTML = `<nav class="row" aria-label="Match IQ">
+      ${SUBNAV.map(([label, to]) => `<button class="t" data-action="nav" data-to="${to}" data-label="${label}" ${state.screen === to ? 'aria-current="page"' : ''}>${label}${count[to] ? `<span class="n num">${count[to]}</span>` : ''}</button>`).join('')}
+    </nav>`;
+    const active = el.querySelector('[aria-current]');
+    if (active) active.scrollIntoView({ inline: 'center', block: 'nearest' });
+    return;
+  }
+  const m = currentMatch();
+  const toHub = BACK_TO[state.screen] === 'hub';
+  el.innerHTML = `<div class="row">
+    <button class="bk" ${toHub ? `data-action="nav" data-to="hub" data-label="Challenges"` : `data-action="open-match" data-match="${m.id}"`}>${icon('i-arrow')}${toHub ? "This week's challenges" : `${m.home.name} v ${m.away.name}`}</button>
+    <span class="ctx">${toHub ? `${m.home.name} v ${m.away.name}` : `${m.competition} · ${m.kickoffLabel}`}</span>
+  </div>`;
+}
 let lastScreen = null;
 
 function render() {
   const app = document.getElementById('app');
+  document.body.dataset.layout = WIDE_SCREENS.includes(state.screen) ? 'wide' : 'narrow';
   app.innerHTML = VIEWS[state.screen]();
+  renderSubnav();
   document.getElementById('nav').innerHTML = NAV.map(([label, to]) => `<button class="${NAV_ACTIVE[state.screen] === label ? 'on' : ''}" data-action="nav" data-to="${to || ''}" data-label="${label}">${label}</button>`).join('');
   document.getElementById('sheet').innerHTML = viewSheet();
   document.body.classList.toggle('sheet-open', !!state.sheet);
@@ -1561,10 +1650,10 @@ function toastQueue(items) {
    In production these map 1:1 to real paths under /match-iq/. */
 const ROUTES = {
   landing: '/', hub: '/challenges', board: '/board', retention: '/me',
-  match: '/match/:id', question: '/match/:id/play', power: '/match/:id/pick', lock: '/match/:id/lock',
+  match: '/match/:id', question: '/match/:id/play', lock: '/match/:id/review',
   odds: '/match/:id/odds', wait: '/match/:id/locked', result: '/match/:id/result',
 };
-const SUBROUTES = { play: 'question', pick: 'power', lock: 'lock', odds: 'odds', locked: 'wait', result: 'result' };
+const SUBROUTES = { play: 'question', review: 'lock', odds: 'odds', locked: 'wait', result: 'result' };
 const pathFor = (screen, matchId) => '#' + ROUTES[screen].replace(':id', matchId || '');
 
 function parseHash(hash) {
@@ -1586,7 +1675,7 @@ function resolveRoute(r) {
   const inProgress = state.matchId === r.matchId && Object.keys(state.answers).length > 0 && status === 'open';
   const toMatch = { screen: 'match', matchId: r.matchId };
   switch (r.screen) {
-    case 'question': case 'power': case 'lock': return inProgress ? r : toMatch;
+    case 'question': case 'lock': return inProgress ? r : toMatch;
     case 'odds': return ['locked', 'live'].includes(status) ? r : toMatch;
     case 'wait': return ['locked', 'live'].includes(status) ? r : status === 'settled' ? { screen: 'result', matchId: r.matchId } : toMatch;
     case 'result': return status === 'settled' ? r : toMatch;
@@ -1681,8 +1770,9 @@ const ACTIONS = {
   start() {
     const m = currentMatch();
     if (statusOf(m, state.profile) !== 'open') { toast('Calls are closed for this match'); return; }
-    track('challenge_start', { match: m.id });
-    go('question', { qIndex: 0, answers: {}, powerPick: null, oddsTab: 'builder' });
+    const answered = Object.keys(state.answers).length;
+    track(answered ? 'challenge_resume' : 'challenge_start', { match: m.id, answered });
+    go('question', answered ? {} : { qIndex: 0, answers: {}, powerPick: null, oddsTab: 'builder' });
   },
   club(btn) {
     updateProfile({ club: btn.dataset.club });
@@ -1697,11 +1787,9 @@ const ACTIONS = {
   'next-q'() {
     if (state.qIndex < QUESTION_ORDER.length - 1) { setState({ qIndex: state.qIndex + 1 }); return; }
     track('challenge_complete', { match: state.matchId });
-    go('power');
+    go('lock');
   },
-  power(btn) { setState({ powerPick: btn.dataset.q }); },
-  'to-lock'() { track('power_pick_set', { q: state.powerPick }); go('lock'); },
-  'back-to-power'() { go('power'); },
+  power(btn) { track('power_pick_set', { q: btn.dataset.q }); setState({ powerPick: btn.dataset.q }); },
   lock() {
     const m = currentMatch();
     if (statusOf(m, state.profile) !== 'open') { toast('Calls closed at kick-off'); go('match'); return; }
