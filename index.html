@@ -399,6 +399,11 @@ body[data-layout="wide"]{--shell:1120px}
 .duel span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);font-weight:600}
 .duel b{font-family:var(--font-display);font-size:28px;font-weight:800;line-height:1.1}
 .duel div.win{border-color:var(--accent)}
+.save-card{display:flex;gap:12px;align-items:flex-start;margin-top:16px;padding:14px 16px;border-radius:var(--radius);background:var(--surface);border:1px dashed var(--line-strong)}
+.save-card .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none;background:var(--surface-2);color:#ff9b3d;font-size:17px}
+.save-card b{font-family:var(--font-display);font-size:19px;font-weight:700;line-height:1.1;display:block}
+.save-card p{font-size:13px;color:var(--ink-2);margin:5px 0 10px;line-height:1.45}
+.save-cta{display:flex;gap:8px;flex-wrap:wrap}
 .rank-line{margin-top:12px;font-size:14px;color:var(--ink-2)}
 .rank-line b{color:var(--accent);font-family:var(--font-display);font-size:18px;font-weight:800}
 .insight{margin-top:12px;display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:var(--radius-sm);background:var(--surface);border:1px solid var(--line);font-size:14px;color:var(--ink-2)}
@@ -886,7 +891,8 @@ const CONFIG = Object.freeze({
    aggregate stats plus one entry per match. Nothing else is persisted client-side. */
 const DEFAULT_PROFILE = Object.freeze({
   uid: null, iq: 0, streak: 0, correct: 0, total: 0, aiCorrect: 0, marketCorrect: 0, badges: [],
-  humans: 2, ai: 3, club: null, prevRank: null, ageConfirmed: false, welcomeSeen: false, welcomeClaimed: null, matches: {},
+  humans: 2, ai: 3, club: null, prevRank: null, ageConfirmed: false, welcomeSeen: false, welcomeClaimed: null,
+  accountSaved: false, accountPrompted: false, matches: {},
 });
 const newId = () => (crypto.randomUUID ? crypto.randomUUID() : 'u-' + Math.random().toString(36).slice(2, 10));
 function loadProfile() {
@@ -1533,6 +1539,18 @@ function viewResult() {
     <div><span class="eyebrow">Match IQ earned</span><div class="n num" data-countup="${out.points}">0<small>pts</small></div></div>
     ${icon('i-bolt')}
   </div>
+  ${!p.accountSaved && !p.accountPrompted ? `
+  <section class="save-card" aria-label="Save your progress">
+    <span class="ic">${icon('i-flame', 'flame')}</span>
+    <div>
+      <b>Keep this streak</b>
+      <p>Your ${p.iq} Match IQ and ${plural(p.streak, 'match', 'matches')} of streak live on this device only. Save them to your Tribuna account and they follow you.</p>
+      <div class="save-cta">
+        <button class="btn btn-primary btn-sm" data-action="account-save">Save to my account</button>
+        <button class="btn btn-ghost btn-sm" data-action="account-later">Not now</button>
+      </div>
+    </div>
+  </section>` : ''}
   <p class="rank-line">You are <b>#${rank}</b> of ${fmtK(WEEK_FIELD)} this week${moved > 0 ? `, up ${plural(moved, 'place', 'places')}` : moved < 0 ? `, down ${plural(-moved, 'place', 'places')}` : ''}${rank <= PRIZE_TOP ? ' — inside the top ' + PRIZE_TOP : ''}.</p>
   <div class="duel" aria-label="Correct calls: you versus CaptainAI versus fans">
     <div class="${out.you === top ? 'win' : ''}"><span>You</span><b class="num">${out.you}/3</b></div>
@@ -2298,6 +2316,17 @@ const ACTIONS = {
     track('leaderboard_view', { rank });
     go('retention');
     updateProfile({ prevRank: rank });
+  },
+  'account-save'() {
+    updateProfile({ accountSaved: true, accountPrompted: true });
+    track('account_saved', { iq: state.profile.iq, streak: state.profile.streak });
+    render();
+    toast('Saved to your Tribuna account (mock)');
+  },
+  'account-later'() {
+    updateProfile({ accountPrompted: true });
+    track('account_prompt_dismissed', {});
+    render();
   },
   'lb-tab'(btn) { setState({ lbTab: btn.dataset.tab }); },
   'lb-expand'() { const lbFull = !state.lbFull; track('leaderboard_expand', { expanded: lbFull }); setState({ lbFull }); },

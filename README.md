@@ -89,10 +89,10 @@ All events are visible in the prototype's Metrics panel at the bottom of every s
 
 Kept out of the prototype so the core flow stays readable. Each is a follow-up, not a missing piece:
 
-- Badge shelf and a visual share card. Badges are toasts, and sharing hands the text to the system share sheet where the browser has one, clipboard everywhere else.
+- Push notifications for "result is in" and "streak at risk", and the weekly reset job behind them. The prototype says where they belong rather than faking a permission prompt.
 - "Save streak to your Tribuna account" prompt after the first result, the soft registration gate.
 - Weekend Quest ("predict three matches this weekend"), streak freeze, friend duels.
-- Real odds feed with geo-specific partner ordering, push notifications for "result is in" and "streak at risk", weekly reset of leaderboards.
+- A real odds feed with geo-specific partner ordering, and the weekly reset of the leaderboards.
 
 Precedents: Sky Bet Super 6 is the reference for predictor-to-sportsbook; FotMob and OneFootball predictions are the content-side reference. Rollout: one top match per week, then top-5 leagues, then a weekly league with partner-funded prizes.
 
