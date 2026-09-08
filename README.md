@@ -2,19 +2,25 @@
 
 Prototype for the Tribuna.com iGaming Product/Project Manager test task.
 
-- Live prototype: https://youngerfornday.github.io/tribuna-match-iq/
-- Answer deck (Ukrainian): https://youngerfornday.github.io/tribuna-match-iq/deck.html — the three answers as a 14-slide deck, built from the prototype's own tokens. Arrow keys navigate, Cmd+P prints one slide per page.
-- Local: open `index.html` in any browser. No build step, works offline. The prototype plus two artwork files in `art/` (98 KB total).
-- Every screen has its own URL (`#/challenges`, `#/match/bay-bvb/play`, `#/board`, `#/me`), so deep links and the browser back button work. In production these map 1:1 to paths under `/match-iq/`.
-- Navigation: a Match IQ sub-nav (Overview / Challenges / Table / You) sits under the site header on every browse screen; the play flow replaces it with one labelled back link. Challenges, Table and You use a 1120px two-column layout from 1024px up; the play flow stays a single 620px column.
-- Table reads in one column: the prize, then where you stand, then the ranking. Partner bonuses are marked as bonuses — a badge on every price that carries one, and an accent card with the reward as its headline.
-- Table and You do different jobs: Table is the ranking, You is your own week — rating, streak, hit rate against CaptainAI and the market, every call you locked and what it scored, and the next challenge. The leaderboard appears once, on Table.
-- Overview reads top to bottom: hero, how it works, prize banner, weekly leaderboard, rules. The table shows the top 10 and expands to the full top 100, which is the prize cut-off.
-- The prize banner has two states. Before a first prediction it sells the entry ticket ("your first prediction unlocks the welcome offer") and names the weekly prize underneath; once a prediction is locked it switches to the top 100 and the user's own standing. The prize is also stated in the hero chips, so it is visible in the first screen.
+- **Live prototype:** https://youngerfornday.github.io/tribuna-match-iq/
+- **Answer deck (Ukrainian):** https://youngerfornday.github.io/tribuna-match-iq/deck.html — the three answers as a 14-slide deck, built from the prototype's own tokens. Arrow keys navigate, Cmd+P prints one slide per page.
+- **Run it locally:** open `index.html` in any browser. No build step, no dependencies, works offline. The only other files are two illustrations and a social preview card in `art/`.
 
 Flow: match page → 3 blind calls (winner, over/under, scorer) → reveal CaptainAI / fans / market after each call → review the three calls and tap one as the Power Pick, then lock → odds at three partners (bet builder or single) → wait for full-time → result → Match IQ, streak, league, leaderboards → next match.
 
 The "Simulate full-time" button on the waiting screen is a prototype control. In production the result arrives after the real match.
+
+## How the prototype is put together
+
+- Every screen has its own URL (`#/challenges`, `#/match/bay-bvb/play`, `#/board`, `#/me`), so deep links and the browser back button work. In production these map 1:1 to paths under `/match-iq/`.
+- A Match IQ sub-nav (Overview / Challenges / Table / You) sits under the site header on every browse screen; the play flow replaces it with one labelled back link, so every screen names exactly one way out.
+- Width follows the task: browse screens open up to 1120px, the play flow stays a single 620px column where a wide measure would hurt.
+- **Overview** reads top to bottom: hero, how it works, prize banner, weekly leaderboard, rules. The leaderboard shows the top 10 and expands to the full top 100, which is the prize cut-off.
+- **Challenges** is one column: a progress strip for the week, then the fixtures. The next match to call is the only highlighted row and carries the only call to action on the screen; matches already played show what you called and what it scored.
+- **Table** is the ranking: the prize, then where you stand, then the table itself.
+- **You** is your own week — rating, league, streak, hit rate against CaptainAI and the market, every call you locked this week, and the next challenge. The leaderboard lives on Table alone, so the two screens do not repeat each other.
+- The prize banner has two states. Before a first prediction it sells the entry ticket ("your first prediction unlocks the welcome offer") and names the weekly prize underneath; once a prediction is locked it switches to the top 100 and the user's own standing. The prize is also stated in the hero chips, so it is on screen before any scrolling.
+- Partner bonuses are marked as bonuses: a badge on every price that carries one, and an accent card with the reward as its headline.
 
 ## 1. What is it and what user problem does it solve
 
@@ -68,12 +74,11 @@ All events are visible in the prototype's Metrics panel at the bottom of every s
 
 - Everything is mocked: fan percentages, CaptainAI probabilities and reasoning, partner odds, the leaderboards and the match results. Amounts are in euro.
 - The weekly table is a real field: the named players are hand-written, the rest of the visible top 100 is generated deterministically from a seed so the prize cut-off means something. The stated field size (12.5k) is the number the copy claims, not the number of rendered rows.
-- The banner artwork sets the look; the hero one was matched to it. Each is levelled for the block it sits in — the hero image's own background is pushed to the hero card's tone, its greens rotated to the same lime — and both use the same radial mask and bleed off their block's edge. Forcing one shared treatment on both, black background included, made the banner read as a pasted rectangle: its block is the lightest on the page.
+- Each illustration is levelled for the block it sits in and inserted with the same radial mask, bleeding off the block's edge. Forcing one shared treatment on both — a pure black background for each — matched them to each other but made the banner read as a pasted rectangle, because its block is the lightest on the page.
 - Two pieces of artwork, both generated for this prototype in one style: CaptainAI, the model you play against, on the overview hero, and the crowned winner holding the trophy and the free bet in the prize banner. Nothing is taken from an operator's site: lifting a casino's character art into a public demo is a copyright problem, and it would be the first thing an operator's own legal team objects to.
 - The banner character is deliberately the winning player, not a gambling mascot aimed at a young audience: crowned, holding the trophy the weekly table is played for, with the free bet as the second prize.
 - Market % is computed in code from the average partner odds: implied probability with the bookmaker margin removed for mutually exclusive markets, raw implied probability for the scorer market.
 - Partners are Tribuna's own betting partners: Parimatch, GG.BET and FAVBET all have their own sections under tribuna.com/en/betting/sportsbook/, and Tribuna's international team has written about working with GG.BET Affiliates. Every price and welcome offer here is illustrative, and says so in the handoff sheet, the game rules and the site footer: live terms differ by market and change often, so a demo must not read as a live offer.
-- Amounts are in euro throughout.
 - Fans % has a cold-start problem: in the first days of a match the widget should show only CaptainAI and market until a vote threshold is reached.
 - Profile state (Match IQ, streak, hit rate, club) persists in `localStorage`. Clearing site data resets it.
 
@@ -88,8 +93,8 @@ Kept out of the prototype so the core flow stays readable. Each is a follow-up, 
 
 Precedents: Sky Bet Super 6 is the reference for predictor-to-sportsbook; FotMob and OneFootball predictions are the content-side reference. Rollout: one top match per week, then top-5 leagues, then a weekly league with partner-funded prizes.
 
-Weekly prize: the top 100 of the weekly table receive the Partner A welcome offer, credited on Monday when the table resets. It is partner-funded rather than a Tribuna cash prize, which is what makes it self-financing: the prize is the same offer the handoff already promotes, so the reward and the conversion event are one thing. Carried on a banner on the overview, table and profile screens, always with the partner terms, new-customers-only wording and 18+.
+Weekly prize: the top 100 of the weekly table receive the lead partner's welcome offer, credited on Monday when the table resets. It is partner-funded rather than a Tribuna cash prize, which is what makes it self-financing: the prize is the same offer the handoff already promotes, so the reward and the conversion event are one thing. Carried on a banner on the overview, table and profile screens, always with the partner terms, new-customers-only wording and 18+.
 
 ## Built with
 
-Vibe-coded with Claude Code. Single HTML file, vanilla JavaScript, no dependencies.
+Vibe-coded with Claude Code. One HTML file of vanilla JavaScript with no dependencies, plus the illustrations in `art/` and the answer deck in `deck.html`.

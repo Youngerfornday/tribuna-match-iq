@@ -299,6 +299,9 @@ body[data-layout="wide"]{--shell:1120px}
 .opt[disabled]{cursor:default}
 .opt[disabled]:hover{border-color:var(--line-strong);background:var(--surface)}
 .opt[disabled][aria-pressed="true"]{border-color:var(--accent);background:var(--accent-dim)}
+/* once a call is made the options you did not pick step back, without dropping text contrast */
+.opt[disabled]:not([aria-pressed="true"]){border-color:var(--line);background:transparent}
+.opt[disabled]:not([aria-pressed="true"]) .lbl{color:var(--ink-2)}
 .opt .lbl{font-family:var(--font-display);font-size:24px;font-weight:700;line-height:1}
 .opt .sub{display:block;font-size:13px;color:var(--ink-3);margin-top:3px}
 .opt .tag{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
@@ -1846,6 +1849,8 @@ function render() {
 function countUp(el) {
   const target = Number(el.dataset.countup);
   const suffix = el.querySelector('small') ? el.querySelector('small').outerHTML : '';
+  /* CSS handles the rest of the motion; this one is scripted, so it opts out here. */
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { el.innerHTML = target + suffix; return; }
   const start = performance.now();
   const step = (t) => {
     const k = Math.min(1, (t - start) / 900);
