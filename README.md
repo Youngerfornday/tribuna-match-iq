@@ -3,7 +3,7 @@
 Prototype for the Tribuna.com iGaming Product/Project Manager test task.
 
 - Live prototype: https://youngerfornday.github.io/tribuna-match-iq/
-- Local: open `index.html` in any browser. No build step, works offline. The prototype plus two artwork files in `art/` (95 KB total).
+- Local: open `index.html` in any browser. No build step, works offline. The prototype plus two artwork files in `art/` (100 KB total).
 - Every screen has its own URL (`#/challenges`, `#/match/bay-bvb/play`, `#/board`, `#/me`), so deep links and the browser back button work. In production these map 1:1 to paths under `/match-iq/`.
 - Navigation: a Match IQ sub-nav (Overview / Challenges / Table / You) sits under the site header on every browse screen; the play flow replaces it with one labelled back link. Challenges, Table and You use a 1120px two-column layout from 1024px up; the play flow stays a single 620px column.
 - Table reads in one column: the prize, then where you stand, then the ranking. Partner bonuses are marked as bonuses — a badge on every price that carries one, and an accent card with the reward as its headline.
@@ -67,6 +67,7 @@ All events are visible in the prototype's Metrics panel at the bottom of every s
 
 - Everything is mocked: fan percentages, CaptainAI probabilities and reasoning, partner odds, the leaderboards and the match results. Amounts are in euro.
 - The weekly table is a real field: the named players are hand-written, the rest of the visible top 100 is generated deterministically from a seed so the prize cut-off means something. The stated field size (12.5k) is the number the copy claims, not the number of rendered rows.
+- Both artworks run through the same treatment before shipping: the black point is lifted so each illustration's own background collapses into the page black, greens are pulled towards the brand lime, and both are inserted with one shared radial mask that bleeds them off the block edge. That is why they read as one campaign rather than two stock images.
 - Two pieces of artwork, both generated for this prototype in one style: CaptainAI, the model you play against, on the overview hero, and the crowned winner holding the trophy and the free bet in the prize banner. Nothing is taken from an operator's site: lifting a casino's character art into a public demo is a copyright problem, and it would be the first thing an operator's own legal team objects to.
 - The banner character is deliberately the winning player, not a gambling mascot aimed at a young audience: crowned, holding the trophy the weekly table is played for, with the free bet as the second prize.
 - Market % is computed in code from the average partner odds: implied probability with the bookmaker margin removed for mutually exclusive markets, raw implied probability for the scorer market.
