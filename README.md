@@ -72,6 +72,9 @@ All events are visible in the prototype's Metrics panel at the bottom of every s
 
 ## Prototype notes
 
+- The Monday reset is real: the profile carries an ISO week key and rolls itself over. Entries, the quest, the humans-versus-model score and last week's rank clear; Match IQ, league, badges and the streak carry over, which is exactly the split the rules promise.
+- One streak freeze per week, spent automatically when a kick-off passes without a call, and the profile says when it saved you.
+- Duels travel in the link: the challenger's slip is encoded into the URL, the opponent plays the same match blind, and both slips are only compared at full-time. Showing the challenger's calls first would break the blind-then-reveal rule the whole game rests on.
 - The weekly quest is computed from the fixtures, not stored: call every Sunday match and the week pays +25 Match IQ, awarded the moment the last one is locked.
 - Partner order follows the market (`PARTNER_ORDER` by geo, UA leads with FAVBET), while the best price is highlighted wherever it sits. Ordering is a market decision; price is not.
 - The first result asks whether to save the streak to a Tribuna account. It is the soft registration gate, shown once, and nothing is gated behind refusing it.
@@ -93,8 +96,9 @@ All events are visible in the prototype's Metrics panel at the bottom of every s
 Kept out of the prototype so the core flow stays readable. Each is a follow-up, not a missing piece:
 
 - Push notifications for "result is in" and "streak at risk", and the weekly reset job behind them. The prototype says where they belong rather than faking a permission prompt.
-- Streak freeze and friend duels: both need social or economy design that a prototype cannot answer honestly.
-- A real odds feed, and the weekly reset job behind the Monday table reset.
+- A live odds feed. Prices here are fixed data; a real feed also needs price-change handling between locking and clicking out, which is a backend contract rather than a UI decision.
+- Server-side notifications and the scheduled jobs behind them. The prototype opts you in through the browser's own Notification permission and fires the full-time notice locally, which is as far as a client can honestly go.
+- Named opponents and a friends list. Duels work from a link and the challenger shows as "A friend"; identity needs the account the soft gate only pretends to create.
 
 Precedents: Sky Bet Super 6 is the reference for predictor-to-sportsbook; FotMob and OneFootball predictions are the content-side reference. Rollout: one top match per week, then top-5 leagues, then a weekly league with partner-funded prizes.
 

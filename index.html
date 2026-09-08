@@ -383,6 +383,13 @@ body[data-layout="wide"]{--shell:1120px}
 .wait{margin-top:18px;text-align:center;padding:28px 18px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--line)}
 .wait .big{font-family:var(--font-display);font-size:52px;font-weight:800;line-height:1;letter-spacing:.02em}
 .wait .lbl{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);font-weight:600;margin-top:8px}
+.notify-row{width:100%;display:flex;align-items:center;gap:12px;margin-top:12px;padding:14px 16px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--line);transition:border-color .15s,background .15s}
+.notify-row:hover{border-color:#4b5245;background:var(--surface-2)}
+.notify-row.on{border-color:rgba(215,255,61,.45);background:linear-gradient(110deg,rgba(215,255,61,.07),var(--surface) 60%)}
+.notify-row .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none;background:var(--surface-2);color:var(--ink-3);font-size:16px}
+.notify-row.on .ic{background:var(--accent);color:var(--accent-ink)}
+.notify-row b{display:block;font-family:var(--font-display);font-size:18px;font-weight:700;line-height:1.1}
+.notify-row small{display:block;font-size:12px;color:var(--ink-3);margin-top:3px;line-height:1.4}
 .proto{margin-top:24px;padding:14px;border:1px dashed var(--line-strong);border-radius:var(--radius);text-align:center;color:var(--ink-3);font-size:13px}
 .proto .btn{margin-top:10px}
 
@@ -409,6 +416,17 @@ body[data-layout="wide"]{--shell:1120px}
 .duel span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);font-weight:600}
 .duel b{font-family:var(--font-display);font-size:28px;font-weight:800;line-height:1.1}
 .duel div.win{border-color:var(--accent)}
+.duel-call{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;padding:14px 16px;border-radius:var(--radius);background:linear-gradient(110deg,rgba(57,135,229,.12),var(--surface) 60%);border:1px solid rgba(57,135,229,.35)}
+.duel-call .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none;background:rgba(57,135,229,.2);color:var(--ai-text);font-size:16px}
+.duel-call b{font-family:var(--font-display);font-size:19px;font-weight:700;line-height:1.1;display:block}
+.duel-call p{font-size:13px;color:var(--ink-2);margin-top:4px;line-height:1.45}
+.duel-score{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:14px;padding:14px 16px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--line)}
+.duel-score .side{text-align:center;flex:1}
+.duel-score .side span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);font-weight:600}
+.duel-score .side b{font-family:var(--font-display);font-size:30px;font-weight:800;line-height:1.1}
+.duel-score .side.win b{color:var(--accent)}
+.duel-score .vs{font-size:12px;color:var(--ink-3);font-weight:600}
+.duel-score .calls-line{font-size:12px;color:var(--ink-3);margin-top:4px}
 .save-card{display:flex;gap:12px;align-items:flex-start;margin-top:16px;padding:14px 16px;border-radius:var(--radius);background:var(--surface);border:1px dashed var(--line-strong)}
 .save-card .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none;background:var(--surface-2);color:#ff9b3d;font-size:17px}
 .save-card b{font-family:var(--font-display);font-size:19px;font-weight:700;line-height:1.1;display:block}
@@ -909,7 +927,7 @@ const CONFIG = Object.freeze({
 const DEFAULT_PROFILE = Object.freeze({
   uid: null, iq: 0, streak: 0, correct: 0, total: 0, aiCorrect: 0, marketCorrect: 0, badges: [],
   humans: 2, ai: 3, club: null, prevRank: null, ageConfirmed: false, welcomeSeen: false, welcomeClaimed: null,
-  accountSaved: false, accountPrompted: false, questDone: false, freezes: 1, freezeUsed: false, week: null, matches: {},
+  accountSaved: false, accountPrompted: false, questDone: false, freezes: 1, freezeUsed: false, week: null, notify: false, duels: {}, matches: {},
 });
 const newId = () => (crypto.randomUUID ? crypto.randomUUID() : 'u-' + Math.random().toString(36).slice(2, 10));
 function loadProfile() {
@@ -1272,8 +1290,17 @@ function viewMatch() {
     : `
       <div class="state-box">${icon('i-check')}<span class="t">Settled: +${e.points} Match IQ<small>${e.correct} of 3 correct</small></span></div>
       <div class="foot-cta"><button class="btn btn-secondary btn-block" data-action="resume">See my result ${icon('i-arrow')}</button></div>`;
+  const duel = entryOf(p, m.id).duel;
   return `
   <article>
+    ${duel ? `
+    <section class="duel-call" aria-label="Duel">
+      <span class="ic">${icon('i-users')}</span>
+      <div>
+        <b>${duel.from} challenged you on this match</b>
+        <p>Their three calls are sealed until full-time — same rule as yours. Make yours and the result compares both.</p>
+      </div>
+    </section>` : ''}
     <section class="match-card" aria-label="Match">
       <div class="row between"><span class="eyebrow">${m.competition}</span>${countdownChip(m)}</div>
       <div class="teams">
@@ -1529,6 +1556,11 @@ function viewWait() {
     <div class="big countdown num" data-countdown="${m.id}">${formatCountdown(kickoffOf(m) - Date.now())}</div>
     <div class="lbl">Until kick-off · ${m.home.name} v ${m.away.name}</div>
   </div>
+  ${'Notification' in window ? `
+  <button class="notify-row ${state.profile.notify ? 'on' : ''}" data-action="notify" aria-pressed="${state.profile.notify}">
+    <span class="ic">${icon(state.profile.notify ? 'i-check' : 'i-clock')}</span>
+    <span class="t"><b>${state.profile.notify ? 'You will be notified at full-time' : 'Notify me at full-time'}</b><small>${state.profile.notify ? 'Tap to turn it off. Uses your browser notifications.' : 'One notification per match, from this browser. No email, no account needed.'}</small></span>
+  </button>` : ''}
   ${(() => {
     const slip = { matchId: m.id, type: 'builder', legs: QUESTION_ORDER.map((qid) => ({ qid, oid: state.answers[qid] })) };
     const best = bestPartnerFor(slip);
@@ -1544,6 +1576,7 @@ function viewWait() {
   })()}
   <div class="foot-cta">
     <button class="btn btn-secondary btn-block" data-action="share">${icon('i-share')} Share my call</button>
+    <button class="btn btn-ghost" data-action="duel-invite">${icon('i-users')} Challenge a friend on this match</button>
     <button class="btn btn-ghost" data-action="nav" data-to="hub">${icon('i-grid')} More challenges this week</button>
   </div>
   <div class="proto">
@@ -1616,6 +1649,25 @@ function viewResult() {
       </div>
     </div>
   </section>` : ''}
+  ${(() => {
+    const duel = entryOf(p, m.id).duel;
+    if (!duel) return '';
+    const theirs = computeOutcome(m, duel.answers, duel.powerPick);
+    const youWin = out.points > theirs.points;
+    const drew = out.points === theirs.points;
+    return `
+  <div class="duel-score" aria-label="Duel result">
+    <div class="side ${youWin ? 'win' : ''}">
+      <span>You</span><b class="num">${out.points}</b>
+      <div class="calls-line">${out.you}/3 correct</div>
+    </div>
+    <span class="vs">${drew ? 'DRAW' : youWin ? 'YOU WIN' : 'THEY WIN'}</span>
+    <div class="side ${!youWin && !drew ? 'win' : ''}">
+      <span>${duel.from}</span><b class="num">${theirs.points}</b>
+      <div class="calls-line">${questionsOf(m).map((q) => optionOf(q, duel.answers[q.id]).label).join(' · ')}</div>
+    </div>
+  </div>` ;
+  })()}
   <p class="rank-line">You are <b>#${rank}</b> of ${fmtK(WEEK_FIELD)} this week${moved > 0 ? `, up ${plural(moved, 'place', 'places')}` : moved < 0 ? `, down ${plural(-moved, 'place', 'places')}` : ''}${rank <= PRIZE_TOP ? ' — inside the top ' + PRIZE_TOP : ''}.</p>
   <div class="duel" aria-label="Correct calls: you versus CaptainAI versus fans">
     <div class="${out.you === top ? 'win' : ''}"><span>You</span><b class="num">${out.you}/3</b></div>
@@ -2030,6 +2082,29 @@ function toastQueue(items) {
   items.forEach((t, i) => setTimeout(() => toast(t.text, t.kind), i * 2800 + 400));
 }
 
+/* ============================================================== duels */
+/* A duel is a link: the challenger's slip is encoded into it, the opponent plays the same
+   match blind, and both sets of calls are only compared at full-time. No server involved,
+   and the blind-then-reveal rule survives - showing their calls first would break it. */
+function encodeDuel(matchId, answers, powerPick) {
+  const payload = JSON.stringify({ m: matchId, a: answers, p: powerPick });
+  return btoa(unescape(encodeURIComponent(payload))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+function decodeDuel(code) {
+  try {
+    const b64 = code.replace(/-/g, '+').replace(/_/g, '/');
+    const d = JSON.parse(decodeURIComponent(escape(atob(b64))));
+    if (!d || !matchById(d.m) || !d.a || !d.p) return null;
+    const qs = QUESTION_ORDER;
+    if (!qs.every((q) => d.a[q])) return null;
+    return { matchId: d.m, answers: d.a, powerPick: d.p };
+  } catch (e) { return null; }
+}
+function duelLink(matchId, answers, powerPick) {
+  const base = location.href.split('#')[0];
+  return `${base}#/duel/${encodeDuel(matchId, answers, powerPick)}`;
+}
+
 /* ================================================================ routing */
 /* Hash routes so every screen is deep-linkable and the browser back button works.
    In production these map 1:1 to real paths under /match-iq/. */
@@ -2048,6 +2123,10 @@ function parseHash(hash) {
   if (parts[0] === 'board') return { screen: 'board' };
   if (parts[0] === 'me') return { screen: 'retention' };
   if (parts[0] === 'match' && matchById(parts[1])) return { screen: SUBROUTES[parts[2]] || 'match', matchId: parts[1] };
+  if (parts[0] === 'duel' && parts[1]) {
+    const duel = decodeDuel(parts[1]);
+    if (duel) return { screen: 'match', matchId: duel.matchId, duel };
+  }
   return { screen: 'landing' };
 }
 
@@ -2071,6 +2150,12 @@ function resolveRoute(r) {
 function applyRoute(r) {
   const res = resolveRoute(r);
   const patch = { screen: res.screen, sheet: null };
+  /* An incoming duel is stored against the match, then the link is replaced by the plain
+     match URL so a refresh does not re-add it. */
+  if (r.duel && !entryOf(state.profile, r.duel.matchId).duel) {
+    updateEntry(r.duel.matchId, { duel: { answers: r.duel.answers, powerPick: r.duel.powerPick, from: 'A friend' } });
+    track('duel_received', { match: r.duel.matchId });
+  }
   if (res.matchId) {
     const e = entryOf(state.profile, res.matchId);
     patch.matchId = res.matchId;
@@ -2322,6 +2407,24 @@ const ACTIONS = {
   'close-welcome'() { track('welcome_offer_dismissed', {}); closeSheet(); },
   'to-wait'() { go('wait', { sheet: null }); },
   'to-odds'() { track('odds_viewed', { tab: state.oddsTab, source: 'wait_screen' }); go('odds', { sheet: null }); },
+  async notify() {
+    if (!('Notification' in window)) { toast('This browser cannot show notifications'); return; }
+    if (state.profile.notify) {
+      updateProfile({ notify: false });
+      track('notify_opt_out', {});
+      render();
+      return;
+    }
+    let permission = Notification.permission;
+    if (permission === 'default') {
+      try { permission = await Notification.requestPermission(); } catch (e) { permission = 'denied'; }
+    }
+    track('notify_opt_in', { permission });
+    if (permission !== 'granted') { toast('Notifications are blocked for this site'); return; }
+    updateProfile({ notify: true });
+    render();
+    toast('We will ping you when the result lands');
+  },
   async share() {
     const text = shareText();
     let file = null;
@@ -2380,6 +2483,9 @@ const ACTIONS = {
     const fresh = [...outcome.badges, ...weekly].filter((id) => !owned.includes(id));
     if (fresh.length) updateProfile({ badges: [...owned, ...fresh] });
     track('result_viewed', { match: m.id, correct: outcome.you, points: outcome.points, badges: outcome.badges, newBadges: fresh });
+    if (state.profile.notify && 'Notification' in window && Notification.permission === 'granted') {
+      try { new Notification('Tribuna Match IQ', { body: `${m.home.name} v ${m.away.name}: +${outcome.points} Match IQ, ${outcome.you}/3 correct.`, tag: 'match-iq-' + m.id }); } catch (e) { /* some browsers need a service worker */ }
+    }
     go('result', { outcome: { ...outcome, fresh } });
     toastQueue(fresh.map((id) => ({ text: `Badge unlocked: ${badgeById(id).name}`, kind: 'badge' })));
   },
@@ -2399,6 +2505,17 @@ const ACTIONS = {
     updateProfile({ accountPrompted: true });
     track('account_prompt_dismissed', {});
     render();
+  },
+  async 'duel-invite'() {
+    const m = currentMatch();
+    const link = duelLink(m.id, state.answers, state.powerPick);
+    const text = `I called ${m.home.name} v ${m.away.name} on Tribuna Match IQ. Your turn - calls stay sealed until full-time.`;
+    track('duel_sent', { match: m.id });
+    if (navigator.share) {
+      try { await navigator.share({ title: 'Tribuna Match IQ', text, url: link }); return; } catch (e) { if (e && e.name === 'AbortError') return; }
+    }
+    const ok = await copyText(`${text} ${link}`);
+    toast(ok ? 'Challenge link copied. Send it to a friend.' : 'Could not copy on this browser');
   },
   'lb-tab'(btn) { setState({ lbTab: btn.dataset.tab }); },
   'lb-expand'() { const lbFull = !state.lbFull; track('leaderboard_expand', { expanded: lbFull }); setState({ lbFull }); },
