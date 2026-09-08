@@ -72,6 +72,9 @@ All events are visible in the prototype's Metrics panel at the bottom of every s
 
 ## Prototype notes
 
+- Sharing produces a card, not a line of text: a 1080x1080 image drawn on a canvas with your three calls, the Power Pick and, after full-time, the points each call scored. It goes through the system share sheet where the browser accepts files, downloads otherwise, and falls back to copied text.
+- Badges persist. Five of them, earned ids stored on the profile, shown on a shelf where the locked ones stay visible with the condition that unlocks them.
+
 - Everything is mocked: fan percentages, CaptainAI probabilities and reasoning, partner odds, the leaderboards and the match results. Amounts are in euro.
 - The weekly table is a real field: the named players are hand-written, the rest of the visible top 100 is generated deterministically from a seed so the prize cut-off means something. The stated field size (12.5k) is the number the copy claims, not the number of rendered rows.
 - Each illustration is levelled for the block it sits in and inserted with the same radial mask, bleeding off the block's edge. Forcing one shared treatment on both — a pure black background for each — matched them to each other but made the banner read as a pasted rectangle, because its block is the lightest on the page.

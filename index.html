@@ -2012,6 +2012,93 @@ window.addEventListener('popstate', () => {
 });
 
 /* ================================================================ actions */
+/* A shareable card beats a line of text: it carries the calls, the Power Pick and the
+   result into places where the link alone would be ignored. Drawn on a canvas so the
+   prototype stays dependency-free. */
+async function shareCard() {
+  const m = currentMatch();
+  const legs = legsOf();
+  const out = state.outcome;
+  const S = 1080;
+  const c = document.createElement('canvas');
+  c.width = S; c.height = S;
+  const x = c.getContext('2d');
+  try { await document.fonts.ready; } catch (e) { /* fonts are a nicety here */ }
+
+  const bg = x.createLinearGradient(0, 0, S, S);
+  bg.addColorStop(0, '#20281a'); bg.addColorStop(0.5, '#171a12'); bg.addColorStop(1, '#0f1710');
+  x.fillStyle = bg; x.fillRect(0, 0, S, S);
+  const glow = x.createRadialGradient(S * 0.8, S * 0.18, 20, S * 0.8, S * 0.18, S * 0.6);
+  glow.addColorStop(0, 'rgba(215,255,61,.16)'); glow.addColorStop(1, 'rgba(215,255,61,0)');
+  x.fillStyle = glow; x.fillRect(0, 0, S, S);
+
+  x.fillStyle = '#d7ff3d'; x.fillRect(80, 92, 16, 16);
+  x.fillStyle = '#f3f4ec';
+  x.font = '800 34px "Barlow Condensed", sans-serif';
+  x.fillText('TRIBUNA', 110, 110);
+  x.fillStyle = '#878c80';
+  x.font = '600 22px "Barlow", sans-serif';
+  x.fillText('MATCH IQ', 300, 108);
+
+  x.fillStyle = '#f3f4ec';
+  x.font = '800 76px "Barlow Condensed", sans-serif';
+  x.fillText(out ? 'My result' : 'My call', 80, 240);
+  x.fillStyle = '#b4b8aa';
+  x.font = '500 30px "Barlow", sans-serif';
+  x.fillText(`${m.home.name} v ${m.away.name} · ${m.kickoffLabel}`, 80, 292);
+
+  legs.forEach((l, i) => {
+    const y = 360 + i * 118;
+    const hit = out && out.calls[i] && out.calls[i].ok;
+    const pp = state.powerPick === l.q.id;
+    x.fillStyle = pp ? 'rgba(215,255,61,.12)' : 'rgba(255,255,255,.04)';
+    roundRect(x, 80, y, S - 160, 96, 16); x.fill();
+    x.strokeStyle = pp ? 'rgba(215,255,61,.5)' : 'rgba(255,255,255,.08)';
+    x.lineWidth = 2; roundRect(x, 80, y, S - 160, 96, 16); x.stroke();
+    x.fillStyle = '#f3f4ec';
+    x.font = '700 40px "Barlow Condensed", sans-serif';
+    x.fillText(l.o.label, 116, y + 46);
+    x.fillStyle = '#878c80';
+    x.font = '500 22px "Barlow", sans-serif';
+    x.fillText(l.q.title, 116, y + 76);
+    if (pp) {
+      x.fillStyle = '#d7ff3d';
+      x.font = '700 22px "Barlow", sans-serif';
+      x.fillText('POWER PICK x2', S - 116 - x.measureText('POWER PICK x2').width, y + 44);
+    }
+    if (out) {
+      x.fillStyle = hit ? '#d7ff3d' : '#e66767';
+      x.font = '800 40px "Barlow Condensed", sans-serif';
+      const mark = hit ? '+' + out.calls[i].points : '0';
+      x.fillText(mark, S - 116 - x.measureText(mark).width, y + 80);
+    }
+  });
+
+  const footY = 800;
+  x.fillStyle = '#d7ff3d';
+  x.font = '800 92px "Barlow Condensed", sans-serif';
+  x.fillText(out ? `+${out.points}` : 'Locked', 80, footY + 40);
+  x.fillStyle = '#b4b8aa';
+  x.font = '500 26px "Barlow", sans-serif';
+  x.fillText(out ? `Match IQ · you ${out.you}/3 · CaptainAI ${out.ai}/3` : 'Locked before kick-off. Beat me on Tribuna.', 80, footY + 86);
+
+  x.fillStyle = '#878c80';
+  x.font = '500 24px "Barlow", sans-serif';
+  x.fillText('tribuna.com · prediction game · 18+', 80, S - 70);
+
+  /* JPEG: the card is a photo-like gradient, and a megabyte PNG is a bad thing to share. */
+  return new Promise((res) => c.toBlob(res, 'image/jpeg', 0.92));
+}
+function roundRect(x, l, t, w, h, r) {
+  x.beginPath();
+  x.moveTo(l + r, t);
+  x.arcTo(l + w, t, l + w, t + h, r);
+  x.arcTo(l + w, t + h, l, t + h, r);
+  x.arcTo(l, t + h, l, t, r);
+  x.arcTo(l, t, l + w, t, r);
+  x.closePath();
+}
+
 function shareText() {
   const m = currentMatch();
   const legs = legsOf();
@@ -2147,15 +2234,36 @@ const ACTIONS = {
   'to-odds'() { track('odds_viewed', { tab: state.oddsTab, source: 'wait_screen' }); go('odds', { sheet: null }); },
   async share() {
     const text = shareText();
-    /* Phones expect the system share sheet; everything else falls back to the clipboard. */
+    let file = null;
+    try {
+      const blob = await shareCard();
+      if (blob) file = new File([blob], 'tribuna-match-iq.jpg', { type: 'image/jpeg' });
+    } catch (e) { /* the text share still works without the card */ }
+    /* Best effort, in order: the card through the system sheet, the text through it,
+       the card as a download, the text on the clipboard. */
+    if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+      try {
+        await navigator.share({ files: [file], text });
+        track('share_click', { match: state.matchId, via: 'card' });
+        return;
+      } catch (e) { if (e && e.name === 'AbortError') { track('share_dismissed', { match: state.matchId }); return; } }
+    }
     if (navigator.share) {
       try {
         await navigator.share({ title: 'Tribuna Match IQ', text });
         track('share_click', { match: state.matchId, via: 'system' });
         return;
-      } catch (e) {
-        if (e && e.name === 'AbortError') { track('share_dismissed', { match: state.matchId }); return; }
-      }
+      } catch (e) { if (e && e.name === 'AbortError') { track('share_dismissed', { match: state.matchId }); return; } }
+    }
+    if (file) {
+      const url = URL.createObjectURL(file);
+      const a = document.createElement('a');
+      a.href = url; a.download = file.name;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      track('share_click', { match: state.matchId, via: 'download' });
+      toast('Card saved. Post it anywhere.');
+      return;
     }
     track('share_click', { match: state.matchId, via: 'clipboard' });
     const ok = await copyText(text);
