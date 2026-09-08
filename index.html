@@ -2186,6 +2186,8 @@ window.addEventListener('popstate', () => {
    prototype stays dependency-free. */
 async function shareCard() {
   const m = currentMatch();
+  /* Only a complete slip can be drawn; callers fall back to text. */
+  if (!QUESTION_ORDER.every((q) => state.answers[q])) return null;
   const legs = legsOf();
   const out = state.outcome;
   const S = 1080;
@@ -2270,6 +2272,7 @@ function roundRect(x, l, t, w, h, r) {
 
 function shareText() {
   const m = currentMatch();
+  if (!QUESTION_ORDER.every((q) => state.answers[q])) return `Match IQ on Tribuna: three calls per match, locked before kick-off.`;
   const legs = legsOf();
   return `My Match IQ call for ${m.home.name} v ${m.away.name}: ${legs.map((l) => l.o.label).join(', ')}. Power Pick: ${legs.find((l) => l.q.id === state.powerPick).o.label}. Beat me on Tribuna.`;
 }
