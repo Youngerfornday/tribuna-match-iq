@@ -63,7 +63,8 @@ All events are visible in the prototype's Metrics panel at the bottom of every s
 - The weekly table is a real field: the named players are hand-written, the rest of the visible top 100 is generated deterministically from a seed so the prize cut-off means something. The stated field size (12.5k) is the number the copy claims, not the number of rendered rows.
 - CaptainAI is drawn, not stock: one inline SVG figure, shown as a club crest on the overview and leaning out of the prize banner with the free bet. No casino mascot: a cartoon character selling a bonus is the first thing a gambling-compliance review removes, and the game already has an opponent worth illustrating.
 - Market % is computed in code from the average partner odds: implied probability with the bookmaker margin removed for mutually exclusive markets, raw implied probability for the scorer market.
-- Partners are "Partner A/B/C" on purpose. Real brands with invented odds would be a compliance problem in a demo.
+- Partners are Tribuna's own betting partners: Parimatch, GG.BET and FAVBET all have their own sections under tribuna.com/en/betting/sportsbook/, and Tribuna's international team has written about working with GG.BET Affiliates. Every price and welcome offer here is illustrative, and says so in the handoff sheet, the game rules and the site footer: live terms differ by market and change often, so a demo must not read as a live offer.
+- Amounts are in euro throughout.
 - Fans % has a cold-start problem: in the first days of a match the widget should show only CaptainAI and market until a vote threshold is reached.
 - Profile state (Match IQ, streak, hit rate, club) persists in `localStorage`. Clearing site data resets it.
 
