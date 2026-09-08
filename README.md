@@ -3,9 +3,10 @@
 Prototype for the Tribuna.com iGaming Product/Project Manager test task.
 
 - Live prototype: https://youngerfornday.github.io/tribuna-match-iq/
-- Local: open `index.html` in any browser. No build step, works offline. Two files: the prototype itself and `art/captain-king.webp` (50 KB).
+- Local: open `index.html` in any browser. No build step, works offline. The prototype plus two artwork files in `art/` (95 KB total).
 - Every screen has its own URL (`#/challenges`, `#/match/bay-bvb/play`, `#/board`, `#/me`), so deep links and the browser back button work. In production these map 1:1 to paths under `/match-iq/`.
 - Navigation: a Match IQ sub-nav (Overview / Challenges / Table / You) sits under the site header on every browse screen; the play flow replaces it with one labelled back link. Challenges, Table and You use a 1120px two-column layout from 1024px up; the play flow stays a single 620px column.
+- Table and You do different jobs: Table is the ranking, You is your own week — rating, streak, hit rate against CaptainAI and the market, every call you locked and what it scored, and the next challenge. The leaderboard appears once, on Table.
 - Overview reads top to bottom: hero, how it works, prize banner, weekly leaderboard, rules. The table shows the top 10 and expands to the full top 100, which is the prize cut-off.
 - The prize banner has two states. Before a first prediction it sells the entry ticket ("your first prediction unlocks the welcome offer") and names the weekly prize underneath; once a prediction is locked it switches to the top 100 and the user's own standing. The prize is also stated in the hero chips, so it is visible in the first screen.
 
@@ -65,7 +66,7 @@ All events are visible in the prototype's Metrics panel at the bottom of every s
 
 - Everything is mocked: fan percentages, CaptainAI probabilities and reasoning, partner odds, the leaderboards and the match results. Amounts are in euro.
 - The weekly table is a real field: the named players are hand-written, the rest of the visible top 100 is generated deterministically from a seed so the prize cut-off means something. The stated field size (12.5k) is the number the copy claims, not the number of rendered rows.
-- Two pieces of artwork, both original. The product emblem is an inline SVG CaptainAI crest, drawn for this prototype. The promo banner carries a generated illustration in the style of a sportsbook welcome-bonus banner. Nothing is taken from an operator's site: lifting a casino's character art into a public demo is a copyright problem, and it would be the first thing an operator's own legal team objects to.
+- Two pieces of artwork, both generated for this prototype in one style: CaptainAI, the model you play against, on the overview hero, and the crowned winner holding the trophy and the free bet in the prize banner. Nothing is taken from an operator's site: lifting a casino's character art into a public demo is a copyright problem, and it would be the first thing an operator's own legal team objects to.
 - The banner character is deliberately the winning player, not a gambling mascot aimed at a young audience: crowned, holding the trophy the weekly table is played for, with the free bet as the second prize.
 - Market % is computed in code from the average partner odds: implied probability with the bookmaker margin removed for mutually exclusive markets, raw implied probability for the scorer market.
 - Partners are Tribuna's own betting partners: Parimatch, GG.BET and FAVBET all have their own sections under tribuna.com/en/betting/sportsbook/, and Tribuna's international team has written about working with GG.BET Affiliates. Every price and welcome offer here is illustrative, and says so in the handoff sheet, the game rules and the site footer: live terms differ by market and change often, so a demo must not read as a live offer.
