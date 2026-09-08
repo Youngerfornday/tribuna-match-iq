@@ -192,11 +192,6 @@ body[data-layout="wide"]{--shell:1120px}
 .hub-head{margin:4px 0 16px}
 .hub-head h1{font-size:40px}
 .hub-head p{color:var(--ink-2);margin-top:6px}
-.week{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:22px}
-.week div{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);padding:12px}
-.week span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);font-weight:600}
-.week b{font-family:var(--font-display);font-size:26px;font-weight:800;line-height:1.1}
-.week b small{font-size:13px;color:var(--ink-3);font-family:var(--font-body);font-weight:600;margin-left:3px}
 .week-strip{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-top:16px;padding:16px 18px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--line)}
 .week-strip .ws-progress{flex:1;min-width:220px}
 .week-strip .ws-progress b{font-family:var(--font-display);font-size:22px;font-weight:700;display:block}
@@ -276,7 +271,6 @@ body[data-layout="wide"]{--shell:1120px}
 .pick .meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;font-size:12px;color:var(--ink-2)}
 .pick .meta .row{gap:5px}
 .pick .meta .agree{display:inline-flex;align-items:center;gap:4px;color:var(--ai-text);font-weight:600}
-.hint{margin-top:14px;display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:var(--radius-sm);background:var(--surface);border:1px solid var(--line);font-size:14px;color:var(--ink-2)}
 .stakes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
 .stakes div{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);padding:12px 10px;text-align:center}
 .stakes span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);font-weight:600}
@@ -347,7 +341,11 @@ body[data-layout="wide"]{--shell:1120px}
 .tabs{display:flex;gap:4px;padding:4px;background:var(--surface-2);border-radius:10px;margin-top:16px}
 .tab{flex:1;min-height:40px;border-radius:8px;font-weight:600;font-size:14px;color:var(--ink-2);text-align:center;transition:background .15s,color .15s}
 .tab[aria-selected="true"]{background:var(--surface-3);color:var(--ink)}
-.odds-table{margin-top:14px;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.slip-line{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px;padding:12px 14px;border-radius:var(--radius-sm);background:var(--surface-2);border:1px solid var(--line)}
+.slip-line .sl-k{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.slip-line .sl-legs{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.slip-line .sl-note{font-size:13px;color:var(--ink-3)}
+.odds-table{margin-top:12px;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
 .odds-row{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;padding:14px 16px;border-top:1px solid var(--line);background:var(--surface)}
 .odds-row:first-child{border-top:0}
 .odds-row.best{background:linear-gradient(90deg,var(--accent-dim),transparent 60%)}
@@ -356,6 +354,7 @@ body[data-layout="wide"]{--shell:1120px}
 .odds-row .bk .offer{display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:4px 9px;border-radius:20px;background:var(--accent-dim);border:1px solid rgba(215,255,61,.4);font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--accent)}
 .odds-row .o{font-family:var(--font-display);font-size:26px;font-weight:800;text-align:right;line-height:1}
 .odds-row .o small{display:block;font-family:var(--font-body);font-size:12px;color:var(--ink-3);font-weight:500;margin-top:2px}
+@media (max-width:560px){.odds-row .bk .offer{font-size:10px;padding:3px 7px;letter-spacing:.02em;white-space:nowrap}}
 .call{margin-top:14px;padding:14px 16px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--line)}
 .call .big{font-family:var(--font-display);font-size:26px;font-weight:700;margin-top:4px;line-height:1.05}
 .call .cmp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
@@ -500,7 +499,6 @@ body[data-layout="wide"]{--shell:1120px}
 .prize-row .pb-status.on{color:var(--accent)}
 .prize-row .pb-terms{font-size:11px;color:var(--ink-3);margin-top:6px}
 .pb-ic{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);flex:none;font-size:17px}
-.prize{margin-top:12px;font-size:13px;color:var(--ink-2);display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:var(--radius-sm);border:1px solid var(--line);background:var(--surface)}
 .next{margin-top:18px;padding:18px;border-radius:var(--radius);background:linear-gradient(135deg,#1c2116,#171915 70%);border:1px solid var(--line-strong)}
 .next h2{font-size:30px;margin:6px 0 4px}
 .next p{color:var(--ink-2);font-size:14px}
@@ -1382,11 +1380,16 @@ function viewOdds() {
     <button class="tab" role="tab" aria-selected="${isBuilder}" data-action="odds-tab" data-tab="builder">Bet Builder · 3 legs</button>
     <button class="tab" role="tab" aria-selected="${!isBuilder}" data-action="odds-tab" data-tab="single">Power Pick · single</button>
   </div>
-  <p class="small muted" style="margin-top:12px">${isBuilder ? legsOf().map((l) => l.o.label).join(' + ') : `${pp.o.label} · ${pp.q.title}`}</p>
+  <div class="slip-line" aria-label="Your scenario">
+    <span class="sl-k">Your scenario</span>
+    <span class="sl-legs">${isBuilder
+      ? legsOf().map((l) => `<span class="chip">${l.o.label}</span>`).join('')
+      : `<span class="chip">${pp.o.label}</span><span class="sl-note">${pp.q.title}</span>`}</span>
+  </div>
   <div class="odds-table" role="tabpanel">
     ${PARTNERS.map((p, i) => `
     <div class="odds-row ${odds[i] === best ? 'best' : ''}">
-      <span class="bk">${p.name}<small>${odds[i] === best ? 'Best price' : 'Partner offer'}</small>${p.offer ? `<span class="offer">${icon('i-gift')} ${p.offer.reward} welcome offer</span>` : ''}</span>
+      <span class="bk">${p.name}<small>${odds[i] === best ? 'Best price' : `${fmtOdds(best - odds[i])} below best`}</small>${p.offer ? `<span class="offer">${icon('i-gift')} ${p.offer.reward} welcome offer</span>` : ''}</span>
       <span class="o num">${fmtOdds(odds[i])}<small>${money(10)} returns ${money(odds[i] * 10)}</small></span>
       <button class="btn btn-sm ${odds[i] === best ? 'btn-primary' : 'btn-secondary'}" data-action="handoff" data-partner="${p.id}">View</button>
     </div>`).join('')}
