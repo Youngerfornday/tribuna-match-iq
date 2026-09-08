@@ -435,6 +435,7 @@ body[data-layout="wide"]{--shell:1120px}
 .statgrid span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);font-weight:600}
 .statgrid b{font-family:var(--font-display);font-size:26px;font-weight:800;line-height:1.15;display:block;margin-top:2px}
 .statgrid b small{font-family:var(--font-body);font-size:13px;color:var(--ink-3);font-weight:600}
+.statgrid div>small{display:block;font-size:11px;color:var(--ink-3);margin-top:4px;line-height:1.3}
 .vs{margin-top:18px}
 .vs .grp{grid-template-columns:78px 1fr;padding:6px 0;border-top:0}
 .vs .name{color:var(--ink-2);font-weight:500}
@@ -908,7 +909,7 @@ const CONFIG = Object.freeze({
 const DEFAULT_PROFILE = Object.freeze({
   uid: null, iq: 0, streak: 0, correct: 0, total: 0, aiCorrect: 0, marketCorrect: 0, badges: [],
   humans: 2, ai: 3, club: null, prevRank: null, ageConfirmed: false, welcomeSeen: false, welcomeClaimed: null,
-  accountSaved: false, accountPrompted: false, questDone: false, matches: {},
+  accountSaved: false, accountPrompted: false, questDone: false, freezes: 1, freezeUsed: false, week: null, matches: {},
 });
 const newId = () => (crypto.randomUUID ? crypto.randomUUID() : 'u-' + Math.random().toString(36).slice(2, 10));
 function loadProfile() {
@@ -917,7 +918,7 @@ function loadProfile() {
     const raw = localStorage.getItem(STORAGE_KEY);
     profile = raw ? { ...DEFAULT_PROFILE, ...JSON.parse(raw) } : { ...DEFAULT_PROFILE };
   } catch (e) { profile = { ...DEFAULT_PROFILE }; }
-  return reconcile(profile.uid ? profile : { ...profile, uid: newId() });
+  return reconcile(rollWeek(profile.uid ? profile : { ...profile, uid: newId() }));
 }
 function saveProfile(profile) {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(profile)); } catch (e) { /* private mode: memory only */ }
@@ -934,10 +935,30 @@ function statusOf(m, profile, now = Date.now()) {
   if (e.status === 'locked') return started ? 'live' : 'locked';
   return started ? 'missed' : 'open';
 }
-/* A missed match breaks the streak. Runs on load so a returning user sees the truth, not a stale counter. */
+/* The table resets on Monday, so the profile has to as well. Weekly state - entries, the
+   quest, the humans-versus-model score, last week's rank - is cleared; everything the
+   copy calls permanent (Match IQ, league, badges, streak) is carried over. */
+function isoWeekKey(ts = Date.now()) {
+  const d = new Date(ts);
+  const day = (d.getUTCDay() + 6) % 7;                 // Monday = 0
+  d.setUTCDate(d.getUTCDate() - day + 3);              // Thursday of this week
+  const firstThursday = new Date(Date.UTC(d.getUTCFullYear(), 0, 4));
+  const week = 1 + Math.round((d - firstThursday) / (7 * 24 * 3600 * 1000));
+  return `${d.getUTCFullYear()}-W${String(week).padStart(2, '0')}`;
+}
+function rollWeek(profile) {
+  const week = isoWeekKey();
+  if (profile.week === week) return profile;
+  if (!profile.week) return { ...profile, week };
+  return { ...profile, week, matches: {}, humans: DEFAULT_PROFILE.humans, ai: DEFAULT_PROFILE.ai, questDone: false, prevRank: null, freezes: 1, freezeUsed: false };
+}
+/* A missed match breaks the streak, unless a freeze is available: one per week, spent
+   automatically, because asking a returning user to claim it is a worse product. */
 function reconcile(profile) {
   const missed = MATCHES.some((m) => statusOf(m, profile) === 'missed');
-  return missed && profile.streak > 0 ? { ...profile, streak: 0 } : profile;
+  if (!missed || profile.streak === 0) return profile;
+  if (profile.freezes > 0) return { ...profile, freezes: profile.freezes - 1, freezeUsed: true };
+  return { ...profile, streak: 0, freezeUsed: false };
 }
 const SESSION_ID = newId();
 
@@ -1771,9 +1792,10 @@ function viewRetention() {
         <div class="progress" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="Progress to ${next ? next.name : 'max'}"><i style="width:${pct}%"></i></div>
         <div class="statgrid">
           <div><span>Rank</span><b class="num">${p.iq > 0 ? '#' + w.rank : '–'}</b></div>
-          <div><span>Streak</span><b class="num">${p.streak}</b></div>
+          <div><span>Streak</span><b class="num">${p.streak}</b><small>${p.freezes > 0 ? '1 freeze left' : 'no freeze left'}</small></div>
           <div><span>Correct</span><b class="num">${p.correct}<small>/${p.total || 0}</small></b></div>
         </div>
+        ${p.freezeUsed ? `<p class="warn-row">${icon('i-flame', 'flame')} A missed kick-off would have ended your streak. The weekly freeze covered it.</p>` : ''}
         ${p.total > 0 ? `
         <div class="vs">
           <span class="eyebrow">Hit rate</span>
