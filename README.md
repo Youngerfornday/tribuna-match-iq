@@ -45,6 +45,7 @@ Support metrics:
 | Challenge completion rate | `prediction_locked / challenge_start` | Is the game itself working? Target 60%+ for a three-tap flow. |
 | Return-to-result rate | Users with `result_viewed` within 48h of `prediction_locked` | The retention loop. This is what streaks, leaderboards and the "result is in" push are for. |
 | Pages per predictor session | Content pages viewed in sessions that include a lock | View depth: the reveal links to the preview, the result links to the report. |
+| Welcome offer claim rate | `welcome_offer_claimed / welcome_offer_shown` | The offer dialog fires once, after a user's first click-out. It is also where the weekly prize is introduced, so a low claim rate with a high `welcome_offer_to_table` rate still counts as working. |
 
 Guardrails: FTD and registration rate from partner postbacks (lead quality), CTR of the existing partner odds block (no cannibalisation), responsible-gambling flags and complaints.
 
@@ -54,6 +55,8 @@ First experiments:
 
 1. Blind reveal vs open reveal (probabilities shown before the user picks). Expect blind to win on completion and on click-out, because the comparison only means something after a commitment.
 2. Odds screen before Lock vs after Lock. Expect after to win on lead quality, because the user has finished the game and is not being interrupted.
+
+After a user's first click-out the prototype shows a one-time welcome-offer dialog: pick one partner offer to claim, or go to the weekly table, where the top 100 earn another partner offer on Monday. It is dismissible, fires once per profile, and every offer in it is labelled illustrative.
 
 All events are visible in the prototype's Metrics panel at the bottom of every screen.
 

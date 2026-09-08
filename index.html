@@ -476,6 +476,19 @@ body[data-layout="wide"]{--shell:1120px}
 .sheet .offer .t{font-family:var(--font-display);font-size:22px;font-weight:700;line-height:1.05}
 .sheet .offer .terms{font-size:12px;color:var(--ink-2);margin-top:6px}
 .sheet .foot-cta{margin-top:16px}
+.offer-pick{display:grid;gap:10px;margin-top:16px}
+.opick{display:flex;align-items:center;gap:12px;padding:14px;border-radius:var(--radius);border:1px solid var(--line-strong);background:var(--surface-2);min-height:64px;transition:border-color .15s,background .15s}
+.opick:hover{border-color:#4b5245}
+.opick[aria-checked="true"]{border-color:var(--accent);background:var(--accent-dim)}
+.opick .logo{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:15px;flex:none}
+.opick .t{min-width:0}
+.opick .t b{display:block;font-family:var(--font-display);font-size:20px;font-weight:700;line-height:1.1}
+.opick .t small{display:block;font-size:12px;color:var(--ink-3);margin-top:3px}
+.opick .tick{margin-left:auto;width:24px;height:24px;border-radius:50%;border:1px solid var(--line-strong);display:grid;place-items:center;color:transparent;flex:none}
+.opick[aria-checked="true"] .tick{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.more-bonus{display:flex;gap:12px;align-items:flex-start;margin-top:18px;padding:14px 16px;border-radius:var(--radius);background:linear-gradient(120deg,rgba(215,255,61,.09),rgba(23,25,21,.9) 60%);border:1px solid rgba(215,255,61,.26)}
+.more-bonus b{font-family:var(--font-display);font-size:19px;font-weight:700;line-height:1.1;display:block}
+.more-bonus p{font-size:13px;color:var(--ink-2);margin:5px 0 10px;line-height:1.45}
 .sheet .age{display:flex;gap:12px;align-items:flex-start;margin-top:14px;font-size:13px;color:var(--ink-2);cursor:pointer;line-height:1.45}
 .sheet .age input{width:20px;height:20px;margin:1px 0 0;accent-color:var(--accent);flex:none;cursor:pointer}
 .fixture.missed{opacity:.6}
@@ -798,7 +811,7 @@ const CONFIG = Object.freeze({
    aggregate stats plus one entry per match. Nothing else is persisted client-side. */
 const DEFAULT_PROFILE = Object.freeze({
   uid: null, iq: 0, streak: 0, correct: 0, total: 0, aiCorrect: 0, marketCorrect: 0,
-  humans: 2, ai: 3, club: null, prevRank: null, ageConfirmed: false, matches: {},
+  humans: 2, ai: 3, club: null, prevRank: null, ageConfirmed: false, welcomeSeen: false, welcomeClaimed: null, matches: {},
 });
 const newId = () => (crypto.randomUUID ? crypto.randomUUID() : 'u-' + Math.random().toString(36).slice(2, 10));
 function loadProfile() {
@@ -1666,6 +1679,47 @@ function viewRetention() {
   </div>`;
 }
 
+/* Shown once, right after the first handoff: the offer the user just earned, and the
+   weekly prize as the reason to play the rest of the week. Dismissible, never blocking. */
+function viewWelcomeSheet() {
+  const offers = PARTNERS.filter((x) => x.offer);
+  const picked = PARTNERS.find((x) => x.id === state.sheet.pick) || offers[0];
+  return `
+  <div class="sheet-wrap" data-action="close-welcome">
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="welcome-title" data-stop>
+      <div class="grab" aria-hidden="true"></div>
+      <h2 id="welcome-title">Your first bet unlocks a welcome offer</h2>
+      <p class="q-sub" style="margin-top:8px">Pick the one you want. One offer per person, new customers only, and it is funded by the partner, not by Tribuna.</p>
+      <div class="offer-pick" role="radiogroup" aria-label="Choose your welcome offer">
+        ${offers.map((x) => `
+        <button class="opick" role="radio" aria-checked="${x.id === picked.id}" data-action="welcome-pick" data-partner="${x.id}">
+          <span class="logo" style="background:${x.color};color:${x.ink}">${x.mark}</span>
+          <span class="t"><b>${x.offer.title}</b><small>${x.name} · ${x.offer.short}</small></span>
+          <span class="tick" aria-hidden="true">${icon('i-check')}</span>
+        </button>`).join('')}
+      </div>
+      <p class="tiny dim" style="margin-top:10px">${picked.offer.terms}</p>
+      <div class="foot-cta">
+        <button class="btn btn-primary btn-block" data-action="welcome-claim" data-partner="${picked.id}">Claim at ${picked.name} ${icon('i-ext')}</button>
+      </div>
+      <div class="more-bonus">
+        <span class="pb-ic">${icon('i-trophy')}</span>
+        <div>
+          <b>Want more than one bonus?</b>
+          <p>Finish in the top ${PRIZE_TOP} of this week's table and you get another partner offer on Monday. ${state.profile.iq > 0
+            ? `You are #${weekSummary().rank} of ${fmtK(WEEK_FIELD)}.`
+            : weekSummary().locked > 0 ? 'Your locked calls score at full-time, and that is when you enter the table.' : 'Lock a prediction to enter the table.'}</p>
+          <button class="btn btn-secondary btn-sm" data-action="welcome-board">See the table ${icon('i-arrow')}</button>
+        </div>
+      </div>
+      <div class="foot-cta">
+        <button class="btn btn-ghost" data-action="close-welcome">Not now</button>
+      </div>
+      <p class="tiny dim" style="margin-top:6px">Illustrative offers, not live terms. 18+ · T&amp;Cs apply · a prediction stays free to lock.</p>
+    </div>
+  </div>`;
+}
+
 /* --------------------------------------------------------------- handoff */
 /* A slip is {matchId, legs:[{qid, oid}], type:'builder'|'single'}; odds come from the match data. */
 function slipLegs(slip) {
@@ -1691,6 +1745,7 @@ function betCta(slip, label, source) {
 
 function viewSheet() {
   if (!state.sheet) return '';
+  if (state.sheet.kind === 'welcome') return viewWelcomeSheet();
   const { partnerId, slip } = state.sheet;
   const partner = PARTNERS.find((p) => p.id === partnerId);
   const idx = PARTNERS.indexOf(partner);
@@ -1995,9 +2050,29 @@ const ACTIONS = {
     const { slip, source } = state.sheet;
     const odds = slipOdds(slip, PARTNERS.indexOf(partner));
     track('bookmaker_click', { partner: partner.name, odds, type: slip.type, offer: !!partner.offer, source, match: slip.matchId });
-    closeSheet();
     toast(`${partner.name} opens in a new tab with your slip pre-filled (mock)`);
+    if (state.profile.welcomeSeen) { closeSheet(); return; }
+    updateProfile({ welcomeSeen: true });
+    track('welcome_offer_shown', { after: partner.name });
+    setState({ sheet: { kind: 'welcome', pick: partner.offer ? partner.id : null } });
   },
+  'welcome-pick'(btn) {
+    track('welcome_offer_selected', { partner: PARTNERS.find((x) => x.id === btn.dataset.partner).name });
+    setState({ sheet: { ...state.sheet, pick: btn.dataset.partner } });
+  },
+  'welcome-claim'(btn) {
+    const partner = PARTNERS.find((x) => x.id === btn.dataset.partner);
+    updateProfile({ welcomeClaimed: partner.id });
+    track('welcome_offer_claimed', { partner: partner.name });
+    closeSheet();
+    toast(`${partner.name} opens with the offer applied (mock)`);
+  },
+  'welcome-board'() {
+    track('welcome_offer_to_table', {});
+    closeSheet();
+    ACTIONS.nav({ dataset: { to: 'board', label: 'Table' } });
+  },
+  'close-welcome'() { track('welcome_offer_dismissed', {}); closeSheet(); },
   'to-wait'() { go('wait', { sheet: null }); },
   'to-odds'() { track('odds_viewed', { tab: state.oddsTab, source: 'wait_screen' }); go('odds', { sheet: null }); },
   async share() {
@@ -2044,7 +2119,8 @@ const ACTIONS = {
 document.addEventListener('click', (e) => {
   const el = e.target.closest('[data-action]');
   if (!el || el.disabled) return;
-  if (el.dataset.action === 'close-sheet' && e.target.closest('[data-stop]') && !e.target.closest('button[data-action="close-sheet"]')) return;
+  const closers = ['close-sheet', 'close-welcome'];
+  if (closers.includes(el.dataset.action) && e.target.closest('[data-stop]') && !e.target.closest(`button[data-action="${el.dataset.action}"]`)) return;
   const handler = ACTIONS[el.dataset.action];
   if (!handler) return;
   if (el.tagName === 'A') e.preventDefault();
