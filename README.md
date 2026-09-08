@@ -86,7 +86,7 @@ All events are visible in the prototype's Metrics panel at the bottom of every s
 
 Kept out of the prototype so the core flow stays readable. Each is a follow-up, not a missing piece:
 
-- Badge shelf and a visual share card (badges are toasts, sharing copies text).
+- Badge shelf and a visual share card. Badges are toasts, and sharing hands the text to the system share sheet where the browser has one, clipboard everywhere else.
 - "Save streak to your Tribuna account" prompt after the first result, the soft registration gate.
 - Weekend Quest ("predict three matches this weekend"), streak freeze, friend duels.
 - Real odds feed with geo-specific partner ordering, push notifications for "result is in" and "streak at risk", weekly reset of leaderboards.

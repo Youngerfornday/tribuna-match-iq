@@ -2100,8 +2100,19 @@ const ACTIONS = {
   'to-wait'() { go('wait', { sheet: null }); },
   'to-odds'() { track('odds_viewed', { tab: state.oddsTab, source: 'wait_screen' }); go('odds', { sheet: null }); },
   async share() {
-    track('share_click', { match: state.matchId });
-    const ok = await copyText(shareText());
+    const text = shareText();
+    /* Phones expect the system share sheet; everything else falls back to the clipboard. */
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: 'Tribuna Match IQ', text });
+        track('share_click', { match: state.matchId, via: 'system' });
+        return;
+      } catch (e) {
+        if (e && e.name === 'AbortError') { track('share_dismissed', { match: state.matchId }); return; }
+      }
+    }
+    track('share_click', { match: state.matchId, via: 'clipboard' });
+    const ok = await copyText(text);
     toast(ok ? 'Copied. Paste it anywhere.' : 'Could not copy on this browser');
   },
   simulate() {
