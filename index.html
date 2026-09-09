@@ -963,7 +963,11 @@ function marketPick(question) {
   const probs = impliedProbs(question);
   return question.options[probs.indexOf(Math.max(...probs))];
 }
-const optionOf = (question, id) => question.options.find((o) => o.id === id);
+/* A stored answer can outlive the option it points at: a profile saved before the
+   fixtures changed, or a market the feed has pulled. A dash is a poor answer, but it
+   is a far better one than losing the whole screen to a thrown error. */
+const MISSING_OPTION = Object.freeze({ id: null, label: '—', sub: '', ai: 0, fans: 0, odds: [0, 0, 0] });
+const optionOf = (question, id) => ((question && question.options) || []).find((o) => o.id === id) || MISSING_OPTION;
 const leagueFor = (iq) => LEAGUES.reduce((cur, l) => (iq >= l.min ? l : cur), LEAGUES[0]);
 const nextLeague = (iq) => LEAGUES.find((l) => l.min > iq) || null;
 const hitRate = (correct, total) => (total ? Math.round((correct / total) * 100) : 0);
