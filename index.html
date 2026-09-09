@@ -157,8 +157,8 @@ body[data-layout="wide"]{--shell:1120px}
 .hero-copy{position:relative;z-index:1;min-width:0}
 /* On phones the art sits out of flow in the corner: stacked above the copy it
    cost 190px before the headline and pushed the CTA under the fold. */
-.hero>.hero-art{position:absolute;top:0;right:0;z-index:0;width:var(--art-w);aspect-ratio:1/1;pointer-events:none;-webkit-mask-image:linear-gradient(to bottom,#000 80%,transparent 100%);mask-image:linear-gradient(to bottom,#000 80%,transparent 100%)}
-.hero-photo{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 22%}
+.hero>.hero-art{position:absolute;top:0;right:0;z-index:0;width:var(--art-w);aspect-ratio:760/944;pointer-events:none;-webkit-mask-image:linear-gradient(to bottom,#000 55%,transparent 97%);mask-image:linear-gradient(to bottom,#000 55%,transparent 97%)}
+.hero-photo{display:block;width:100%;height:100%;object-fit:contain;object-position:top center}
 .hero-copy>.row{padding-right:calc(var(--art-w) - 34px)}
 .hero:before{content:"";position:absolute;inset:-50% -20% auto auto;width:320px;height:320px;border-radius:50%;background:radial-gradient(closest-side,rgba(215,255,61,.18),transparent 70%);pointer-events:none}
 .hero:after{content:"";position:absolute;inset:auto auto -60% -20%;width:280px;height:280px;border-radius:50%;background:radial-gradient(closest-side,rgba(57,135,229,.16),transparent 70%);pointer-events:none}
@@ -204,8 +204,8 @@ body[data-layout="wide"]{--shell:1120px}
 @media (min-width:720px){
   .hero{flex-direction:row;align-items:center;gap:28px;padding:30px 28px}
   .hero-copy{flex:1;min-width:0}
-  .hero>.hero-art{position:relative;top:auto;right:auto;order:0;width:min(400px,38%);aspect-ratio:auto;align-self:stretch;margin:-30px -28px -30px 0}
-  .hero-photo{object-position:50% 32%}
+  .hero>.hero-art{position:relative;top:auto;right:auto;order:0;width:min(400px,38%);aspect-ratio:auto;align-self:stretch;margin:-30px -28px -30px 0;-webkit-mask-image:linear-gradient(to bottom,#000 84%,transparent 100%);mask-image:linear-gradient(to bottom,#000 84%,transparent 100%)}
+  .hero-photo{object-fit:cover;object-position:50% 32%}
   .hero-copy>.row{padding-right:0}
 }
 
