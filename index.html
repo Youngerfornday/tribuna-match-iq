@@ -435,6 +435,12 @@ body[data-layout="wide"]{--shell:1120px}
 .iq-hero{margin-top:16px;padding:20px;border-radius:var(--radius);background:linear-gradient(135deg,#1c2116,#171915 70%);border:1px solid var(--line-strong);display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px}
 .iq-hero .n{font-family:var(--font-display);font-size:56px;font-weight:800;line-height:1;color:var(--accent)}
 .iq-hero .n small{font-size:20px;color:var(--ink-2);font-weight:700;margin-left:4px}
+.iq-reward{display:flex;align-items:flex-start;justify-content:center;gap:14px}
+.iq-reward-badge{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:56px}
+.iq-reward .medallion{width:56px;height:56px;font-size:20px;animation:badge-reveal .46s var(--ease) both}
+.iq-reward-badge .name{max-width:72px;color:var(--ink);font-family:var(--font-display);font-size:13px;font-weight:700;line-height:1;text-align:center;white-space:normal;hyphens:none;word-break:normal;overflow:visible;animation:badge-name .26s var(--ease) .14s both}
+@keyframes badge-reveal{0%{opacity:0;transform:scale(.7);box-shadow:0 0 0 0 rgba(215,255,61,0)}60%{opacity:1;transform:scale(1.05);box-shadow:0 0 0 8px rgba(215,255,61,.12)}100%{opacity:1;transform:scale(1);box-shadow:0 0 0 3px var(--accent-dim)}}
+@keyframes badge-name{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 .duel{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
 .duel div{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);padding:12px;text-align:center}
 .duel span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);font-weight:600}
@@ -562,14 +568,27 @@ body[data-layout="wide"]{--shell:1120px}
 .shelf .hd{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:14px 16px 4px}
 .shelf .hd h2{font-family:var(--font-display);font-size:22px;font-weight:700}
 .shelf .hd span{font-size:12px;color:var(--ink-3)}
-.shelf-grid{display:grid;gap:2px;padding:8px 8px 12px}
-.badge{display:flex;align-items:center;gap:12px;padding:10px 8px;border-radius:var(--radius-sm)}
-.badge .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none;background:var(--surface-2);color:var(--ink-3);font-size:16px}
+.shelf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:2px;padding:8px 8px 12px}
+.badge{display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 8px 14px;border-radius:var(--radius-sm);text-align:center}
+.medallion{width:60px;height:60px;border-radius:50%;display:grid;place-items:center;flex:none;background:transparent;color:var(--ink-3);border:1px dashed var(--line-strong);font-size:22px;opacity:.7}
+.badge .t{min-width:0;height:72px;display:flex;flex-direction:column}
 .badge .t b{display:block;font-family:var(--font-display);font-size:17px;font-weight:700;line-height:1.1;color:var(--ink-2)}
 .badge .t small{display:block;font-size:12px;color:var(--ink-3);margin-top:2px;line-height:1.35}
-.badge.on .ic{background:var(--accent);color:var(--accent-ink)}
+.badge.on .medallion,.iq-reward .medallion{background:radial-gradient(circle at 32% 24%,rgba(255,255,255,.32),transparent 36%),var(--accent);color:var(--accent-ink);border:2px solid var(--accent);box-shadow:0 0 0 3px var(--accent-dim);opacity:1}
 .badge.on .t b{color:var(--ink)}
 .badge.on .t small{color:var(--accent)}
+.landing-next{margin-top:22px;padding:18px;border-radius:var(--radius);background:linear-gradient(135deg,rgba(215,255,61,.06),var(--surface) 42%);border:1px solid var(--line);border-top-color:rgba(215,255,61,.38);box-shadow:var(--shadow)}
+.landing-next .head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.landing-next .head .eyebrow{display:inline-flex;align-items:center;gap:6px;color:var(--accent)}
+.landing-next .head .eyebrow .i{width:22px;height:22px;padding:3px;border-radius:50%;background:var(--accent-dim);color:var(--accent)}
+.landing-next h3{font-size:32px;line-height:.95;margin-top:4px}
+.landing-next .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px;margin-top:14px}
+.landing-next .stat{min-width:0;padding:12px 10px;border-radius:var(--radius-sm);background:var(--surface-2);border:1px solid var(--line-strong);text-align:center}
+.landing-next .stat > .label{display:block;font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.landing-next .stat b{display:block;margin-top:3px;font-family:var(--font-display);font-size:28px;font-weight:800;line-height:1.05}
+.landing-next .stat b.crowd{font-size:28px;line-height:1.05}
+.landing-next .stat b.crowd small{display:block;margin-top:2px;font-family:var(--font-body);font-size:12px;font-weight:600;line-height:1.1;color:var(--ink-3);text-transform:none;letter-spacing:0}
+.landing-next .foot-cta{margin-top:14px}
 .myweek{border-radius:var(--radius);background:var(--surface);border:1px solid var(--line);overflow:hidden}
 .myweek .hd{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:14px 16px 10px;flex-wrap:wrap}
 .myweek .hd h2{font-family:var(--font-display);font-size:22px;font-weight:700}
@@ -674,6 +693,12 @@ body[data-layout="wide"]{--shell:1120px}
   .site-nav button{font-size:12px;padding:0 6px}
   .fixture .names{font-size:18px}
   .lb td,.lb th{padding-left:6px;padding-right:6px}
+  .iq-reward{gap:12px}
+  .iq-reward-badge{min-width:48px}
+  .iq-reward .medallion{width:48px;height:48px;font-size:18px}
+  .landing-next h3{font-size:30px}
+  .landing-next .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .landing-next .stat:last-child{grid-column:1/-1}
 }
 @media (prefers-reduced-motion:reduce){
   *{animation:none!important;transition:none!important}
@@ -1175,6 +1200,8 @@ function viewLanding() {
   const p = state.profile;
   const w = weekSummary();
   const totalPredictions = FANBASES.reduce((a, f) => a + f.n, 0);
+  const nextOpen = MATCHES.find((m) => statusOf(m, p) === 'open');
+  const crowdPick = nextOpen ? nextOpen.questions.winner.options.reduce((best, option) => option.fans > best.fans ? option : best) : null;
   return `
   <section class="hero" aria-labelledby="hero-title">
     <div class="hero-copy">
@@ -1208,6 +1235,18 @@ function viewLanding() {
     </div>
     <div class="lb">${playersTable(p, { limit: 10, expandable: true })}</div>
   </section>
+
+  ${nextOpen ? `
+  <section class="landing-next" aria-labelledby="next-match-title">
+    <div class="head"><span class="eyebrow">${icon('i-flame')} Next open match</span><span class="tiny dim">${nextOpen.competition} · ${nextOpen.kickoffLabel}</span></div>
+    <h3 id="next-match-title">${nextOpen.home.name} v ${nextOpen.away.name}</h3>
+    <div class="stats">
+      <div class="stat"><span class="label">Calls locked</span><b class="num">${nextOpen.fansCount}</b></div>
+      <div class="stat"><span class="label">Kick-off in</span><b class="num"><span data-countdown="${nextOpen.id}">${formatCountdown(kickoffOf(nextOpen) - Date.now())}</span></b></div>
+      <div class="stat"><span class="label">Crowd pick</span><b class="crowd"><span class="num">${crowdPick.fans}%</span><small>back ${crowdPick.label}</small></b></div>
+    </div>
+    <div class="foot-cta"><button class="btn btn-secondary btn-block" data-action="open-match" data-match="${nextOpen.id}">Make your three calls ${icon('i-arrow')}</button></div>
+  </section>` : ''}
 
   <section class="terms" aria-labelledby="terms-title">
     <h2 id="terms-title">Game rules and terms</h2>
@@ -1686,6 +1725,7 @@ function viewResult() {
   const r = m.result;
   const out = state.outcome;
   const p = state.profile;
+  const freshBadges = (out.fresh || []).map(badgeById).filter(Boolean);
   const top = Math.max(out.you, out.ai, out.fans);
   const rank = rankOf(p);
   const moved = p.prevRank && p.prevRank !== rank ? p.prevRank - rank : 0;
@@ -1709,7 +1749,7 @@ function viewResult() {
   </div>
   <div class="iq-hero">
     <div><span class="eyebrow">Match IQ earned</span><div class="n num" data-countup="${out.points}">0<small>pts</small></div></div>
-    ${icon('i-bolt')}
+    ${freshBadges.length ? `<div class="iq-reward" aria-label="Badges unlocked: ${freshBadges.map((b) => b.name).join(', ')}">${freshBadges.map((b) => `<div class="iq-reward-badge"><span class="medallion">${icon(b.icon)}</span><span class="name">${b.name}</span></div>`).join('')}</div>` : icon('i-bolt')}
   </div>
   ${!p.accountSaved && !p.accountPrompted ? `
   <section class="save-card" aria-label="Save your progress">
@@ -1860,6 +1900,7 @@ function rivalsPanel(p) {
 
 function badgeShelf(p) {
   const owned = p.badges || [];
+  const ordered = BADGES.filter((b) => owned.includes(b.id)).concat(BADGES.filter((b) => !owned.includes(b.id)));
   return `
   <section class="shelf" aria-label="Badges">
     <div class="hd">
@@ -1867,11 +1908,11 @@ function badgeShelf(p) {
       <span>${owned.length} of ${BADGES.length}</span>
     </div>
     <div class="shelf-grid">
-      ${BADGES.map((b) => {
+      ${ordered.map((b) => {
         const has = owned.includes(b.id);
         return `
         <div class="badge ${has ? 'on' : ''}">
-          <span class="ic">${icon(b.icon)}</span>
+          <span class="ic medallion">${icon(b.icon)}</span>
           <span class="t"><b>${b.name}</b><small>${has ? 'Unlocked' : b.hint}</small></span>
         </div>`;
       }).join('')}
@@ -2691,7 +2732,6 @@ const ACTIONS = {
       try { new Notification('Tribuna Match IQ', { body: `${m.home.name} v ${m.away.name}: +${outcome.points} Match IQ, ${outcome.you}/3 correct.`, tag: 'match-iq-' + m.id }); } catch (e) { /* some browsers need a service worker */ }
     }
     go('result', { outcome: { ...outcome, fresh } });
-    toastQueue(fresh.map((id) => ({ text: `Badge unlocked: ${badgeById(id).name}`, kind: 'badge' })));
   },
   'to-retention'() {
     const rank = rankOf(state.profile);
