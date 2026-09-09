@@ -174,16 +174,11 @@ h1 .lime{color:var(--accent)}
 .toc .q{display:block;font-size:13px;color:var(--ink-3);font-weight:400;margin-top:2px}
 .legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:12.5px;color:var(--ink-3);margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
 .legend span{display:inline-flex;align-items:center;gap:7px}
-.art{width:100%;display:block}
-/* The artwork ships on its own near-black ground (#191d1e), lighter than the slide.
-   A vignette in the slide's own colour dissolves that rectangle instead of framing it. */
-.art-frame{position:relative;display:block;isolation:isolate}
-.art-frame::after{
-  content:"";position:absolute;inset:-1px;pointer-events:none;
-  background:
-    linear-gradient(90deg,var(--bg) 0,rgba(14,15,12,0) 26%,rgba(14,15,12,0) 74%,var(--bg) 100%),
-    linear-gradient(180deg,var(--bg) 0,rgba(14,15,12,0) 22%,rgba(14,15,12,0) 78%,var(--bg) 100%);
-}
+.art{width:100%;height:auto;display:block}
+/* The cut-out art runs off the bottom of its frame; a short fade there keeps the
+   legs from ending on a ruled line. */
+.art-frame,.slide-art{-webkit-mask-image:linear-gradient(to bottom,#000 84%,transparent 100%);mask-image:linear-gradient(to bottom,#000 84%,transparent 100%)}
+.art-frame{position:relative;display:block}
 /* In two-column slides the artwork is a supporting note, not the subject. */
 .split figure{max-width:270px;margin-left:auto}
 /* A slide whose illustration is atmosphere, not a column: it lives in the field,
@@ -195,13 +190,7 @@ h1 .lime{color:var(--accent)}
   position:absolute;right:max(3vw,16px);top:50%;transform:translateY(-50%);
   width:min(30vw,440px);z-index:0;pointer-events:none;display:block;
 }
-.slide-art img{width:100%;display:block}
-.slide-art::after{
-  content:"";position:absolute;inset:-1px;pointer-events:none;
-  background:
-    linear-gradient(90deg,var(--bg) 0,rgba(14,15,12,0) 34%,rgba(14,15,12,0) 72%,var(--bg) 100%),
-    linear-gradient(180deg,var(--bg) 0,rgba(14,15,12,0) 24%,rgba(14,15,12,0) 76%,var(--bg) 100%);
-}
+.slide-art img{width:100%;height:auto;display:block}
 @media (max-width:1100px){.slide-art{display:none}}
 figure{margin:0}
 figcaption{margin-top:2px;font-size:12.5px;color:var(--ink-3);line-height:1.45}
@@ -277,7 +266,7 @@ figcaption{margin-top:2px;font-size:12.5px;color:var(--ink-3);line-height:1.45}
           </div>
         </div>
         <figure>
-          <span class="art-frame"><img class="art" src="art/captain-ai.webp?v=3" alt="CaptainAI — модель, проти якої грає користувач" width="390" height="484"></span>
+          <span class="art-frame"><img class="art" src="art/captain-ai.webp?v=4" alt="CaptainAI — модель, проти якої грає користувач" width="390" height="484"></span>
           <figcaption>CaptainAI — суперник читача. Не «AI-функція», а персонаж, з яким ви ведете особистий рахунок.</figcaption>
         </figure>
       </div>
@@ -460,7 +449,7 @@ figcaption{margin-top:2px;font-size:12.5px;color:var(--ink-3);line-height:1.45}
 
   <!-- ------------------------------------------------------------- 2.4 -->
   <section class="slide dense field" id="s24" data-label="2.4 Відповідальна гра">
-    <span class="slide-art"><img src="art/captain-king.webp?v=3" alt="Переможець тижневої таблиці з кубком і безкоштовною ставкою" width="440" height="546"></span>
+    <span class="slide-art"><img src="art/captain-king.webp?v=4" alt="Переможець тижневої таблиці з кубком і безкоштовною ставкою" width="440" height="546"></span>
     <div class="inner">
       <div class="head">
         <div class="eyebrow"><span class="no">2.4</span>iGaming-конверсія<span class="sep"></span>Відповідальна гра</div>
