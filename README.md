@@ -16,7 +16,7 @@ The "Simulate full-time" button on the waiting screen is a prototype control. In
 - Every screen has its own URL (`#/challenges`, `#/match/bay-bvb/play`, `#/board`, `#/me`), so deep links and the browser back button work. In production these map 1:1 to paths under `/match-iq/`.
 - A Match IQ sub-nav (Overview / Challenges / Table / You) sits under the site header on every browse screen; the play flow replaces it with one labelled back link, so every screen names exactly one way out.
 - Width follows the task: browse screens open up to 1120px, the play flow stays a single 620px column where a wide measure would hurt.
-- **Overview** reads top to bottom: hero, how it works, prize banner, weekly leaderboard, rules. The leaderboard shows the top 10 and expands to the full top 100, which is the prize cut-off.
+- **Overview** reads top to bottom: hero, how it works, prize banner, weekly leaderboard, next open match, rules. The leaderboard shows the top 10 and expands to the full top 100, which is the prize cut-off. The next-match card exists so the page does not dead-end on the terms block: it carries the game's own numbers - calls locked, time to kick-off, where the crowd stands - and one route back into a match, with no second betting surface under the prize banner.
 - **Challenges** is one column: a progress strip for the week, then the fixtures. The next match to call is the only highlighted row and carries the only call to action on the screen; matches already played show what you called and what it scored.
 - **Table** is the ranking: the prize, then where you stand, then the table itself.
 - **You** is your own week — rating, league, streak, hit rate against CaptainAI and the market, every call you locked this week, and the next challenge. The leaderboard lives on Table alone, so the two screens do not repeat each other.
@@ -86,7 +86,7 @@ All events are visible in the prototype's Metrics panel at the bottom of every s
 - Partner order follows the market (`PARTNER_ORDER` by geo, UA leads with FAVBET), while the best price is highlighted wherever it sits. Ordering is a market decision; price is not.
 - The first result asks whether to save the streak to a Tribuna account. It is the soft registration gate, shown once, and nothing is gated behind refusing it.
 - Sharing produces a card, not a line of text: a 1080x1080 image drawn on a canvas with your three calls, the Power Pick and, after full-time, the points each call scored. It goes through the system share sheet where the browser accepts files, downloads otherwise, and falls back to copied text.
-- Badges persist. Five of them, earned ids stored on the profile, shown on a shelf where the locked ones stay visible with the condition that unlocks them.
+- Badges persist. Five of them, earned ids stored on the profile, shown on a shelf of medals where the locked ones stay visible with the condition that unlocks them. A badge earned at full-time lands in the same block that counts the points up, rather than in a toast that flies away.
 
 - Everything is mocked: fan percentages, CaptainAI probabilities and reasoning, partner odds, the leaderboards and the match results. Amounts are in euro.
 - The weekly table is a real field: the named players are hand-written, the rest of the visible top 100 is generated deterministically from a seed so the prize cut-off means something. The stated field size (12.5k) is the number the copy claims, not the number of rendered rows.
