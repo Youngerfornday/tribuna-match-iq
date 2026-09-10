@@ -7,7 +7,7 @@ Prototype for the Tribuna.com iGaming Product/Project Manager test task.
 - **Integration contract:** [`docs/integration.md`](docs/integration.md) — the three things a browser cannot host (odds feed, push, account) specified to the point where a backend team can build them without touching this front end: payload shapes, suspension and close semantics, notification rules, sync and merge conflicts, the event list and partner attribution.
 - **Run it locally:** open `index.html` in any browser. No build step, no dependencies. Over HTTPS it installs as a PWA and works offline; the rest of the repo is the illustrations, icons and social card in `art/`, a manifest and a service worker.
 
-Flow: match page → 3 blind calls (winner, over/under, scorer) → reveal CaptainAI / fans / market after each call → review the three calls and tap one as the Power Pick, then lock → odds at three partners (bet builder or single) → wait for full-time → result → Match IQ, streak, league, leaderboards → next match.
+Flow: match page → 3 blind calls (winner, over/under, scorer), each one selected and then committed, so a mis-tap on a phone is not a scored call → reveal CaptainAI / fans / market after each commit → review the three calls and tap one as the Power Pick, then lock → odds at three partners (bet builder or single) → wait for full-time → result → Match IQ, streak, league, leaderboards → next match.
 
 The "Simulate full-time" button on the waiting screen is a prototype control. In production the result arrives after the real match.
 

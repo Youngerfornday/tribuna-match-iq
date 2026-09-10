@@ -321,6 +321,8 @@ body[data-layout="wide"]{--shell:1120px}
 .opt{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:60px;padding:14px 16px;border-radius:var(--radius);border:1px solid var(--line-strong);background:var(--surface);transition:border-color .15s,background .15s}
 .opt:hover{border-color:#4b5245;background:var(--surface-2)}
 .opt[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-dim)}
+.opt.picked{border-color:var(--accent);background:var(--accent-dim);box-shadow:inset 3px 0 0 var(--accent)}
+.opt.picked .tag{color:var(--ink-2)}
 .opt[disabled]{cursor:default}
 .opt[disabled]:hover{border-color:var(--line-strong);background:var(--surface)}
 .opt[disabled][aria-pressed="true"]{border-color:var(--accent);background:var(--accent-dim)}
@@ -947,6 +949,7 @@ const avg = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
 const round2 = (n) => Math.round(n * 100) / 100;
 const fmtOdds = (n) => n.toFixed(2);
 const fmtK = (n) => (n >= 1000 ? (n / 1000).toFixed(1) + 'k' : String(n));
+const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
 const pad = (n) => String(n).padStart(2, '0');
 const matchById = (id) => MATCHES.find((m) => m.id === id);
@@ -1080,7 +1083,7 @@ const SESSION_ID = newId();
 /* =================================================================== state */
 const initialState = () => ({
   screen: 'landing', matchId: MATCHES[0].id, qIndex: 0,
-  answers: {}, powerPick: null, oddsTab: 'builder', lbTab: 'players',
+  answers: {}, pending: null, powerPick: null, oddsTab: 'builder', lbTab: 'players',
   outcome: null, sheet: null, lbFull: false, drift: PARTNERS.map(() => 1), suspended: PARTNERS.map(() => false), pricedAt: Date.now(),
   profile: loadProfile(), events: [],
 });
@@ -1515,6 +1518,10 @@ function viewQuestion() {
   const qs = questionsOf(m);
   const q = qs[state.qIndex];
   const chosen = state.answers[q.id];
+  /* A call is scored, streaked and ranked, so it cannot rest on one tap of a phone: the
+     tap selects and a second press commits. Nothing is revealed until the commit, so the
+     call stays as blind as it was when a tap decided it outright. */
+  const pending = chosen || state.pending;
   const isLast = state.qIndex === qs.length - 1;
   return `
   ${shellHead(1)}
@@ -1523,13 +1530,15 @@ function viewQuestion() {
   <p class="q-sub">${q.sub}</p>
   <div class="options" role="group" aria-label="${q.title}">
     ${q.options.map((o) => `
-    <button class="opt" data-action="answer" data-q="${q.id}" data-opt="${o.id}" aria-pressed="${chosen === o.id}" ${chosen ? 'disabled' : ''}>
+    <button class="opt ${!chosen && pending === o.id ? 'picked' : ''}" data-action="answer" data-q="${q.id}" data-opt="${o.id}" aria-pressed="${pending === o.id}" ${chosen ? 'disabled' : ''}>
       <span><span class="lbl">${o.label}</span><span class="sub">${o.sub}</span></span>
-      ${chosen === o.id ? `<span class="tag">Your call</span>` : ''}
+      ${chosen === o.id ? `<span class="tag">Your call</span>` : !chosen && pending === o.id ? `<span class="tag">Selected</span>` : ''}
     </button>`).join('')}
   </div>
-  ${chosen ? revealChart(q, chosen) : '<p class="tiny dim" style="margin-top:14px">Blind call: CaptainAI, fans and market reveal after you choose.</p>'}
-  ${chosen ? `<div class="foot-cta"><button class="btn btn-primary btn-block" data-action="next-q">${isLast ? 'Review my calls' : 'Next call'} ${icon('i-arrow')}</button></div>` : ''}`;
+  ${chosen ? revealChart(q, chosen) : `<p class="tiny dim" style="margin-top:14px">Blind call: CaptainAI, fans and market reveal after you commit.${pending ? ' Tap another option to change your mind.' : ''}</p>`}
+  ${chosen
+    ? `<div class="foot-cta"><button class="btn btn-primary btn-block" data-action="next-q">${isLast ? 'Review my calls' : 'Next call'} ${icon('i-arrow')}</button></div>`
+    : `<div class="foot-cta"><button class="btn btn-primary btn-block" data-action="commit-call" data-q="${q.id}" ${pending ? '' : 'disabled'}>${pending ? `Commit this call ${icon('i-arrow')}` : 'Tap an option to make your call'}</button></div>`}`;
 }
 
 function slip(locked) {
@@ -2254,7 +2263,7 @@ function countUp(el) {
   const target = Number(el.dataset.countup);
   const suffix = el.querySelector('small') ? el.querySelector('small').outerHTML : '';
   /* CSS handles the rest of the motion; this one is scripted, so it opts out here. */
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { el.innerHTML = target + suffix; return; }
+  if (prefersReducedMotion()) { el.innerHTML = target + suffix; return; }
   const start = performance.now();
   const step = (t) => {
     const k = Math.min(1, (t - start) / 900);
@@ -2400,7 +2409,7 @@ function applyRoute(r) {
     patch.matchId = res.matchId;
     if (['wait', 'odds'].includes(res.screen)) Object.assign(patch, { answers: e.answers, powerPick: e.powerPick });
     if (res.screen === 'result') Object.assign(patch, { answers: e.answers, powerPick: e.powerPick, outcome: computeOutcome(matchById(res.matchId), e.answers, e.powerPick) });
-    if (res.screen === 'match' && state.matchId !== res.matchId) Object.assign(patch, { answers: {}, powerPick: null, qIndex: 0, outcome: null });
+    if (res.screen === 'match' && state.matchId !== res.matchId) Object.assign(patch, { answers: {}, pending: null, powerPick: null, qIndex: 0, outcome: null });
   }
   state = { ...state, ...patch };
   const hash = pathFor(res.screen, res.matchId);
@@ -2558,7 +2567,7 @@ const ACTIONS = {
     const id = btn.dataset.match;
     track('match_page_view', { match: id });
     const same = state.matchId === id;
-    go('match', { matchId: id, sheet: null, ...(same ? {} : { answers: {}, powerPick: null, qIndex: 0, outcome: null }) });
+    go('match', { matchId: id, sheet: null, ...(same ? {} : { answers: {}, pending: null, powerPick: null, qIndex: 0, outcome: null }) });
   },
   resume() {
     const m = currentMatch();
@@ -2572,7 +2581,7 @@ const ACTIONS = {
     if (statusOf(m, state.profile) !== 'open') { toast('Calls are closed for this match'); return; }
     const answered = Object.keys(state.answers).length;
     track(answered ? 'challenge_resume' : 'challenge_start', { match: m.id, answered });
-    go('question', answered ? {} : { qIndex: 0, answers: {}, powerPick: null, oddsTab: 'builder' });
+    go('question', answered ? {} : { qIndex: 0, answers: {}, pending: null, powerPick: null, oddsTab: 'builder' });
   },
   club(btn) {
     updateProfile({ club: btn.dataset.club });
@@ -2580,12 +2589,27 @@ const ACTIONS = {
     render();
   },
   answer(btn) {
+    if (state.answers[btn.dataset.q]) return;
     track('answer_selected', { q: btn.dataset.q, opt: btn.dataset.opt, match: state.matchId });
-    setState({ answers: { ...state.answers, [btn.dataset.q]: btn.dataset.opt } });
+    setState({ pending: btn.dataset.opt });
+  },
+  /* The reveal is the payoff, and on a phone it renders below the fold, so send the screen
+     and the focus to it rather than leaving both where the option used to be. */
+  'commit-call'(btn) {
+    if (!state.pending || state.answers[btn.dataset.q]) return;
+    track('answer_committed', { q: btn.dataset.q, opt: state.pending, match: state.matchId });
+    setState({ answers: { ...state.answers, [btn.dataset.q]: state.pending }, pending: null });
     track('reveal_viewed', { q: btn.dataset.q });
+    requestAnimationFrame(() => {
+      const reveal = document.querySelector('.reveal');
+      if (!reveal) return;
+      reveal.scrollIntoView({ block: 'start', behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
+      const heading = reveal.querySelector('h3');
+      if (heading) { heading.setAttribute('tabindex', '-1'); heading.focus({ preventScroll: true }); }
+    });
   },
   'next-q'() {
-    if (state.qIndex < QUESTION_ORDER.length - 1) { setState({ qIndex: state.qIndex + 1 }); return; }
+    if (state.qIndex < QUESTION_ORDER.length - 1) { setState({ qIndex: state.qIndex + 1, pending: null }); return; }
     track('challenge_complete', { match: state.matchId });
     go('lock');
   },
