@@ -950,6 +950,8 @@ const round2 = (n) => Math.round(n * 100) / 100;
 const fmtOdds = (n) => n.toFixed(2);
 const fmtK = (n) => (n >= 1000 ? (n / 1000).toFixed(1) + 'k' : String(n));
 const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* A place in a field of twelve thousand needs its thousands separator to stay readable. */
+const fmtRank = (n) => n.toLocaleString('en-GB');
 const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
 const pad = (n) => String(n).padStart(2, '0');
 const matchById = (id) => MATCHES.find((m) => m.id === id);
@@ -1261,7 +1263,7 @@ function viewLanding() {
   <section class="board-section" aria-labelledby="lb-title">
     <div class="sec-head">
       <h2 id="lb-title">Weekly leaderboard</h2>
-      <span>${p.iq > 0 ? `You are #${w.rank} of ${fmtK(WEEK_FIELD)}` : `${fmtK(WEEK_FIELD)} players this week`} · resets Monday</span>
+      <span>${p.iq > 0 ? `You are #${fmtRank(w.rank)} of ${fmtK(WEEK_FIELD)}` : `${fmtK(WEEK_FIELD)} players this week`} · resets Monday</span>
     </div>
     <div class="lb">${playersTable(p, { limit: 10, expandable: true })}</div>
   </section>
@@ -1297,7 +1299,7 @@ function viewBoard() {
 
   <section class="standing" aria-label="Your position">
     <div class="st-main">
-      <b>${p.iq > 0 ? `You are #${w.rank}` : 'You are not in the table yet'}</b>
+      <b>${p.iq > 0 ? `You are #${fmtRank(w.rank)}` : 'You are not in the table yet'}</b>
       <span>${p.iq > 0
         ? `${p.iq} Match IQ · ${leagueFor(p.iq).name} · ${w.locked} of ${w.total} matches called this week`
         : `Lock one prediction and you enter this week's table straight away`}</span>
@@ -1822,7 +1824,7 @@ function viewResult() {
     </div>
   </div>` ;
   })()}
-  <p class="rank-line">You are <b>#${rank}</b> of ${fmtK(WEEK_FIELD)} this week${moved > 0 ? `, up ${plural(moved, 'place', 'places')}` : moved < 0 ? `, down ${plural(-moved, 'place', 'places')}` : ''}${beatsAI(p) ? ` — and ${plural(p.iq - CAPTAIN.iq, 'point', 'points')} clear of CaptainAI` : `, ${plural(toBeatAI(p), 'point', 'points')} behind CaptainAI`}.</p>
+  <p class="rank-line">You are <b>#${fmtRank(rank)}</b> of ${fmtK(WEEK_FIELD)} this week${moved > 0 ? `, up ${plural(moved, 'place', 'places')}` : moved < 0 ? `, down ${plural(-moved, 'place', 'places')}` : ''}${beatsAI(p) ? ` — and ${plural(p.iq - CAPTAIN.iq, 'point', 'points')} clear of CaptainAI` : `, ${plural(toBeatAI(p), 'point', 'points')} behind CaptainAI`}.</p>
   <div class="duel" aria-label="Correct calls: you versus CaptainAI versus fans">
     <div class="${out.you === top ? 'win' : ''}"><span>You</span><b class="num">${out.you}/3</b></div>
     <div class="${out.ai === top ? 'win' : ''}"><span>CaptainAI</span><b class="num">${out.ai}/3</b></div>
@@ -1854,7 +1856,6 @@ function quickBet() {
   </section>`;
 }
 
-const fmtRank = (n) => n.toLocaleString('en-GB');
 function movement(row, rank) {
   const prev = row.mv != null ? rank + row.mv : row.prev;
   if (prev == null) return `<span class="mv new">new</span>`;
@@ -1998,7 +1999,7 @@ function myWeek(p) {
         <button class="btn btn-secondary btn-block" data-action="nav" data-to="hub" data-label="Challenges">See this week's challenges ${icon('i-arrow')}</button>
       </div>`}
     ${rows.length ? `<div class="foot row between wrap" style="gap:8px">
-      <span>${p.iq > 0 ? `You are #${w.rank} of ${fmtK(WEEK_FIELD)}.` : 'Your first result lands at full-time.'}</span>
+      <span>${p.iq > 0 ? `You are #${fmtRank(w.rank)} of ${fmtK(WEEK_FIELD)}.` : 'Your first result lands at full-time.'}</span>
       <button class="btn btn-ghost btn-sm" data-action="nav" data-to="board" data-label="Table">Weekly table ${icon('i-arrow')}</button>
     </div>` : ''}
   </section>`;
@@ -2090,7 +2091,7 @@ function viewTableSheet() {
       <div class="st-head">
         <div>
           <h2 id="table-title">Weekly table · top ${PRIZE_TOP}</h2>
-          <p>${WEEK_LABEL} · ${p.iq > 0 ? `you are #${w.rank} of ${fmtK(WEEK_FIELD)}` : `${fmtK(WEEK_FIELD)} players this week`}</p>
+          <p>${WEEK_LABEL} · ${p.iq > 0 ? `you are #${fmtRank(w.rank)} of ${fmtK(WEEK_FIELD)}` : `${fmtK(WEEK_FIELD)} players this week`}</p>
         </div>
         <button class="btn btn-ghost btn-sm" data-action="close-sheet" aria-label="Close the table">${icon('i-x')}</button>
       </div>
@@ -2127,7 +2128,7 @@ function viewWelcomeSheet() {
         <div>
           <b>Want more than one bonus?</b>
           <p>Finish this week above CaptainAI and you get another partner offer on Monday. ${state.profile.iq > 0
-            ? `You are #${weekSummary().rank} of ${fmtK(WEEK_FIELD)}.`
+            ? `You are #${fmtRank(weekSummary().rank)} of ${fmtK(WEEK_FIELD)}.`
             : weekSummary().locked > 0 ? 'Your locked calls score at full-time, and that is when you enter the table.' : 'Lock a prediction to enter the table.'}</p>
           <button class="btn btn-secondary btn-sm" data-action="welcome-board">See the table ${icon('i-arrow')}</button>
         </div>
@@ -2225,7 +2226,7 @@ function renderSubnav() {
   const el = document.getElementById('subnav');
   if (WIDE_SCREENS.includes(state.screen)) {
     const w = weekSummary();
-    const count = { hub: `${w.locked}/${w.total}`, board: state.profile.iq > 0 ? '#' + w.rank : '', retention: state.profile.iq > 0 ? String(state.profile.iq) : '' };
+    const count = { hub: `${w.locked}/${w.total}`, board: state.profile.iq > 0 ? '#' + fmtRank(w.rank) : '', retention: state.profile.iq > 0 ? String(state.profile.iq) : '' };
     el.innerHTML = `<nav class="row" aria-label="Match IQ">
       ${SUBNAV.map(([label, to]) => `<button class="t" data-action="nav" data-to="${to}" data-label="${label}" ${state.screen === to ? 'aria-current="page"' : ''}>${label}${count[to] ? `<span class="n num">${count[to]}</span>` : ''}</button>`).join('')}
     </nav>`;
