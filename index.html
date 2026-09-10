@@ -1113,7 +1113,32 @@ function updateEntry(id, patch) {
 
 /* ================================================================== views */
 const currentMatch = () => matchById(state.matchId);
-const crest = (team, sm = false) => `<span class="crest ${sm ? 'sm' : ''}" style="background:${clubColor(team.name)}" aria-hidden="true">${team.short}</span>`;
+/* Club colours run from Dortmund yellow to Chelsea blue, so white initials sit anywhere
+   between 1.3:1 and 12:1 against them. The ink follows the shirt rather than the habit. */
+const luminance = (hex) => {
+  const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)
+    .map((c) => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)));
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+};
+const contrast = (a, b) => {
+  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
+};
+const onColor = (hex) => (contrast(hex, '#12140f') > contrast(hex, '#ffffff') ? '#12140f' : '#ffffff');
+/* A few shirt colours - Arsenal red above all - clear neither white nor near-black by the
+   4.5:1 body-text bar. Those get darkened until they do, which costs a shade of accuracy on
+   the crest and buys initials a low-vision reader can actually read. */
+const crestBg = (hex) => {
+  let out = hex;
+  for (let i = 0; i < 6 && contrast(out, onColor(out)) < 4.5; i++) {
+    out = '#' + [1, 3, 5].map((k) => Math.round(parseInt(out.slice(k, k + 2), 16) * 0.88).toString(16).padStart(2, '0')).join('');
+  }
+  return out;
+};
+const crest = (team, sm = false) => {
+  const bg = crestBg(clubColor(team.name));
+  return `<span class="crest ${sm ? 'sm' : ''}" style="background:${bg};color:${onColor(bg)}" aria-hidden="true">${team.short}</span>`;
+};
 const countdownChip = (m) => `<span class="chip">${icon('i-clock')} <span class="countdown num" data-countdown="${m.id}">${formatCountdown(kickoffOf(m) - Date.now())}</span></span>`;
 
 function questProgress(p) {
@@ -1379,7 +1404,7 @@ function viewHub() {
 
   ${prizeBanner(p, { compact: true })}
 
-  ${CONFIG.features.aiSlip ? `
+  ${CONFIG.features.aiSlip && w.locked > 0 ? `
   <div class="sec-head">
     <h2>What the model would back</h2>
     <span>One slip, every week</span>
@@ -1713,15 +1738,15 @@ function viewWait() {
     <span class="t"><b>${state.profile.notify ? 'You will be notified at full-time' : 'Notify me at full-time'}</b><small>${state.profile.notify ? 'Tap to turn it off. Uses your browser notifications.' : 'One notification per match, from this browser. No email, no account needed.'}</small></span>
   </button>` : ''}
   ${(() => {
-    const slip = { matchId: m.id, type: 'builder', legs: QUESTION_ORDER.map((qid) => ({ qid, oid: state.answers[qid] })) };
-    const best = bestPartnerFor(slip);
+    /* The user reached this screen by declining the price on the odds screen, so it states
+       where the prices are and does not ask a second time. */
+    const best = bestPartnerFor(currentSlip());
     return `
   <div class="back-it">
-    <div class="row between wrap" style="gap:8px"><span class="eyebrow">Back this prediction</span>${best.partner.offer ? `<span class="chip chip-accent">${icon('i-gift')} ${best.partner.offer.short}</span>` : ''}</div>
-    <p class="small muted" style="margin-top:6px">Your three calls as a Bet Builder. Stake ${money(10)} returns <b style="color:var(--ink)" class="num">${money(best.odds * 10)}</b> at the best price.</p>
+    <div class="row between wrap" style="gap:8px"><span class="eyebrow">Prices for this prediction</span>${best.partner.offer ? `<span class="chip chip-accent">${icon('i-gift')} ${best.partner.offer.short}</span>` : ''}</div>
+    <p class="small muted" style="margin-top:6px">Best price is ${fmtOdds(best.odds)} at ${best.partner.name} right now. Locking your calls stays free either way.</p>
     <div class="foot-cta" style="margin-top:12px">
-      ${betCta(slip, 'Back it', 'wait_screen')}
-      <button class="btn btn-ghost" data-action="to-odds">Compare all ${PARTNERS.length} partners</button>
+      <button class="btn btn-secondary btn-block" data-action="to-odds">Compare all ${PARTNERS.length} partners ${icon('i-arrow')}</button>
     </div>
   </div>`;
   })()}
@@ -1842,9 +1867,13 @@ function quickBet() {
   const nextOpen = MATCHES.find((x) => statusOf(x, state.profile) === 'open');
   if (!nextOpen) return '';
   return `
-  <section class="quick" aria-label="Bet on the next match">
+  <section class="quick" aria-label="Your next match">
     <div class="row between wrap" style="gap:8px"><span class="eyebrow">${icon('i-bolt')} Next up · ${nextOpen.kickoffLabel}</span><span class="tiny dim">Best of ${PARTNERS.length} partners · 18+</span></div>
     <h3>${nextOpen.home.name} v ${nextOpen.away.name}</h3>
+    <div class="foot-cta" style="margin-top:12px">
+      <button class="btn btn-secondary btn-block" data-action="open-match" data-match="${nextOpen.id}">Make your 3 calls ${icon('i-arrow')}</button>
+    </div>
+    <p class="tiny dim" style="margin-top:14px">Or back the winner now, if that is what you came for:</p>
     <div class="grid">
       ${nextOpen.questions.winner.options.map((o) => {
         const slip = { matchId: nextOpen.id, type: 'single', legs: [{ qid: 'winner', oid: o.id }] };
@@ -1852,7 +1881,6 @@ function quickBet() {
         return `<button class="cell" data-action="handoff" data-partner="${best.partner.id}" data-slip='${JSON.stringify(slip)}' data-source="result_quick_bet" aria-label="Bet on ${o.label} at ${fmtOdds(best.odds)}"><span>${o.label}</span><b class="num">${fmtOdds(best.odds)}</b><span class="bk">${best.partner.name}</span></button>`;
       }).join('')}
     </div>
-    <button class="btn btn-ghost" data-action="open-match" data-match="${nextOpen.id}" style="margin-top:8px">Or make your 3 calls first ${icon('i-arrow')}</button>
   </section>`;
 }
 
@@ -2120,8 +2148,11 @@ function viewWelcomeSheet() {
         </button>`).join('')}
       </div>
       <p class="tiny dim" style="margin-top:10px">${picked.offer.terms}</p>
+      ${state.profile.ageConfirmed
+        ? `<div class="rg" style="margin-top:12px"><span class="badge18">18+</span><span>Age confirmed on this device. Only bet what you can afford to lose.</span></div>`
+        : `<label class="age"><input type="checkbox" data-action="age-confirm"><span>I confirm I am 18 or over, in a licensed territory, and I accept ${picked.name}'s terms.</span></label>`}
       <div class="foot-cta">
-        <button class="btn btn-primary btn-block" data-action="welcome-claim" data-partner="${picked.id}">Claim at ${picked.name} ${icon('i-ext')}</button>
+        <button class="btn btn-primary btn-block" data-action="welcome-claim" data-partner="${picked.id}" ${state.profile.ageConfirmed ? '' : 'disabled'}>Claim at ${picked.name} ${icon('i-ext')}</button>
       </div>
       <div class="more-bonus">
         <span class="pb-ic">${icon('i-trophy')}</span>
@@ -2186,7 +2217,7 @@ function viewSheet() {
       </div>
       <div class="mini-slip">
         <div><span>Your slip · ${isBuilder ? 'Bet Builder' : 'Single'}</span><span>${legs.length} ${legs.length === 1 ? 'selection' : 'selections'}</span></div>
-        ${legs.map((l) => `<div><span>${l.o.label} <span class="dim">· ${l.q.title}</span></span><span class="num">${fmtOdds(l.o.odds[idx])}</span></div>`).join('')}
+        ${legs.map((l) => `<div><span>${l.o.label} <span class="dim">· ${l.q.title}</span></span><span class="num">${fmtOdds(oddsFeed.price(l.o.odds, idx))}</span></div>`).join('')}
         <div><span>Stake ${money(10)} at ${fmtOdds(odds)}</span><span class="tot num">Returns ${money(odds * 10)}</span></div>
       </div>
       ${state.sheet.moved ? `
@@ -2673,10 +2704,15 @@ const ACTIONS = {
     track('welcome_offer_selected', { partner: PARTNERS.find((x) => x.id === btn.dataset.partner).name });
     setState({ sheet: { ...state.sheet, pick: btn.dataset.partner } });
   },
+  /* Claiming an offer sends the user to a partner, so it is a handoff: same age gate as the
+     odds sheet, and the same commercial event, or the funnel would show a claim that never
+     reached the operator. */
   'welcome-claim'(btn) {
+    if (!state.profile.ageConfirmed) { toast('Confirm you are 18 or over to continue'); return; }
     const partner = PARTNERS.find((x) => x.id === btn.dataset.partner);
     updateProfile({ welcomeClaimed: partner.id });
     track('welcome_offer_claimed', { partner: partner.name });
+    track('bookmaker_click', { partner: partner.name, odds: null, type: 'offer', offer: true, source: 'welcome_offer', match: null });
     closeSheet();
     toast(`${partner.name} opens with the offer applied (mock)`);
   },
