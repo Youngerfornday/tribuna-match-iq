@@ -790,18 +790,30 @@ const CLUBS = {
   'Man United': '#da291c', Tottenham: '#5b6b8a', Newcastle: '#41B6E6', 'Aston Villa': '#7a003c',
   'Real Madrid': '#d4af37', Barcelona: '#a50044', Bayern: '#dc052d', Dortmund: '#fde100',
 };
+/* The weekly table is a field, not a short list. One curve maps a score to a place in it,
+   and everything derives from that curve: the generated field, your rank, and the rows the
+   table can open. LAMBDA is set so the best realistic week lands at #1 and the ninth-best
+   at #9, which is what makes "you are #4,312 of 12,480" a sentence the table can defend. */
+const WEEK_FIELD = 12480;
+const RANK_LAMBDA = 30.4;
+const rankFor = (iq) => Math.min(WEEK_FIELD, Math.max(1, Math.round(WEEK_FIELD * Math.exp(-iq / RANK_LAMBDA))));
+const iqForRank = (rank) => Math.round(RANK_LAMBDA * Math.log(WEEK_FIELD / Math.max(1, rank)));
+
+/* These nine are the visible top of a field of WEEK_FIELD players, so their scores have to
+   look like the top of one: six matches called, most of the Power Picks landing. A week
+   caps at 6 x 50 plus the quest bonus, and nobody here is near that ceiling. */
 const PLAYERS = [
-  { name: 'dmytro_k', club: 'Arsenal', played: 5, correct: 11, iq: 138, prev: 2 },
-  { name: 'gunner_88', club: 'Arsenal', played: 5, correct: 9, iq: 112, prev: 1 },
-  { name: 'kop_forever', club: 'Liverpool', played: 4, correct: 8, iq: 96, prev: 3 },
-  { name: 'xg_nerd', club: 'Man City', played: 5, correct: 8, iq: 88, prev: 5 },
-  { name: 'olena.f', club: 'Chelsea', played: 3, correct: 6, iq: 74, prev: 4 },
-  { name: 'tactix', club: 'Real Madrid', played: 4, correct: 6, iq: 61, prev: 8 },
-  { name: 'red_wall', club: 'Liverpool', played: 3, correct: 5, iq: 52, prev: 6 },
-  { name: 'blue_moon', club: 'Man City', played: 2, correct: 4, iq: 44, prev: 7 },
-  { name: 'bvb_ultra', club: 'Dortmund', played: 2, correct: 3, iq: 31, prev: 9 },
+  { name: 'dmytro_k', club: 'Arsenal', played: 6, correct: 16, iq: 287, prev: 2 },
+  { name: 'gunner_88', club: 'Arsenal', played: 6, correct: 15, iq: 276, prev: 1 },
+  { name: 'kop_forever', club: 'Liverpool', played: 6, correct: 15, iq: 265, prev: 3 },
+  { name: 'xg_nerd', club: 'Man City', played: 6, correct: 14, iq: 256, prev: 5 },
+  { name: 'olena.f', club: 'Chelsea', played: 5, correct: 14, iq: 248, prev: 4 },
+  { name: 'tactix', club: 'Real Madrid', played: 6, correct: 13, iq: 240, prev: 8 },
+  { name: 'red_wall', club: 'Liverpool', played: 5, correct: 13, iq: 233, prev: 6 },
+  { name: 'blue_moon', club: 'Man City', played: 6, correct: 12, iq: 226, prev: 7 },
+  { name: 'bvb_ultra', club: 'Dortmund', played: 5, correct: 12, iq: 220, prev: 9 },
 ];
-const CAPTAIN = { name: 'CaptainAI', played: 6, correct: 12, iq: 120, prev: 4, ai: true };
+const CAPTAIN = { name: 'CaptainAI', played: 6, correct: 12, iq: 120, prev: 246, ai: true };
 const FANBASES = [
   { club: 'Arsenal', hit: 61, n: 6900 }, { club: 'Liverpool', hit: 54, n: 5500 },
   { club: 'Man City', hit: 57, n: 5700 }, { club: 'Chelsea', hit: 49, n: 4100 },
@@ -812,8 +824,9 @@ const FANBASES = [
 ];
 
 /* The named players are only the people the copy talks about. The rest of the visible
-   field is generated once, deterministically, so the top 100 is a real cut-off and the
-   table can be expanded without shipping 100 hand-written rows. */
+   field is generated once, deterministically, from the same rank curve the whole table
+   uses, so the hundred rows a user can open are a real slice of WEEK_FIELD rather than a
+   short list wearing a big number. */
 const HANDLE_STEMS = ['tifo', 'curva', 'panenka', 'gegen', 'libero', 'regista', 'catenaccio', 'xg_model', 'pressing', 'fullback', 'trequarti', 'offside', 'ultras', 'terrace', 'kop_end', 'holte', 'yaya', 'tiki_taka', 'derby_day', 'matchday', 'away_end', 'clean_sheet', 'back_post', 'set_piece', 'low_block', 'false_nine', 'wing_back', 'stoppage', 'north_stand', 'touchline'];
 const HANDLE_TAILS = ['_88', '_10', '_ua', '_x', '7', '_fan', '_iq', '_99', '_21', '', '_pro', '_04'];
 const FIELD = (() => {
@@ -827,10 +840,10 @@ const FIELD = (() => {
   const out = [];
   for (let i = 0; out.length < 120 && i < names.length; i++) {
     if (taken.has(names[i])) continue;
-    const iq = i < 8 ? 132 - 3 * i : Math.round(110 - (i - 8) * 0.8 - (i % 3));
+    const iq = iqForRank(PLAYERS.length + 1 + out.length);
     if (iq < 8) break;
-    const played = Math.max(1, Math.min(6, Math.round(iq / 24) + (i % 2)));
-    const correct = Math.max(0, Math.min(played * 3, Math.round(iq / 11)));
+    const played = Math.max(2, Math.min(6, Math.round(iq / 42)));
+    const correct = Math.max(1, Math.min(played * 3, Math.round(iq / 18)));
     out.push({ name: names[i], club: clubs[i % clubs.length], played, correct, iq, mv: (i % 7) - 3 });
   }
   return out;
@@ -994,8 +1007,13 @@ const badgeById = (id) => BADGES.find((b) => b.id === id);
 /* One weekly quest, computed from the fixtures rather than stored: call every match on
    the busiest day and the week pays a bonus. */
 const QUEST = { day: 'Sunday', bonus: 25 };
+/* The prize is set against CaptainAI rather than against a place in the table, because a
+   place depends on twelve thousand strangers while the model is a target you can see and
+   chase. It is also what the first screen promises: beat CaptainAI. PRIZE_TOP is only the
+   depth of table a reader can open. */
 const PRIZE_TOP = 100;
-const WEEK_FIELD = 12480;
+const beatsAI = (p) => p.iq > CAPTAIN.iq;
+const toBeatAI = (p) => Math.max(0, CAPTAIN.iq + 1 - p.iq);
 const CONFIG = Object.freeze({
   features: { offers: true, aiSlip: true, quickBet: true, fanbases: true, livePrices: true },
   geo: 'UA',
@@ -1105,12 +1123,17 @@ function weekSummary() {
   const locked = entries.filter((e) => e.status !== 'open').length;
   return { locked, settled: entries.filter((e) => e.status === 'settled').length, total: MATCHES.length, rank: rankOf(p) };
 }
-function rankOf(p) {
-  return leaderboard(p).findIndex((r) => r.me) + 1;
-}
+/* The rows the table can draw are the top of the field, so they hold their ordinal place;
+   the curve decides where everyone else stands. Taking the larger of the two keeps the
+   sequence strictly increasing instead of letting rounding hand out two first places. */
+const SHOWN = [...PLAYERS, ...FIELD];
+const rankAmong = (iq) => Math.max(SHOWN.filter((r) => r.iq > iq).length + 1, rankFor(iq));
+const rankOf = (p) => rankAmong(p.iq);
 function leaderboard(p) {
   const me = { name: p.name || 'You', club: p.club, played: Object.values(p.matches).filter((e) => e.status === 'settled').length, correct: p.correct, iq: p.iq, prev: p.prevRank, me: true };
-  return [...PLAYERS, ...FIELD, CAPTAIN, me].sort((a, b) => b.iq - a.iq || hitRate(b.correct, b.played * 3) - hitRate(a.correct, a.played * 3));
+  return [...SHOWN, CAPTAIN, me]
+    .map((r) => ({ ...r, rank: rankAmong(r.iq) }))
+    .sort((a, b) => a.rank - b.rank || b.iq - a.iq || hitRate(b.correct, b.played * 3) - hitRate(a.correct, a.played * 3));
 }
 
 const AI_SLIP = { matchId: 'bay-bvb', type: 'builder', legs: [{ qid: 'winner', oid: 'home' }, { qid: 'goals', oid: 'over' }, { qid: 'scorer', oid: 'kane' }] };
@@ -1141,7 +1164,7 @@ const TERMS = [
   ['Who can play', 'Tribuna Match IQ is free to play for registered Tribuna users aged 18 or over. One entry per match. Calls lock at the scheduled kick-off time; late entries are not accepted.'],
   ['Scoring', `+${POINTS_PER_CALL} Match IQ for each correct call. Your Power Pick counts double. A perfect match (all three correct) earns a +${PERFECT_BONUS} bonus. Anytime scorer calls settle on official competition data; abandoned matches are void.`],
   ['Weekly table', 'The table covers fixtures from Monday 00:00 to Sunday 23:59 site time and resets every Monday. Ties are broken by hit rate, then by earliest lock. Your all-time Match IQ and league tier never reset.'],
-  ['Prizes', `Each week the top ${PRIZE_TOP} players receive the ${PARTNERS[0].name} welcome offer, credited on Monday when the table resets. Prizes are funded by the partner and subject to its terms: new customers only, 18+, verified account, licensed territory. Tribuna staff and partner employees are not eligible. No purchase or bet is required to play or win.`],
+  ['Prizes', `Each week every player who finishes above CaptainAI's score receives the ${PARTNERS[0].name} welcome offer, credited on Monday when the table resets. CaptainAI calls every match of the week, so the target it sets moves with its own results. Prizes are funded by the partner and subject to its terms: new customers only, 18+, verified account, licensed territory. Tribuna staff and partner employees are not eligible. No purchase or bet is required to play or win.`],
   ['Fair play', 'One account per person. Automated or duplicate accounts are removed from the table without notice. Tribuna\'s decision on settlement is final.'],
   ['CaptainAI and market data', 'CaptainAI is a statistical model. Fans % aggregates locked calls from Tribuna users. Market % is derived from partner odds with the bookmaker margin removed. None of this is betting advice.'],
   ['Partners and prices', `Prices come from Tribuna's betting partners, currently ${PARTNERS.map((x) => x.name).join(', ')}, and are refreshed before each kick-off. The order of the partners follows the market you are in; the best price is highlighted wherever it sits, and you can back your prediction with any of them. In this prototype every price and welcome offer is illustrative: check the operator's own site for live odds and terms.`],
@@ -1154,17 +1177,17 @@ function prizeBanner(p, opts = {}) {
   const partner = PARTNERS[0];
   const w = weekSummary();
   const started = w.locked > 0;
-  const inPrize = p.iq > 0 && w.rank <= PRIZE_TOP;
+  const inPrize = p.iq > 0 && beatsAI(p);
   const standing = p.iq > 0
     ? (inPrize
-      ? `You are #${w.rank} of ${fmtK(WEEK_FIELD)} — inside the top ${PRIZE_TOP}.`
-      : `You are #${w.rank} — ${plural(w.rank - PRIZE_TOP, 'place', 'places')} from the prize.`)
+      ? `You are ${plural(p.iq - CAPTAIN.iq, 'point', 'points')} ahead of CaptainAI.`
+      : `CaptainAI is on ${CAPTAIN.iq}. You are on ${p.iq} — ${plural(toBeatAI(p), 'point', 'points')} to go.`)
     : `Your locked calls score at full-time, and that is when you enter the table.`;
-  const headline = started ? `Finish in the top ${PRIZE_TOP} this week` : `Your first prediction unlocks ${partner.offer.reward} in free bets`;
+  const headline = started ? `Beat CaptainAI this week` : `Your first prediction unlocks ${partner.offer.reward} in free bets`;
   const lead = started
-    ? `${partner.name} adds its welcome offer — ${partner.offer.title} — credited on Monday when the table resets.`
+    ? `Finish the week above CaptainAI's ${CAPTAIN.iq} and ${partner.name} adds its welcome offer — ${partner.offer.title} — credited on Monday when the table resets.`
     : `Lock three calls on any match and claim the ${partner.name} welcome offer. The game is free, the offer is partner-funded.`;
-  const note = started ? standing : `Then finish in the top ${PRIZE_TOP} of the weekly table and Monday brings a second partner offer.`;
+  const note = started ? standing : `Then finish the week above CaptainAI and Monday brings a second partner offer.`;
   const kind = opts.quietCta ? 'btn-secondary' : 'btn-primary';
   const cta = opts.cta || (started
     ? `<button class="btn ${kind}" data-action="nav" data-to="board" data-label="Table">See the table ${icon('i-arrow')}</button>`
@@ -1176,10 +1199,10 @@ function prizeBanner(p, opts = {}) {
     <section class="prize-row" aria-label="This week's prize">
       <span class="pb-ic">${icon(started ? 'i-trophy' : 'i-gift')}</span>
       <div>
-        <b>${started ? `Top ${PRIZE_TOP} win the ${partner.name} welcome offer` : `First prediction unlocks ${partner.offer.reward} in free bets`}</b>
-        <p>${started ? `${partner.offer.title}, credited Monday.` : `Then the top ${PRIZE_TOP} of the weekly table get a second offer on Monday.`} <span class="pb-status ${inPrize ? 'on' : ''}">${started ? standing : ''}</span></p>
+        <b>${started ? `Beat CaptainAI, win the ${partner.name} welcome offer` : `First prediction unlocks ${partner.offer.reward} in free bets`}</b>
+        <p>${started ? `${partner.offer.title}, credited Monday.` : `Then finish the week above CaptainAI for a second offer on Monday.`} <span class="pb-status ${inPrize ? 'on' : ''}">${started ? standing : ''}</span></p>
         ${opts.claimable ? (claimed
-          ? `<p class="pb-claimed">${icon('i-check')} Welcome offer claimed at ${claimed.name}. The top ${PRIZE_TOP} offer lands Monday.</p>`
+          ? `<p class="pb-claimed">${icon('i-check')} Welcome offer claimed at ${claimed.name}. Beat CaptainAI and the second offer lands Monday.</p>`
           : `<div class="pb-actions"><button class="btn btn-secondary btn-sm" data-action="claim-offer">${icon('i-gift')} Claim the welcome offer</button></div>`) : ''}
         <p class="pb-terms">Partner-funded · new customers only · 18+ · T&amp;Cs apply</p>
       </div>
@@ -1209,7 +1232,7 @@ function viewLanding() {
   return `
   <section class="hero" aria-labelledby="hero-title">
     <div class="hero-copy">
-      <div class="row wrap" style="gap:8px"><span class="chip">${WEEK_LABEL} · ${MATCHES.length} matches</span><span class="chip chip-accent">${icon('i-trophy')} Top ${PRIZE_TOP} win ${PARTNERS[0].offer.reward}</span><span class="chip">${fmtK(totalPredictions)} calls locked</span></div>
+      <div class="row wrap" style="gap:8px"><span class="chip">${WEEK_LABEL} · ${MATCHES.length} matches</span><span class="chip chip-accent">${icon('i-trophy')} Beat CaptainAI, win ${PARTNERS[0].offer.reward}</span><span class="chip">${fmtK(totalPredictions)} calls locked</span></div>
       <h1 id="hero-title">Call the match. <em>Beat CaptainAI.</em> Climb the table.</h1>
       <p>Three calls per match, locked before kick-off. Compare yours with the model, ${fmtK(totalPredictions)} fans and the betting market, then watch the points land at full-time.</p>
       <div class="foot-cta">
@@ -1790,7 +1813,7 @@ function viewResult() {
     </div>
   </div>` ;
   })()}
-  <p class="rank-line">You are <b>#${rank}</b> of ${fmtK(WEEK_FIELD)} this week${moved > 0 ? `, up ${plural(moved, 'place', 'places')}` : moved < 0 ? `, down ${plural(-moved, 'place', 'places')}` : ''}${rank <= PRIZE_TOP ? ' — inside the top ' + PRIZE_TOP : ''}.</p>
+  <p class="rank-line">You are <b>#${rank}</b> of ${fmtK(WEEK_FIELD)} this week${moved > 0 ? `, up ${plural(moved, 'place', 'places')}` : moved < 0 ? `, down ${plural(-moved, 'place', 'places')}` : ''}${beatsAI(p) ? ` — and ${plural(p.iq - CAPTAIN.iq, 'point', 'points')} clear of CaptainAI` : `, ${plural(toBeatAI(p), 'point', 'points')} behind CaptainAI`}.</p>
   <div class="duel" aria-label="Correct calls: you versus CaptainAI versus fans">
     <div class="${out.you === top ? 'win' : ''}"><span>You</span><b class="num">${out.you}/3</b></div>
     <div class="${out.ai === top ? 'win' : ''}"><span>CaptainAI</span><b class="num">${out.ai}/3</b></div>
@@ -1821,6 +1844,7 @@ function quickBet() {
   </section>`;
 }
 
+const fmtRank = (n) => n.toLocaleString('en-GB');
 function movement(row, rank) {
   const prev = row.mv != null ? rank + row.mv : row.prev;
   if (prev == null) return `<span class="mv new">new</span>`;
@@ -1831,13 +1855,15 @@ function movement(row, rank) {
 
 function playersTable(p, opts = {}) {
   const board = leaderboard(p);
-  const meIdx = board.findIndex((r) => r.me);
   const TOP = Math.min(board.length, opts.limit || 8);
   const visible = board.slice(0, TOP);
-  const showMeBelow = meIdx >= TOP;
-  const row = (r, i) => `
+  const cut = visible.length ? visible[visible.length - 1].rank : 0;
+  /* CaptainAI is the score the prize is set against, so its row stays pinned below the
+     visible top however far down the curve puts it: the gap to it is the goal. */
+  const pinned = board.filter((r) => (r.me || r.ai) && r.rank > cut).sort((a, b) => a.rank - b.rank);
+  const row = (r) => `
     <tr class="${r.me ? 'me' : ''} ${r.ai ? 'ai' : ''}">
-      <td><span class="rank num">${i + 1} ${movement(r, i + 1)}</span></td>
+      <td><span class="rank num">${fmtRank(r.rank)} ${movement(r, r.rank)}</span></td>
       <td><span class="pname"><span class="av">${r.ai ? icon('i-cpu') : r.name.slice(0, 2).toUpperCase()}</span>${r.club ? `<span class="club" style="background:${clubColor(r.club)}" title="${r.club}"></span>` : ''}<span class="nm">${r.name}</span></span></td>
       <td class="num">${r.played}</td>
       <td class="num">${r.played ? hitRate(r.correct, r.played * 3) + '%' : '–'}</td>
@@ -1854,10 +1880,17 @@ function playersTable(p, opts = {}) {
       <thead><tr><th>#</th><th>Player</th><th title="Matches played">P</th><th>Hit</th><th>IQ</th></tr></thead>
       <tbody>
         ${visible.map(row).join('')}
-        ${showMeBelow ? `${meIdx > TOP ? `<tr><td colspan="5" class="gap">${plural(meIdx - TOP, 'more player', 'more players')}</td></tr>` : ''}${row(board[meIdx], meIdx)}` : ''}
+        ${(() => {
+          let cursor = cut;
+          return pinned.map((r) => {
+            const skipped = r.rank - cursor - 1;
+            cursor = r.rank;
+            return `${skipped > 0 ? `<tr><td colspan="5" class="gap">${fmtK(skipped)} more ${skipped === 1 ? 'player' : 'players'}</td></tr>` : ''}${row(r)}`;
+          }).join('');
+        })()}
       </tbody>
     </table>
-    ${opts.expandable ? `<button class="lb-more" data-action="lb-expand">Show the top ${PRIZE_TOP} — everyone in the prize ${icon('i-arrow')}</button>` : ''}
+    ${opts.expandable ? `<button class="lb-more" data-action="lb-expand">Show the top ${PRIZE_TOP} of ${fmtK(WEEK_FIELD)} ${icon('i-arrow')}</button>` : ''}
     <div class="foot">${p.iq === 0 ? 'Lock a prediction to enter the table. ' : ''}Ties break on hit rate, movement is versus yesterday.</div>`;
 }
 
@@ -2083,7 +2116,7 @@ function viewWelcomeSheet() {
         <span class="pb-ic">${icon('i-trophy')}</span>
         <div>
           <b>Want more than one bonus?</b>
-          <p>Finish in the top ${PRIZE_TOP} of this week's table and you get another partner offer on Monday. ${state.profile.iq > 0
+          <p>Finish this week above CaptainAI and you get another partner offer on Monday. ${state.profile.iq > 0
             ? `You are #${weekSummary().rank} of ${fmtK(WEEK_FIELD)}.`
             : weekSummary().locked > 0 ? 'Your locked calls score at full-time, and that is when you enter the table.' : 'Lock a prediction to enter the table.'}</p>
           <button class="btn btn-secondary btn-sm" data-action="welcome-board">See the table ${icon('i-arrow')}</button>

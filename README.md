@@ -16,11 +16,11 @@ The "Simulate full-time" button on the waiting screen is a prototype control. In
 - Every screen has its own URL (`#/challenges`, `#/match/bay-bvb/play`, `#/board`, `#/me`), so deep links and the browser back button work. In production these map 1:1 to paths under `/match-iq/`.
 - A Match IQ sub-nav (Overview / Challenges / Table / You) sits under the site header on every browse screen; the play flow replaces it with one labelled back link, so every screen names exactly one way out.
 - Width follows the task: browse screens open up to 1120px, the play flow stays a single 620px column where a wide measure would hurt.
-- **Overview** reads top to bottom: hero, how it works, prize banner, weekly leaderboard, next open match, rules. The leaderboard shows the top 10 and expands to the full top 100, which is the prize cut-off. The next-match card exists so the page does not dead-end on the terms block: it carries the game's own numbers - calls locked, time to kick-off, where the crowd stands - and one route back into a match, with no second betting surface under the prize banner.
+- **Overview** reads top to bottom: hero, how it works, prize banner, weekly leaderboard, next open match, rules. The leaderboard shows the top 10 and expands to the top 100 of the field. The next-match card exists so the page does not dead-end on the terms block: it carries the game's own numbers - calls locked, time to kick-off, where the crowd stands - and one route back into a match, with no second betting surface under the prize banner.
 - **Challenges** is one column: a progress strip for the week, then the fixtures. The next match to call is the only highlighted row and carries the only call to action on the screen; matches already played show what you called and what it scored.
 - **Table** is the ranking: the prize, then where you stand, then the table itself.
 - **You** is your own week — rating, league, streak, hit rate against CaptainAI and the market, every call you locked this week, and the next challenge. The leaderboard lives on Table alone, so the two screens do not repeat each other.
-- The prize banner has two states. Before a first prediction it sells the entry ticket ("your first prediction unlocks the welcome offer") and names the weekly prize underneath; once a prediction is locked it switches to the top 100 and the user's own standing. The prize is also stated in the hero chips, so it is on screen before any scrolling.
+- The prize banner has two states. Before a first prediction it sells the entry ticket ("your first prediction unlocks the welcome offer") and names the weekly prize underneath; once a prediction is locked it switches to the CaptainAI target and the user's own distance from it ("CaptainAI is on 120. You are on 95 - 26 points to go"). The prize is also stated in the hero chips, so it is on screen before any scrolling.
 - Partner bonuses are marked as bonuses: a badge on every price that carries one, and an accent card with the reward as its headline.
 
 ## 1. What is it and what user problem does it solve
@@ -67,7 +67,7 @@ First experiments:
 1. Blind reveal vs open reveal (probabilities shown before the user picks). Expect blind to win on completion and on click-out, because the comparison only means something after a commitment.
 2. Odds screen before Lock vs after Lock. Expect after to win on lead quality, because the user has finished the game and is not being interrupted.
 
-After a user's first click-out the prototype shows a one-time welcome-offer dialog: pick one partner offer to claim, or go to the weekly table, where the top 100 earn another partner offer on Monday. It is dismissible, fires once per profile, and every offer in it is labelled illustrative.
+After a user's first click-out the prototype shows a one-time welcome-offer dialog: pick one partner offer to claim, or go to the weekly table, where beating CaptainAI's weekly score earns another partner offer on Monday. It is dismissible, fires once per profile, and every offer in it is labelled illustrative.
 
 All events are visible in the prototype's Metrics panel at the bottom of every screen.
 
@@ -89,7 +89,7 @@ All events are visible in the prototype's Metrics panel at the bottom of every s
 - Badges persist. Five of them, earned ids stored on the profile, shown on a shelf of medals where the locked ones stay visible with the condition that unlocks them. A badge earned at full-time lands in the same block that counts the points up, rather than in a toast that flies away.
 
 - Everything is mocked: fan percentages, CaptainAI probabilities and reasoning, partner odds, the leaderboards and the match results. Amounts are in euro.
-- The weekly table is a real field: the named players are hand-written, the rest of the visible top 100 is generated deterministically from a seed so the prize cut-off means something. The stated field size (12.5k) is the number the copy claims, not the number of rendered rows.
+- The weekly table is a real field. One curve maps a score to a place among the 12,480 players the copy claims, and everything derives from it: the generated rows below the named players, your own rank, and CaptainAI's. So "#4,312 of 12,480" is a number the table can defend rather than a label over 131 rendered rows, and reaching the top of it takes a week of good calls rather than one lucky match.
 - Each illustration is levelled for the block it sits in and inserted with the same radial mask, bleeding off the block's edge. Forcing one shared treatment on both — a pure black background for each — matched them to each other but made the banner read as a pasted rectangle, because its block is the lightest on the page.
 - Two pieces of artwork, both generated for this prototype in one style: CaptainAI, the model you play against, on the overview hero, and the crowned winner holding the trophy and the free bet in the prize banner. Nothing is taken from an operator's site: lifting a casino's character art into a public demo is a copyright problem, and it would be the first thing an operator's own legal team objects to.
 - The banner character is deliberately the winning player, not a gambling mascot aimed at a young audience: crowned, holding the trophy the weekly table is played for, with the free bet as the second prize.
@@ -111,7 +111,7 @@ Three of them are services rather than screens, and each is specified in [`docs/
 
 Precedents: Sky Bet Super 6 is the reference for predictor-to-sportsbook; FotMob and OneFootball predictions are the content-side reference. Rollout: one top match per week, then top-5 leagues, then a weekly league with partner-funded prizes.
 
-Weekly prize: the top 100 of the weekly table receive the lead partner's welcome offer, credited on Monday when the table resets. It is partner-funded rather than a Tribuna cash prize, which is what makes it self-financing: the prize is the same offer the handoff already promotes, so the reward and the conversion event are one thing. Carried on a banner on the overview, table and profile screens, always with the partner terms, new-customers-only wording and 18+.
+Weekly prize: every player who finishes the week above CaptainAI's score receives the lead partner's welcome offer, credited on Monday when the table resets. The target is the model rather than a place in the table, because a place depends on twelve thousand strangers while the model is a visible, chaseable number - and beating it is what the first screen already promises. CaptainAI calls every match of the week, so the bar moves with its own results, and clearing it takes three or four well-called matches rather than one. It is partner-funded rather than a Tribuna cash prize, which is what makes it self-financing: the prize is the same offer the handoff already promotes, so the reward and the conversion event are one thing. Carried on a banner on the overview, table and profile screens, always with the partner terms, new-customers-only wording and 18+.
 
 ## Built with
 
