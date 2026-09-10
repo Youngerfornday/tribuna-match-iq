@@ -1831,6 +1831,7 @@ function viewResult() {
   <div class="insight"><span class="ai-dot">${icon('i-cpu')}</span><span>${r.insight} <a href="#report" data-action="read-more">Read match report</a></span></div>
   <div class="foot-cta">
     <button class="btn btn-primary btn-block" data-action="to-retention">See my Match IQ ${icon('i-arrow')}</button>
+    <button class="btn btn-secondary" data-action="share">${icon('i-share')} Share my result</button>
   </div>
   ${CONFIG.features.quickBet ? quickBet() : ''}`;
 }
@@ -2520,6 +2521,9 @@ function roundRect(x, l, t, w, h, r) {
 
 function shareText() {
   const m = currentMatch();
+  const out = state.outcome;
+  /* After full-time the score is the thing worth sending; before it, the call is. */
+  if (out) return `${m.home.name} v ${m.away.name}: I called ${out.you}/3, CaptainAI called ${out.ai}/3, +${out.points} Match IQ. Beat me on Tribuna.`;
   if (!QUESTION_ORDER.every((q) => state.answers[q])) return `Match IQ on Tribuna: three calls per match, locked before kick-off.`;
   const legs = legsOf();
   return `My Match IQ call for ${m.home.name} v ${m.away.name}: ${legs.map((l) => l.o.label).join(', ')}. Power Pick: ${legs.find((l) => l.q.id === state.powerPick).o.label}. Beat me on Tribuna.`;
